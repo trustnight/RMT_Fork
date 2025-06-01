@@ -1,7 +1,7 @@
 #Requires AutoHotkey v2.0
 #Include MacroEditGui.ahk
 
-class SearchGui {
+class SearchProGui {
     __new() {
         this.Gui := ""
         this.SureBtnAction := ""
@@ -19,6 +19,8 @@ class SearchGui {
         this.EndPosYCon := ""
         this.ImageCon := ""
         this.ImageBtn := ""
+        this.SimilarCon := ""
+        this.OCRTypeCon := ""
         this.ScreenshotBtn := ""
         this.HexColorCon := ""
         this.HexColorTipCon := ""
@@ -30,6 +32,13 @@ class SearchGui {
         this.SearchTypeCon := ""
         this.AutoTypeCon := ""
         this.SpeedCon := ""
+        this.ResultToggleCon := ""
+        this.ResultSaveNameCon := ""
+        this.TrueValueCon := ""
+        this.FalseValueCon := ""
+        this.CoordToogleCon := ""
+        this.CoordXNameCon := ""
+        this.CoordYNameCon := ""
         this.MacroGui := ""
     }
 
@@ -46,7 +55,7 @@ class SearchGui {
     }
 
     AddGui() {
-        MyGui := Gui(, "搜索指令编辑")
+        MyGui := Gui(, "搜索Pro指令编辑")
         this.Gui := MyGui
         MyGui.SetFont(, "Arial")
         MyGui.SetFont("S10 W550 Q2", "Consolas")
@@ -98,6 +107,10 @@ class SearchGui {
         PosX := 10
         PosY += 30
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 100), "搜索范围:")
+        PosX := 150
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "相似度(%):")
+        PosX += 75
+        this.SimilarCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
 
         PosX := 330
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "搜索类型:")
@@ -151,6 +164,13 @@ class SearchGui {
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 120), "鼠标点击次数:")
         PosX += 120
         this.ClickCountCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50), "1")
+        PosY += 30
+        PosX := 10
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 120), "文本识别模型:")
+        PosX += 120
+        this.OCRTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} Center", PosX, PosY - 5, 130), ["极速版",
+            "标准版"])
+        this.OCRTypeCon.Value := 1
         PosY := SplitPosY
         PosX := 330
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 80, 30), "选择图片")
@@ -196,11 +216,35 @@ class SearchGui {
         this.UnFoundCommandStrCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 280, 80), "")
         TempPosY := PosY
         PosY += 90
+        PosX := 10
+        MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", PosX, PosY, 310, 70), "结果保存到变量中")
+        PosY += 20
+        PosX := 15
+        MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "开关    选择/输入      真值        假值")
+        PosY += 20
+        PosX := 20
+        this.ResultToggleCon := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
+        this.ResultSaveNameCon := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 30, PosY - 3, 100), [])
+        this.TrueValueCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX + 135, PosY - 4, 70), 0)
+        this.FalseValueCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX + 220, PosY - 4, 70), 0)
+        PosY := TempPosY
+        PosY += 90
+        PosX := 330
+        MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", PosX, PosY, 290, 70), "找到后目标点保存到变量中")
+        PosY += 20
+        PosX := 335
+        MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "开关  坐标X选择/输入  坐标Y选择/输入")
+        PosY += 20
+        PosX := 340
+        this.CoordToogleCon := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
+        this.CoordXNameCon := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 35, PosY - 3, 100), [])
+        this.CoordYNameCon := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 150, PosY - 3, 100), [])
+        PosY += 40
         PosX := 270
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 100, 40), "确定")
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 640, 500))
+        MyGui.Show(Format("w{} h{}", 640, 570))
     }
 
     Init(cmd) {
@@ -212,6 +256,8 @@ class SearchGui {
 
         this.Data := this.GetCompareData(this.SerialStr)
         this.SearchTypeCon.Value := this.Data.SearchType
+        this.SimilarCon.Value := this.Data.Similar
+        this.OCRTypeCon.Value := this.Data.OCRType
         this.ImageCon.Value := this.Data.SearchImagePath
         this.HexColorCon.Value := this.Data.SearchColor
         this.TextCon.Value := this.Data.SearchText
@@ -226,12 +272,25 @@ class SearchGui {
         this.ClickCountCon.Value := this.Data.ClickCount
         this.FoundCommandStrCon.Value := this.Data.TrueCommandStr
         this.UnFoundCommandStrCon.Value := this.Data.FalseCommandStr
+        this.ResultToggleCon.Value := this.Data.ResultToggle
+        this.ResultSaveNameCon.Delete()
+        this.ResultSaveNameCon.Add(VariableArr)
+        this.ResultSaveNameCon.Text := this.Data.ResultSaveName
+        this.TrueValueCon.Value := this.Data.TrueValue
+        this.FalseValueCon.Value := this.Data.FalseValue
+        this.CoordToogleCon.Value := this.Data.CoordToogle
+        this.CoordXNameCon.Delete()
+        this.CoordXNameCon.Add(VariableArr)
+        this.CoordXNameCon.Text := this.Data.CoordXName
+        this.CoordYNameCon.Delete()
+        this.CoordYNameCon.Add(VariableArr)
+        this.CoordYNameCon.Text := this.Data.CoordYName
         this.OnChangeSearchType()
     }
 
     GetCommandStr() {
         hasRemark := this.RemarkCon.Value != ""
-        CommandStr := "搜索_" this.Data.SerialStr
+        CommandStr := "搜索Pro_" this.Data.SerialStr
         if (hasRemark) {
             CommandStr .= "_" this.RemarkCon.Value
         }
@@ -244,7 +303,7 @@ class SearchGui {
     }
 
     GetCompareData(SerialStr) {
-        saveStr := IniRead(SearchFile, IniSection, SerialStr, "")
+        saveStr := IniRead(SearchProFile, IniSection, SerialStr, "")
         if (!saveStr) {
             data := SearchData()
             data.SerialStr := SerialStr
@@ -519,6 +578,8 @@ class SearchGui {
 
     SaveSearchData() {
         data := this.Data
+        data.Similar := this.SimilarCon.Value
+        data.OCRType := this.OCRTypeCon.Value
         data.SearchType := this.SearchTypeCon.Value
         data.SearchColor := this.HexColorCon.Value
         data.SearchText := this.TextCon.Value
@@ -533,7 +594,14 @@ class SearchGui {
         data.Speed := this.SpeedCon.Value
         data.TrueCommandStr := this.FoundCommandStrCon.Value
         data.FalseCommandStr := this.UnFoundCommandStrCon.Value
+        data.ResultToggle := this.ResultToggleCon.Value
+        data.ResultSaveName := this.ResultSaveNameCon.Text
+        data.TrueValue := this.TrueValueCon.Value
+        data.FalseValue := this.FalseValueCon.Value
+        data.CoordToogle := this.CoordToogleCon.Value
+        data.CoordXName := this.CoordXNameCon.Text
+        data.CoordYName := this.CoordYNameCon.Text
         saveStr := JSON.stringify(data, 0)
-        IniWrite(saveStr, SearchFile, IniSection, data.SerialStr)
+        IniWrite(saveStr, SearchProFile, IniSection, data.SerialStr)
     }
 }
