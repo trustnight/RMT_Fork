@@ -434,7 +434,7 @@ InitFilePath() {
     FileInstall("Images\Soft\rabit.ico", "Images\Soft\rabit.ico", 1)
     FileInstall("Images\Soft\IcoPause.ico", "Images\Soft\IcoPause.ico", 1)
 
-    global vbsPath := A_WorkingDir "\VBS\PlayAudio.vbs"
+    global VBSPath := A_WorkingDir "\VBS\PlayAudio.vbs"
     global IniFile := A_WorkingDir "\Setting\MainSettings.ini"
     global SearchFile := A_WorkingDir "\Setting\SearchFile.ini"
     global SearchProFile := A_WorkingDir "\Setting\SearchProFile.ini"
@@ -444,6 +444,7 @@ InitFilePath() {
     global OutputFile := A_WorkingDir "\Setting\OutputFile.ini"
     global StopFile := A_WorkingDir "\Setting\StopFile.ini"
     global VariableFile := A_WorkingDir "\Setting\VariableFile.ini"
+    global ExVariableFile := A_WorkingDir "\Setting\ExVariableFile.ini"
     global SubMacroFile := A_WorkingDir "\Setting\SubMacroFile.ini"
     global OperationFile := A_WorkingDir "\Setting\OperationFile.ini"
     global BGMouseFile := A_WorkingDir "\Setting\BGMouseFile.ini"

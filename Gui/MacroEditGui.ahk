@@ -13,6 +13,7 @@
 #Include SubMacroGui.ahk
 #Include OperationGui.ahk
 #Include BGMouseGui.ahk
+#Include ExVariableGui.ahk
 
 class MacroEditGui {
     __new() {
@@ -95,6 +96,11 @@ class MacroEditGui {
         this.VariableGui.MacroEditGui := this
         this.VariableGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
         this.SubGuiMap.Set("变量", this.VariableGui)
+
+        this.ExVariableGui := ExVariableGui()
+        this.ExVariableGui.MacroEditGui := this
+        this.ExVariableGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
+        this.SubGuiMap.Set("提取变量", this.ExVariableGui)
 
         this.SubMacroGui := SubMacroGui()
         this.SubMacroGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
@@ -215,17 +221,23 @@ class MacroEditGui {
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.OutputGui))
         this.CmdBtnConMap.Set("输出", btnCon)
 
-        PosY += 35
-        PosX := 20
+        PosX += 100
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "文件")
         btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.FileGui))
         this.CmdBtnConMap.Set("文件", btnCon)
 
-        PosX += 100
+        PosY += 35
+        PosX := 20
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "变量")
         btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.VariableGui))
+        this.CmdBtnConMap.Set("变量", btnCon)
+
+        PosX += 100
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "提取变量")
+        btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
+        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.ExVariableGui))
         this.CmdBtnConMap.Set("变量", btnCon)
 
         PosX += 100
@@ -377,7 +389,8 @@ class MacroEditGui {
             }
 
             nextIndex := processedIndex + 1
-            isNextInterval := nextIndex <= CommandArr.Length && StrCompare(SubStr(CommandArr[nextIndex], 1, 2), "间隔", false) == 0
+            isNextInterval := nextIndex <= CommandArr.Length && StrCompare(SubStr(CommandArr[nextIndex], 1, 2), "间隔",
+            false) == 0
             isNextNormalInterval := isNextInterval && StrSplit(CommandArr[nextIndex], "_").Length == 2
             if (!isNextNormalInterval) {
                 macroEditStr .= "`n"

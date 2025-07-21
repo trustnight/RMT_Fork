@@ -351,6 +351,23 @@ class VariableData {
     }
 }
 
+class ExVariableData {
+    __New() {
+        this.ToggleArr := [1, 0, 0, 0]
+        this.VariableArr := ["Num1", "Num2", "Num3", "Num4"]
+        this.SerialStr := ""
+        this.ExtractStr := ""
+        this.ExtractType := 1
+        this.OCRType := 1
+        this.StartPosX := 0
+        this.StartPosY := 0
+        this.EndPosX := A_ScreenWidth
+        this.EndPosY := A_ScreenHeight
+        this.SearchCount := 1
+        this.SearchInterval := 1000
+    }
+}
+
 class OperationData {
     __New() {
         this.SerialStr := ""
