@@ -114,7 +114,7 @@ class VariableGui {
             this.ValueConArr.Push(con)
 
             PosX += 75
-            con := MyGui.Add("ComboBox", Format("x{} y{} w{} Center", PosX, PosY - 2, 80), [])
+            con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5 Center", PosX, PosY - 2, 80), [])
             this.SelectCopyConArr.Push(con)
 
             PosX := 300
@@ -131,7 +131,7 @@ class VariableGui {
             this.ValueConArr.Push(con)
 
             PosX += 75
-            con := MyGui.Add("ComboBox", Format("x{} y{} w{} Center", PosX, PosY - 2, 80), [])
+            con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5 Center", PosX, PosY - 2, 80), [])
             this.SelectCopyConArr.Push(con)
 
             PosX := 10
@@ -149,7 +149,7 @@ class VariableGui {
             this.ValueConArr.Push(con)
 
             PosX += 75
-            con := MyGui.Add("ComboBox", Format("x{} y{} w{} Center", PosX, PosY - 2, 80), [])
+            con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5 Center", PosX, PosY - 2, 80), [])
             this.SelectCopyConArr.Push(con)
 
             PosX := 300
@@ -166,7 +166,7 @@ class VariableGui {
             this.ValueConArr.Push(con)
 
             PosX += 75
-            con := MyGui.Add("ComboBox", Format("x{} y{} w{} Center", PosX, PosY - 2, 80), [])
+            con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5 Center", PosX, PosY - 2, 80), [])
             this.SelectCopyConArr.Push(con)
 
         }

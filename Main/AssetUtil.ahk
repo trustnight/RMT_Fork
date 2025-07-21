@@ -160,6 +160,7 @@ EditListen() {
     ; 设置消息监听
     OnMessage(0x0204, WM_RBUTTONDOWN)  ; WM_RBUTTONDOWN
     OnMessage(0x0205, WM_RBUTTONUP)    ; WM_RBUTTONUP
+    OnMessage(0x020A, WM_MOUSEWHEEL)  ; 0x020A 是 WM_MOUSEWHEEL
 }
 
 WM_RBUTTONDOWN(wParam, lParam, msg, hwnd) {
@@ -195,6 +196,31 @@ WM_RBUTTONUP(wParam, lParam, msg, hwnd) {
         menum.Show(x, y)  ; 在鼠标位置显示菜单
         return 0  ; 阻止默认行为
     }
+}
+
+WM_MOUSEWHEEL(wParam, lParam, msg, hwnd) {
+    try {
+        ctrl := GuiCtrlFromHwnd(hwnd)
+        if (ctrl.Type == "DDL" || ctrl.Type == "ComboBox") {
+            ; 检查下拉列表是否展开（通过发送 CB_GETDROPPEDSTATE 消息）
+            isDropped := CheckIfDrop(0x0157, 0, 0, hwnd)  ; 0x0157 是 CB_GETDROPPEDSTATE
+            if (!isDropped || !ctrl.Focused) {
+                return 0  ; 阻止处理未展开状态下的滚轮事件
+            }
+            ; 如果下拉列表是展开的，允许滚轮滚动选项
+        }
+    }
+    ; 其他控件允许正常处理
+    return
+}
+
+CheckIfDrop(Msg, wParam, lParam, hWnd) {
+    ; 辅助函数：发送 Windows 消息
+    static WM_USER := 0x400
+    if (Msg >= WM_USER) {
+        return DllCall("SendMessage", "Ptr", hWnd, "UInt", Msg, "Ptr", wParam, "Ptr", lParam, "Ptr")
+    }
+    return DllCall("User32.dll\SendMessage", "Ptr", hWnd, "UInt", Msg, "Ptr", wParam, "Ptr", lParam, "Ptr")
 }
 
 ;初始化数据

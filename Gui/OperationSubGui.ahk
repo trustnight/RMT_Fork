@@ -66,7 +66,7 @@ class OperationSubGui {
         PosY += 20
         this.ValueCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 100, 20), "0")
         PosX += 150
-        this.NameCon := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX, PosY, 100), [])
+        this.NameCon := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX, PosY, 100), [])
 
         PosX := 10
         PosY += 30

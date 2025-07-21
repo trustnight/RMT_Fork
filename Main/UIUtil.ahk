@@ -203,7 +203,7 @@ LoadSavedSettingUI(index) {
         newTkControl.Visible := isSubMacro ? false : true
         newTkControl.Value := tableItem.TKArr.Length >= A_Index ? tableItem.TKArr[A_Index] : ""
 
-        newLoopCountControl := MyGui.Add("ComboBox", Format("x{} y{} w80 center", TabPosX + 115 - subMacroWidth,
+        newLoopCountControl := MyGui.Add("ComboBox", Format("x{} y{} w80 R5 center", TabPosX + 115 - subMacroWidth,
             tableItem.underPosY),
         ["无限"])
         conValue := tableItem.LoopCountArr.Length >= A_Index ? tableItem.LoopCountArr[A_Index] : "1"
@@ -294,6 +294,7 @@ OnAddSetting(*) {
     tableItem.LoopCountArr.Push("1")
     tableItem.HoldTimeArr.Push(500)
     tableItem.SerialArr.Push(FormatTime(, "HHmmss"))
+    tableItem.IsWorkArr.Push(0)
 
     heightValue := 60
     TKPosY := tableItem.underPosY + 10
@@ -314,7 +315,7 @@ OnAddSetting(*) {
     "")
     newTkControl.Visible := isSubMacro ? false : true
 
-    newLoopCountControl := MyGui.Add("ComboBox", Format("x{} y{} w80 center", TabPosX + 115 - subMacroWidth, tableItem.underPosY
+    newLoopCountControl := MyGui.Add("ComboBox", Format("x{} y{} w80 R5 center", TabPosX + 115 - subMacroWidth, tableItem.underPosY
     ), [
         "无限"])
     newLoopCountControl.Text := "1"

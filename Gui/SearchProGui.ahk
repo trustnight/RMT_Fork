@@ -224,7 +224,7 @@ class SearchProGui {
         PosY += 20
         PosX := 20
         this.ResultToggleCon := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
-        this.ResultSaveNameCon := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 30, PosY - 3, 100), [])
+        this.ResultSaveNameCon := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 30, PosY - 3, 100), [])
         this.TrueValueCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX + 135, PosY - 4, 70), 0)
         this.FalseValueCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX + 220, PosY - 4, 70), 0)
         PosY := TempPosY
@@ -237,8 +237,8 @@ class SearchProGui {
         PosY += 20
         PosX := 340
         this.CoordToogleCon := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
-        this.CoordXNameCon := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 35, PosY - 3, 100), [])
-        this.CoordYNameCon := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX + 150, PosY - 3, 100), [])
+        this.CoordXNameCon := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 35, PosY - 3, 100), [])
+        this.CoordYNameCon := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 150, PosY - 3, 100), [])
         PosY += 40
         PosX := 270
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 100, 40), "确定")

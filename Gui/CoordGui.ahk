@@ -76,14 +76,14 @@ class CoordGui {
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "坐标位置X:")
         PosX += 80
         this.PosXCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
-        this.NameXCon := MyGui.Add("ComboBox", Format("x{} y{} w{} Center", PosX + 55, PosY - 5, 100), [])
+        this.NameXCon := MyGui.Add("ComboBox", Format("x{} y{} w{} R5 Center", PosX + 55, PosY - 5, 100), [])
 
         PosY += 30
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "坐标位置Y:")
         PosX += 80
         this.PosYCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
-        this.NameYCon := MyGui.Add("ComboBox", Format("x{} y{} w{} Center", PosX + 55, PosY - 5, 100), [])
+        this.NameYCon := MyGui.Add("ComboBox", Format("x{} y{} w{} R5 Center", PosX + 55, PosY - 5, 100), [])
 
         PosX := 10
         PosY += 30

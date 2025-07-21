@@ -60,7 +60,7 @@ class IntervalGui {
         this.TimeTextCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 2, 80))
 
         PosX += 90
-        this.TimeVarCon := MyGui.Add("ComboBox", Format("x{} y{} w{} Center", PosX, PosY - 2, 100), [])
+        this.TimeVarCon := MyGui.Add("ComboBox", Format("x{} y{} w{} R5 Center", PosX, PosY - 2, 100), [])
 
         PosY += 40
         PosX := 130

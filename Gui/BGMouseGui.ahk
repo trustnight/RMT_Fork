@@ -102,7 +102,7 @@ class BGMouseGui {
         PosX += 120
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "选择/输入:")
         PosX += 80
-        this.PosXNameCon := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX, PosY - 3, 100), [])
+        this.PosXNameCon := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX, PosY - 3, 100), [])
 
         PosX := 10
         PosY += 30
@@ -112,7 +112,7 @@ class BGMouseGui {
         PosX += 120
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "选择/输入:")
         PosX += 80
-        this.PosYNameCon := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX, PosY - 3, 100), [])
+        this.PosYNameCon := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX, PosY - 3, 100), [])
 
         PosX := 10
         PosY += 40
