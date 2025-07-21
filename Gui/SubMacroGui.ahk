@@ -77,7 +77,7 @@ class SubMacroGui {
 
         PosX := 10
         PosY += 25
-        MyGui.Add("Text", Format("x{} y{} h{}", PosX, PosY, 20), "触发:与正常的按键触发等效，和当前宏多线程同时执行")
+        MyGui.Add("Text", Format("x{} y{} h{}", PosX, PosY, 20), "触发:与正常的按键触发等效")
 
         PosY += 30
         PosX := 200
@@ -85,7 +85,7 @@ class SubMacroGui {
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
 
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 500, 250))
+        MyGui.Show(Format("w{} h{}", 500, 220))
     }
 
     Init(cmd) {
@@ -226,5 +226,8 @@ class SubMacroGui {
 
         saveStr := JSON.stringify(this.Data, 0)
         IniWrite(saveStr, SubMacroFile, IniSection, this.Data.SerialStr)
+        if (MySoftData.DataCacheMap.Has(this.Data.SerialStr)) {
+            MySoftData.DataCacheMap.Delete(this.Data.SerialStr)
+        }
     }
 }

@@ -62,13 +62,13 @@ class StopGui {
         PosX += 70
         this.StopIndexCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY - 5, 80, 20), "1")
 
-        PosY += 100
+        PosY += 50
         PosX := 200
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 100, 40), "确定")
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
 
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 500, 240))
+        MyGui.Show(Format("w{} h{}", 500, 180))
     }
 
     Init(cmd) {
@@ -157,5 +157,8 @@ class StopGui {
 
         saveStr := JSON.stringify(this.Data, 0)
         IniWrite(saveStr, StopFile, IniSection, this.Data.SerialStr)
+        if (MySoftData.DataCacheMap.Has(this.Data.SerialStr)) {
+            MySoftData.DataCacheMap.Delete(this.Data.SerialStr)
+        }
     }
 }

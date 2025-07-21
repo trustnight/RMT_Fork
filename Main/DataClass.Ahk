@@ -270,7 +270,6 @@ class CompareData {
         this.ToggleArr := [1, 0, 0, 0]
         this.NameArr := ["空", "空", "空", "空"]
         this.CompareTypeArr := [1, 1, 1, 1]  ;1大于 2大于等于 3等于 4小于等 5小于
-        this.ValueArr := [0, 0, 0, 0]
         this.VariableArr := ["空", "空", "空", "空"]
         this.TrueMacro := ""
         this.FalseMacro := ""
@@ -282,13 +281,11 @@ class CompareData {
     }
 }
 
-class CoordData {
+class MMProData {
     __New() {
         this.SerialStr := ""
-        this.PosX := 100
-        this.PosY := 100
-        this.NameX := "空"
-        this.NameY := "空"
+        this.PosVarX := 100
+        this.PosVarY := 100
         this.IsRelative := 0         ;相对位移
         this.IsGameView := 0        ;游戏视角
         this.Speed := 90           ;移动速度
@@ -373,10 +370,8 @@ class BGMouseData {
         this.TargetTitle := ""
         this.OperateType := 1 ;点击 双击 按下 松开
         this.MouseType := 1 ;左键 中键 右键
-        this.PosX := 100
-        this.PosY := 100
-        this.PosXName := "空"
-        this.PosYName := "空"
+        this.PosVarX := 100
+        this.PosVarY := 100
         this.ScrollV := 1 ;水平滚动
         this.ScrollH := 0 ; 垂直滚动
         this.ClickTime := 50 ;点击时间跨度

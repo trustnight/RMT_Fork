@@ -207,5 +207,8 @@ class FileGui {
 
         saveStr := JSON.stringify(this.Data, 0)
         IniWrite(saveStr, FileFile, IniSection, this.Data.SerialStr)
+        if (MySoftData.DataCacheMap.Has(this.Data.SerialStr)) {
+            MySoftData.DataCacheMap.Delete(this.Data.SerialStr)
+        }
     }
 }

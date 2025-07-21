@@ -32,7 +32,7 @@ InitWorkFilePath() {
     global SearchFile := A_WorkingDir "\..\Setting\SearchFile.ini"
     global SearchProFile := A_WorkingDir "\..\Setting\SearchProFile.ini"
     global CompareFile := A_WorkingDir "\..\Setting\CompareFile.ini"
-    global CoordFile := A_WorkingDir "\..\Setting\CoordFile.ini"
+    global MMProFile := A_WorkingDir "\..\Setting\MMProFile.ini"
     global FileFile := A_WorkingDir "\..\Setting\FileFile.ini"
     global OutputFile := A_WorkingDir "\..\Setting\OutputFile.ini"
     global StopFile := A_WorkingDir "\..\Setting\StopFile.ini"

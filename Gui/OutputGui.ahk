@@ -170,5 +170,8 @@ class OutputGui {
 
         saveStr := JSON.stringify(this.Data, 0)
         IniWrite(saveStr, OutputFile, IniSection, this.Data.SerialStr)
+        if (MySoftData.DataCacheMap.Has(this.Data.SerialStr)) {
+            MySoftData.DataCacheMap.Delete(this.Data.SerialStr)
+        }
     }
 }

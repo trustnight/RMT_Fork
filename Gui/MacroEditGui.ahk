@@ -6,7 +6,7 @@
 #Include SearchProGui.ahk
 #Include FileGui.ahk
 #Include CompareGui.ahk
-#Include CoordGui.ahk
+#Include MMProGui.ahk
 #Include OutputGui.ahk
 #Include StopGui.ahk
 #Include VariableGui.ahk
@@ -77,10 +77,10 @@ class MacroEditGui {
         this.CompareGui.MacroEditGui := this
         this.SubGuiMap.Set("如果", this.CompareGui)
 
-        this.CoordGui := CoordGui()
-        this.CoordGui.MacroEditGui := this
-        this.CoordGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
-        this.SubGuiMap.Set("移动Pro", this.CoordGui)
+        this.MMProGui := MMProGui()
+        this.MMProGui.MacroEditGui := this
+        this.MMProGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
+        this.SubGuiMap.Set("移动Pro", this.MMProGui)
 
         this.OutputGui := OutputGui()
         this.OutputGui.MacroEditGui := this
@@ -206,7 +206,7 @@ class MacroEditGui {
         PosX += 100
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "移动Pro")
         btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
-        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.CoordGui))
+        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.MMProGui))
         this.CmdBtnConMap.Set("移动Pro", btnCon)
 
         PosX += 100

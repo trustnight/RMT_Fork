@@ -26,6 +26,7 @@ OnOpen() {
     if (!MySoftData.IsExecuteShow && !MySoftData.IsLastSaved)
         return
 
+    RefreshGui()    ;不同的分辨率滑动条会异常，两次ShowGUI后才正常，
     RefreshGui()
     IniWrite(false, IniFile, IniSection, "LastSaved")
 }
@@ -315,7 +316,8 @@ OnAddSetting(*) {
     "")
     newTkControl.Visible := isSubMacro ? false : true
 
-    newLoopCountControl := MyGui.Add("ComboBox", Format("x{} y{} w80 R5 center", TabPosX + 115 - subMacroWidth, tableItem.underPosY
+    newLoopCountControl := MyGui.Add("ComboBox", Format("x{} y{} w80 R5 center", TabPosX + 115 - subMacroWidth,
+        tableItem.underPosY
     ), [
         "无限"])
     newLoopCountControl.Text := "1"

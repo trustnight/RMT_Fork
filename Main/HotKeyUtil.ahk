@@ -87,7 +87,7 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         IsInterval := StrCompare(paramArr[1], "间隔", false) == 0
         IsFile := StrCompare(paramArr[1], "文件", false) == 0
         IsIf := StrCompare(paramArr[1], "如果", false) == 0
-        IsCoord := StrCompare(paramArr[1], "移动Pro", false) == 0
+        IsMMPro := StrCompare(paramArr[1], "移动Pro", false) == 0
         IsOutput := StrCompare(paramArr[1], "输出", false) == 0
         IsStop := StrCompare(paramArr[1], "终止", false) == 0
         IsVariable := StrCompare(paramArr[1], "变量", false) == 0
@@ -112,8 +112,8 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         else if (IsIf) {
             OnCompare(tableItem, cmdArr[A_Index], index)
         }
-        else if (IsCoord) {
-            OnCoord(tableItem, cmdArr[A_Index], index)
+        else if (IsMMPro) {
+            OnMMPro(tableItem, cmdArr[A_Index], index)
         }
         else if (IsOutput) {
             OnOutput(tableItem, cmdArr[A_Index], index)
@@ -302,23 +302,23 @@ OnCompare(tableItem, cmd, index) {
     VariableMap := tableItem.VariableMapArr[index]
     result := Data.LogicalType == 1 ? true : false
     loop 4 {
-        if (!Data.ToggleArr[A_Index] || Data.NameArr[A_Index] == "空")
+        if (!Data.ToggleArr[A_Index])
             continue
 
         Name := Data.NameArr[A_Index]
         OhterName := Data.VariableArr[A_Index]
-        if (!VariableMap.Has(Name)) {
+        if (!IsNumber(Name) && !VariableMap.Has(Name)) {
             ShowNoVariableTip(Name)
             return
         }
 
-        if (OhterName != "空" && !VariableMap.Has(OhterName)) {
+        if (!IsNumber(OhterName) && !VariableMap.Has(OhterName)) {
             ShowNoVariableTip(OhterName)
             return
         }
 
-        Value := VariableMap[Name]
-        OtherValue := OhterName != "空" ? VariableMap[OhterName] : Data.ValueArr[A_Index]
+        Value := IsNumber(Name) ? Name : VariableMap[Name]
+        OtherValue := IsNumber(OhterName) ? OhterName : VariableMap[OhterName]
 
         currentComparison := false
         switch Data.CompareTypeArr[A_Index] {
@@ -361,9 +361,9 @@ OnCompare(tableItem, cmd, index) {
     }
 }
 
-OnCoord(tableItem, cmd, index) {
+OnMMPro(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
-    Data := GetMacroCMDData(CoordFile, paramArr[2])
+    Data := GetMacroCMDData(MMProFile, paramArr[2])
     MacroType := tableItem.MacroTypeArr[index]
 
     LastSumTime := 0
@@ -373,16 +373,16 @@ OnCoord(tableItem, cmd, index) {
 
         FloatInterval := GetFloatTime(Data.Interval, MySoftData.PreIntervalFloat)
         if (MacroType == 1) {
-            OnCoordOnce(tableItem, index, Data)
+            OnMMProOnce(tableItem, index, Data)
             if (A_Index != Data.Count)
                 Sleep(FloatInterval)
         }
         else if (MacroType == 2) {
             if (A_Index == 1) {
-                OnCoordOnce(tableItem, index, Data)
+                OnMMProOnce(tableItem, index, Data)
             }
             else {
-                tempAction := OnCoordOnce.Bind(tableItem, index, Data)
+                tempAction := OnMMProOnce.Bind(tableItem, index, Data)
                 tableItem.CmdActionArr[index].Push(tempAction)
                 SetTimer tempAction, -LastSumTime
             }
@@ -391,23 +391,23 @@ OnCoord(tableItem, cmd, index) {
     }
 }
 
-OnCoordOnce(tableItem, index, Data) {
+OnMMProOnce(tableItem, index, Data) {
     SendMode("Event")
     CoordMode("Mouse", "Screen")
     Speed := 100 - Data.Speed
     VariableMap := tableItem.VariableMapArr[index]
-    if (Data.NameX != "空" && !VariableMap.Has(Data.NameX)) {
-        ShowNoVariableTip(Data.NameX)
+    if (!IsNumber(Data.PosVarX) && !VariableMap.Has(Data.PosVarX)) {
+        ShowNoVariableTip(Data.PosVarX)
         return
     }
 
-    if (Data.NameY != "空" && !VariableMap.Has(Data.NameY)) {
-        ShowNoVariableTip(Data.NameY)
+    if (!IsNumber(Data.PosVarY) && !VariableMap.Has(Data.PosVarY)) {
+        ShowNoVariableTip(Data.PosVarY)
         return
     }
 
-    PosX := Data.NameX != "空" ? VariableMap[Data.NameX] : Data.PosX
-    PosY := Data.NameY != "空" ? VariableMap[Data.NameY] : Data.PosY
+    PosX := IsNumber(Data.PosVarX) ? Data.PosVarX : VariableMap[Data.PosVarX]
+    PosY := IsNumber(Data.PosVarY) ? Data.PosVarY : VariableMap[Data.PosVarY]
     PosX := GetFloatValue(PosX, MySoftData.CoordXFloat)
     PosY := GetFloatValue(PosY, MySoftData.CoordYFloat)
     if (Data.IsGameView) {
@@ -648,18 +648,18 @@ OnBGMouse(tableItem, cmd, index) {
     WM_DCLICK_ARR := [0x203, 0x206, 0x209]    ;左键，中键，右键
 
     VariableMap := tableItem.VariableMapArr[index]
-    if (Data.PosXName != "空" && !VariableMap.Has(Data.PosXName)) {
-        ShowNoVariableTip(Data.PosXName)
+    if (!IsNumber(Data.PosVarX) && !VariableMap.Has(Data.PosVarX)) {
+        ShowNoVariableTip(Data.PosVarX)
         return
     }
 
-    if (Data.PosYName != "空" && !VariableMap.Has(Data.PosYName)) {
-        ShowNoVariableTip(Data.PosYName)
+    if (!IsNumber(Data.PosVarY) && !VariableMap.Has(Data.PosVarY)) {
+        ShowNoVariableTip(Data.PosVarY)
         return
     }
 
-    PosX := Data.PosXName != "空" ? VariableMap[Data.PosXName] : Data.PosX
-    PosY := Data.PosYName != "空" ? VariableMap[Data.PosYName] : Data.PosY
+    PosX := IsNumber(Data.PosVarX) ? Data.PosVarX : VariableMap[Data.PosVarX]
+    PosY := IsNumber(Data.PosVarY) ? Data.PosVarY : VariableMap[Data.PosVarY]
     PosX := GetFloatValue(PosX, MySoftData.CoordXFloat)
     PosY := GetFloatValue(PosY, MySoftData.CoordYFloat)
 

@@ -16,8 +16,8 @@ class BGMouseGui {
         this.MouseTypeCon := ""
         this.PosXCon := ""
         this.PosYCon := ""
-        this.PosXNameCon := ""
-        this.PosYNameCon := ""
+        this.PosVarXCon := ""
+        this.PosVarYCon := ""
         this.ScrollVCon := ""
         this.ScrollHCon := ""
         this.ClickTimeCon := ""
@@ -71,10 +71,6 @@ class BGMouseGui {
         this.CurPosCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 380, 20), "当前窗口坐标:0,0")
 
         PosX := 10
-        PosY += 25
-        MyGui.Add("Text", Format("x{} y{} h{}", PosX, PosY, 20), "选择/输入为空时使用坐标数值，否则使用选择/输入的变量值")
-
-        PosX := 10
         PosY += 30
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "窗口标题:")
         PosX += 80
@@ -98,21 +94,12 @@ class BGMouseGui {
         PosY += 40
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "窗口坐标X:")
         PosX += 80
-        this.PosXCon := MyGui.Add("Edit", Format("x{} y{} w{}", PosX, PosY - 3, 70), "")
-        PosX += 120
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "选择/输入:")
-        PosX += 80
-        this.PosXNameCon := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX, PosY - 3, 100), [])
+        this.PosVarXCon := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX, PosY - 3, 100), [])
 
-        PosX := 10
-        PosY += 30
+        PosX += 120
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "窗口坐标Y:")
         PosX += 80
-        this.PosYCon := MyGui.Add("Edit", Format("x{} y{} w{}", PosX, PosY - 3, 70), "")
-        PosX += 120
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "选择/输入:")
-        PosX += 80
-        this.PosYNameCon := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX, PosY - 3, 100), [])
+        this.PosVarYCon := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX, PosY - 3, 100), [])
 
         PosX := 10
         PosY += 40
@@ -138,7 +125,7 @@ class BGMouseGui {
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
 
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 500, 375))
+        MyGui.Show(Format("w{} h{}", 500, 325))
     }
 
     Init(cmd) {
@@ -152,15 +139,13 @@ class BGMouseGui {
         this.TargetTitleCon.Value := this.Data.TargetTitle
         this.OperateTypeCon.Value := this.Data.OperateType
         this.MouseTypeCon.Value := this.Data.MouseType
-        this.PosXCon.Value := this.Data.PosX
-        this.PosYCon.Value := this.Data.PosY
         this.ClickTimeCon.Value := this.Data.ClickTime
-        this.PosXNameCon.Delete()
-        this.PosXNameCon.Add(VariableObjArr)
-        this.PosXNameCon.Text := this.Data.PosXName
-        this.PosYNameCon.Delete()
-        this.PosYNameCon.Add(VariableObjArr)
-        this.PosYNameCon.Text := this.Data.PosYName
+        this.PosVarXCon.Delete()
+        this.PosVarXCon.Add(VariableObjArr)
+        this.PosVarXCon.Text := this.Data.PosVarX
+        this.PosVarYCon.Delete()
+        this.PosVarYCon.Add(VariableObjArr)
+        this.PosVarYCon.Text := this.Data.PosVarY
         this.ScrollVCon.Value := this.Data.ScrollV
         this.ScrollHCon.Value := this.Data.ScrollH
     }
@@ -198,8 +183,8 @@ class BGMouseGui {
 
     OnF2() {
         PosArr := GetWinPos()
-        this.PosXCon.Value := PosArr[1]
-        this.PosYCon.Value := PosArr[2]
+        this.PosVarXCon.Text := PosArr[1]
+        this.PosVarYCon.Text := PosArr[2]
     }
 
     OnF3() {
@@ -238,6 +223,11 @@ class BGMouseGui {
     }
 
     TriggerMacro() {
+        if (!IsNumber(this.PosVarXCon.Text) || !IsNumber(this.PosVarYCon.Text)) {
+            MsgBox("坐标中存在变量，无法在编辑器模式下执行指令")
+            return false
+        }
+
         this.SaveBGMouseData()
         CommandStr := this.GetCommandStr()
         tableItem := MySoftData.SpecialTableItem
@@ -280,15 +270,16 @@ class BGMouseGui {
         this.Data.TargetTitle := this.TargetTitleCon.Value
         this.Data.OperateType := this.OperateTypeCon.Value
         this.Data.MouseType := this.MouseTypeCon.Value
-        this.Data.PosX := this.PosXCon.Value
-        this.Data.PosY := this.PosYCon.Value
-        this.Data.PosXName := this.PosXNameCon.Text
-        this.Data.PosYName := this.PosYNameCon.Text
+        this.Data.PosVarX := this.PosVarXCon.Text
+        this.Data.PosVarY := this.PosVarYCon.Text
         this.Data.ClickTime := this.ClickTimeCon.Value
         this.Data.ScrollV := this.ScrollVCon.Value
         this.Data.ScrollH := this.ScrollHCon.Value
 
         saveStr := JSON.stringify(this.Data, 0)
         IniWrite(saveStr, BGMouseFile, IniSection, this.Data.SerialStr)
+        if (MySoftData.DataCacheMap.Has(this.Data.SerialStr)) {
+            MySoftData.DataCacheMap.Delete(this.Data.SerialStr)
+        }
     }
 }

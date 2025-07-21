@@ -886,6 +886,7 @@ IsClipboardText() {
     return false
 }
 
+;没必要删除
 ClearUselessSetting(deleteMacro) {
     if (deleteMacro == "")
         return
@@ -902,7 +903,7 @@ ClearUselessSetting(deleteMacro) {
     for id, value in match {
         if (value == "")
             continue
-        IniDelete(CoordFile, IniSection, value)
+        IniDelete(MMPROFile, IniSection, value)
     }
 }
 

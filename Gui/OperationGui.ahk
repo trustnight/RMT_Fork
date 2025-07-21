@@ -43,12 +43,12 @@ class OperationGui {
 
         PosX := 10
         PosY += 25
-        MyGui.Add("Text", Format("x{} y{}", PosX, PosY, 70, 20), "勾选开关且选择/输入1不为空时生效")
+        MyGui.Add("Text", Format("x{} y{}", PosX, PosY, 70, 20), "勾选开关且选择/输入不为空时生效")
 
         PosX := 10
         PosY += 25
         MyGui.Add("Text", Format("x{} y{}", PosX, PosY, 70, 20),
-        "开关  选择/输入1       运算表达式                                 选择/输入2")
+        "开关  选择/输入       运算表达式                                 ")
 
         PosY += 20
         PosX := 15
@@ -67,6 +67,7 @@ class OperationGui {
 
         con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 355, PosY - 3, 100), ["更新自己", "创建或更新"])
         con.Value := 1
+        con.OnEvent("Change", (*) => this.RefreshUIState())
         this.UpdateTypeConArr.Push(con)
 
         con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 460, PosY - 3, 100), [])
@@ -89,6 +90,7 @@ class OperationGui {
 
         con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 355, PosY - 3, 100), ["更新自己", "创建或更新"])
         con.Value := 1
+        con.OnEvent("Change", (*) => this.RefreshUIState())
         this.UpdateTypeConArr.Push(con)
 
         con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 460, PosY - 3, 100), [])
@@ -111,6 +113,7 @@ class OperationGui {
 
         con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 355, PosY - 3, 100), ["更新自己", "创建或更新"])
         con.Value := 1
+        con.OnEvent("Change", (*) => this.RefreshUIState())
         this.UpdateTypeConArr.Push(con)
 
         con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 460, PosY - 3, 100), [])
@@ -133,6 +136,7 @@ class OperationGui {
 
         con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 355, PosY - 3, 100), ["更新自己", "创建或更新"])
         con.Value := 1
+        con.OnEvent("Change", (*) => this.RefreshUIState())
         this.UpdateTypeConArr.Push(con)
 
         con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 460, PosY - 3, 100), [])
@@ -164,6 +168,15 @@ class OperationGui {
             this.UpdateNameConArr[A_Index].Delete()
             this.UpdateNameConArr[A_Index].Add(VariableObjArr)
             this.UpdateNameConArr[A_Index].Text := this.Data.UpdateNameArr[A_Index]
+        }
+
+        this.RefreshUIState()
+    }
+
+    RefreshUIState() {
+        loop 4 {
+            showState := this.UpdateTypeConArr[A_Index].Value == 2
+            this.UpdateNameConArr[A_Index].Visible := showState
         }
     }
 
@@ -242,5 +255,8 @@ class OperationGui {
 
         saveStr := JSON.stringify(this.Data, 0)
         IniWrite(saveStr, OperationFile, IniSection, this.Data.SerialStr)
+        if (MySoftData.DataCacheMap.Has(this.Data.SerialStr)) {
+            MySoftData.DataCacheMap.Delete(this.Data.SerialStr)
+        }
     }
 }
