@@ -356,7 +356,7 @@ class ExVariableData {
         this.ToggleArr := [1, 0, 0, 0]
         this.VariableArr := ["Num1", "Num2", "Num3", "Num4"]
         this.SerialStr := ""
-        this.ExtractStr := ""
+        this.ExtractStr := "HP:&x"
         this.ExtractType := 1
         this.OCRType := 1
         this.StartPosX := 0

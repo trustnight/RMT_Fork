@@ -91,29 +91,30 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         IsOutput := StrCompare(paramArr[1], "输出", false) == 0
         IsStop := StrCompare(paramArr[1], "终止", false) == 0
         IsVariable := StrCompare(paramArr[1], "变量", false) == 0
+        IsExVariable := StrCompare(paramArr[1], "变量提取", false) == 0
         IsSubMacro := StrCompare(paramArr[1], "子宏", false) == 0
         IsOperation := StrCompare(paramArr[1], "运算", false) == 0
         IsBGMouse := StrCompare(paramArr[1], "后台鼠标", false) == 0
-        if (IsMouseMove) {
-            OnMouseMove(tableItem, cmdArr[A_Index], index)
-        }
-        else if (IsSearch || IsSearchPro) {
-            OnSearch(tableItem, cmdArr[A_Index], index)
+        if (IsInterval) {
+            OnInterval(tableItem, cmdArr[A_Index], index)
         }
         else if (IsPressKey) {
             OnPressKey(tableItem, cmdArr[A_Index], index)
         }
-        else if (IsInterval) {
-            OnInterval(tableItem, cmdArr[A_Index], index)
+        else if (IsSearch || IsSearchPro) {
+            OnSearch(tableItem, cmdArr[A_Index], index)
+        }
+        else if (IsMouseMove) {
+            OnMouseMove(tableItem, cmdArr[A_Index], index)
+        }
+        else if (IsMMPro) {
+            OnMMPro(tableItem, cmdArr[A_Index], index)
         }
         else if (IsFile) {
             OnRunFile(tableItem, cmdArr[A_Index], index)
         }
         else if (IsIf) {
             OnCompare(tableItem, cmdArr[A_Index], index)
-        }
-        else if (IsMMPro) {
-            OnMMPro(tableItem, cmdArr[A_Index], index)
         }
         else if (IsOutput) {
             OnOutput(tableItem, cmdArr[A_Index], index)
@@ -123,6 +124,9 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         }
         else if (IsVariable) {
             OnVariable(tableItem, cmdArr[A_Index], index)
+        }
+        else if (IsExVariable) {
+            OnExVariable(tableItem, cmdArr[A_Index], index)
         }
         else if (IsSubMacro) {
             OnSubMacro(tableItem, cmdArr[A_Index], index)
@@ -597,6 +601,78 @@ OnExtractingVariablesOnce(tableItem, index, variableData, isFinally) {
         loop baseVariableArr.Length {
             if (variableData.ToggleArr[A_Index]) {
                 name := variableData.NameArr[A_Index]
+                value := baseVariableArr[A_Index]
+                VariableMap[name] := value
+            }
+        }
+
+        isOk := true
+        break
+    }
+
+    if (isOk || isFinally) {
+        ;清除后续的搜索和搜索记录
+        if (tableItem.SuccessClearActionArr[index].Has(variableData.ExtractStr)) {
+            SuccessClearActionArr := tableItem.SuccessClearActionArr[index].Get(variableData.ExtractStr)
+            loop SuccessClearActionArr.Length {
+                action := SuccessClearActionArr[A_Index]
+                SetTimer action, 0
+            }
+            tableItem.SuccessClearActionArr[index].Delete(variableData.ExtractStr)
+        }
+    }
+}
+
+OnExVariable(tableItem, cmd, index) {
+    paramArr := StrSplit(cmd, "_")
+    Data := GetMacroCMDData(ExVariableFile, paramArr[2])
+    count := Data.SearchCount
+    interval := Data.SearchInterval
+    tableItem.SuccessClearActionArr[index].Set(Data.ExtractStr, [])
+
+    OnExVariableOnce(tableItem, index, Data, count == 1)
+    loop count {
+        if (A_Index == 1)
+            continue
+
+        if (!tableItem.SuccessClearActionArr[index].Has(Data.ExtractStr)) ;第一次比较成功就退出
+            break
+
+        tempAction := OnExVariableOnce.Bind(tableItem, index, Data, A_Index == count)
+        leftTime := GetFloatTime((Integer(interval) * (A_Index - 1)), MySoftData.PreIntervalFloat)
+        tableItem.SuccessClearActionArr[index][Data.ExtractStr].Push(tempAction)
+        SetTimer tempAction, -leftTime
+    }
+}
+
+OnExVariableOnce(tableItem, index, variableData, isFinally) {
+    X1 := variableData.StartPosX
+    Y1 := variableData.StartPosY
+    X2 := variableData.EndPosX
+    Y2 := variableData.EndPosY
+    if (variableData.ExtractType == 1) {
+        TextObjs := GetScreenTextObjArr(X1, Y1, X2, Y2, variableData.OCRType)
+        TextObjs := TextObjs == "" ? [] : TextObjs
+    }
+    else {
+        if (!IsClipboardText())
+            return
+        TextObjs := []
+        obj := Object()
+        obj.Text := A_Clipboard
+        TextObjs.Push(obj)
+    }
+
+    isOk := false
+    VariableMap := tableItem.VariableMapArr[index]
+    for index, value in TextObjs {
+        baseVariableArr := ExtractNumbers(value.Text, variableData.ExtractStr)
+        if (baseVariableArr == "")
+            continue
+
+        loop baseVariableArr.Length {
+            if (variableData.ToggleArr[A_Index]) {
+                name := variableData.VariableArr[A_Index]
                 value := baseVariableArr[A_Index]
                 VariableMap[name] := value
             }

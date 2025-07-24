@@ -75,12 +75,12 @@ class ExVariableGui {
             "英文"])
         this.OCRTypeCon.Value := 1
 
-        PosY += 25
+        PosY += 30
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 550),
         "使用&&x代替数字变量位置，使用&&c代替文本变量位置`n形如：`"坐标(&&x,&&x)`"可以提取`"坐标(10.5,8.6)`"中的10.5和8.6到变量1和变量2")
 
-        PosY += 40
+        PosY += 45
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "提取文本：")
         this.ExtractStrCon := MyGui.Add("Edit", Format("x{} y{} w{}", PosX + 75, PosY - 5, 250), "")
@@ -136,7 +136,7 @@ class ExVariableGui {
 
         PosX := 10
         PosY += 30
-        MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", PosX, PosY, 300, 90), "搜索范围:")
+        MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", PosX, PosY, 310, 90), "搜索范围:")
 
         PosY += 30
         PosX := 20
@@ -175,7 +175,7 @@ class ExVariableGui {
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
 
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 600, 450))
+        MyGui.Show(Format("w{} h{}", 600, 380))
     }
 
     Init(cmd) {
@@ -186,6 +186,12 @@ class ExVariableGui {
         macro := this.MacroEditGui.GetFinallyMacroStr()
         VariableObjArr := GetSelectVariableObjArr(macro)
 
+        loop 4 {
+            this.ToggleConArr[A_Index].Value := this.Data.ToggleArr[A_Index]
+            this.VariableConArr[A_Index].Delete()
+            this.VariableConArr[A_Index].Add(VariableObjArr)
+            this.VariableConArr[A_Index].Text := this.Data.VariableArr[A_Index]
+        }
         this.ExtractStrCon.Value := this.Data.ExtractStr
         this.ExtractTypeCon.Value := this.Data.ExtractType
         this.OCRTypeCon.Value := this.Data.OCRType
@@ -297,7 +303,7 @@ class ExVariableGui {
 
     GetCommandStr() {
         hasRemark := this.RemarkCon.Value != ""
-        CommandStr := "提取变量_" this.Data.SerialStr
+        CommandStr := "变量提取_" this.Data.SerialStr
         if (hasRemark) {
             CommandStr .= "_" this.RemarkCon.Value
         }
@@ -331,6 +337,10 @@ class ExVariableGui {
         this.Data.EndPosY := this.EndPosYCon.Value
         this.Data.SearchCount := this.SearchCountCon.Value
         this.Data.SearchInterval := this.SearchIntervalCon.Value
+        loop 4 {
+            this.Data.ToggleArr[A_Index] := this.ToggleConArr[A_Index].Value
+            this.Data.VariableArr[A_Index] := this.VariableConArr[A_Index].Text
+        }
 
         saveStr := JSON.stringify(this.Data, 0)
         IniWrite(saveStr, ExVariableFile, IniSection, this.Data.SerialStr)

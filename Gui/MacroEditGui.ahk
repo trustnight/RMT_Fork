@@ -100,7 +100,7 @@ class MacroEditGui {
         this.ExVariableGui := ExVariableGui()
         this.ExVariableGui.MacroEditGui := this
         this.ExVariableGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
-        this.SubGuiMap.Set("提取变量", this.ExVariableGui)
+        this.SubGuiMap.Set("变量提取", this.ExVariableGui)
 
         this.SubMacroGui := SubMacroGui()
         this.SubMacroGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
@@ -235,10 +235,10 @@ class MacroEditGui {
         this.CmdBtnConMap.Set("变量", btnCon)
 
         PosX += 100
-        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "提取变量")
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "变量提取")
         btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.ExVariableGui))
-        this.CmdBtnConMap.Set("变量", btnCon)
+        this.CmdBtnConMap.Set("变量提取", btnCon)
 
         PosX += 100
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "运算")

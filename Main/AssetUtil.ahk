@@ -1032,6 +1032,7 @@ GetSelectVariableObjArr(macro) {
     loop cmdArr.Length {
         paramArr := StrSplit(cmdArr[A_Index], "_")
         IsVariable := StrCompare(paramArr[1], "变量", false) == 0
+        IsExVariable := StrCompare(paramArr[1], "提取变量", false) == 0
         IsSearchPro := StrCompare(paramArr[1], "搜索Pro", false) == 0
         IsOperation := StrCompare(paramArr[1], "运算", false) == 0
         IsIf := StrCompare(paramArr[1], "如果", false) == 0
@@ -1045,6 +1046,14 @@ GetSelectVariableObjArr(macro) {
             loop 4 {
                 if (Data.ToggleArr[A_Index])
                     VariableMap[Data.NameArr[A_Index]] := true
+            }
+        }
+        else if (IsExVariable) {
+            saveStr := IniRead(ExVariableFile, IniSection, paramArr[2], "")
+            Data := JSON.parse(saveStr, , false)
+            loop 4 {
+                if (Data.ToggleArr[A_Index])
+                    VariableMap[Data.VariableArr[A_Index]] := true
             }
         }
         else if (IsSearchPro) {
