@@ -37,7 +37,7 @@ OnTriggerMacroKeyAndInit(tableItem, macro, index) {
     tableItem.CmdActionArr[index] := []
     tableItem.KilledArr[index] := false
     tableItem.ActionCount[index] := 0
-    tableItem.VariableMapArr[index]["循环次数"] := 1
+    tableItem.VariableMapArr[index]["当前循环次数"] := 1
     tableItem.SuccessClearActionArr[index] := Map()
     isContinue := tableItem.TKArr.Has(index) && MySoftData.ContinueKeyMap.Has(tableItem.TKArr[index]) && tableItem.LoopCountArr[
         index] == 1
@@ -66,7 +66,7 @@ OnTriggerMacroKeyAndInit(tableItem, macro, index) {
 
         OnTriggerMacroOnce(tableItem, macro, index)
         tableItem.ActionCount[index]++
-        tableItem.VariableMapArr[index]["循环次数"] += 1
+        tableItem.VariableMapArr[index]["当前循环次数"] += 1
     }
     ; OnFinishMacro(tableItem, macro, index)
 }
@@ -560,10 +560,10 @@ OnVariable(tableItem, cmd, index) {
         value := Data.ValueArr[A_Index]
         if (Data.CreateType == 2) {     ;选择复制
             copyName := Data.SelectCopyNameArr[A_Index]
-            if (copyName == "X坐标" || copyName == "Y坐标") {
+            if (copyName == "当前鼠标坐标X" || copyName == "当前鼠标坐标Y") {
                 CoordMode("Mouse", "Screen")
                 MouseGetPos &mouseX, &mouseY
-                value := copyName == "X坐标" ? mouseX : mouseY
+                value := copyName == "当前鼠标坐标X" ? mouseX : mouseY
             }
             else if (VariableMap.Has(copyName)) {
                 value := VariableMap[copyName]

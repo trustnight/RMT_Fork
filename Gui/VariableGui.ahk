@@ -6,22 +6,15 @@ class VariableGui {
         this.SureBtnAction := ""
         this.MacroEditGui := ""
         this.RemarkCon := ""
-        this.SelectToggleCon := ""
 
-        this.CreateTypeCon := ""
+        this.IsGlobalCon := ""
+        this.IsIgnoreExistCon := ""
         this.ToggleConArr := []
-        this.NameConArr := []
-        this.ValueConArr := []
-        this.SelectCopyConArr := []
-        this.ExtractStrCon := ""
-        this.ExtractTypeCon := ""
-        this.StartPosXCon := ""
-        this.StartPosYCon := ""
-        this.EndPosXCon := ""
-        this.EndPosYCon := ""
-        this.SearchCountCon := ""
-        this.SearchIntervalCon := ""
-        this.OCRTypeCon := ""
+        this.VariableConArr := []
+        this.OperaTypeConArr := []
+        this.CopyVariableConArr := []
+        this.MinVariableConArr := []
+        this.MaxVariableConArr := []
         this.Data := ""
     }
 
@@ -60,44 +53,36 @@ class VariableGui {
         PosX += 50
         this.RemarkCon := MyGui.Add("Edit", Format("x{} y{} w{}", PosX, PosY - 5, 150), "")
 
-        PosX := 10
+        PosX := 20
         PosY += 30
-        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 70, 20), "创建方式:")
+        this.IsGlobalCon := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 90), "全局变量")
 
-        PosX += 70
-        this.CreateTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX, PosY - 5, 100), ["赋值", "变量复制",
-            "变量提取"])
-        this.CreateTypeCon.OnEvent("Change", (*) => this.OnRefresh())
+        PosX += 120
+        this.IsIgnoreExistCon := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 150), "变量存在忽略操作")
 
         {
             PosX := 10
             PosY += 25
-            MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", PosX, PosY, 580, 100), "变量：")
+            MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", PosX, PosY, 580, 200), "变量：")
 
             PosX := 11
             PosY += 20
             MyGui.Add("Text", Format("x{} y{} w{} h{} Center", PosX, PosY, 50, 20), "开关")
 
             PosX += 50
-            MyGui.Add("Text", Format("x{} y{} w{} h{} Center", PosX, PosY, 70, 20), "变量名")
+            MyGui.Add("Text", Format("x{} y{} w{} h{} Center", PosX, PosY, 80, 20), "变量名")
 
-            PosX += 75
-            MyGui.Add("Text", Format("x{} y{} w{} h{} Center", PosX, PosY, 70, 20), "初始值")
+            PosX += 110
+            MyGui.Add("Text", Format("x{} y{} h{}", PosX, PosY, 20), "操作类型")
 
-            PosX += 75
-            MyGui.Add("Text", Format("x{} y{} w{} h{} Center", PosX, PosY, 80, 20), "选择/输入")
+            PosX += 110
+            MyGui.Add("Text", Format("x{} y{} h{}", PosX, PosY, 20), "选择/输入")
 
-            PosX := 300
-            MyGui.Add("Text", Format("x{} y{} w{} h{} Center", PosX, PosY, 50, 20), "开关")
+            PosX += 110
+            MyGui.Add("Text", Format("x{} y{} h{}", PosX, PosY, 20), "最小值选择/输入")
 
-            PosX += 50
-            MyGui.Add("Text", Format("x{} y{} w{} h{} Center", PosX, PosY, 70, 20), "变量名")
-
-            PosX += 75
-            MyGui.Add("Text", Format("x{} y{} w{} h{} Center", PosX, PosY, 70, 20), "初始值")
-
-            PosX += 75
-            MyGui.Add("Text", Format("x{} y{} w{} h{} Center", PosX, PosY, 80, 20), "选择/输入")
+            PosX += 110
+            MyGui.Add("Text", Format("x{} y{} h{}", PosX, PosY, 20), "最大值选择/输入")
 
             PosX := 10
             PosY += 20
@@ -106,139 +91,110 @@ class VariableGui {
             this.ToggleConArr.Push(con)
 
             PosX += 50
-            con := MyGui.Add("Edit", Format("x{} y{} w{} h{} Center", PosX, PosY, 70, 20), "Num1")
-            this.NameConArr.Push(con)
+            con := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 100, 20), "Num1")
+            this.VariableConArr.Push(con)
 
-            PosX += 75
-            con := MyGui.Add("Edit", Format("x{} y{} w{} h{} Center", PosX, PosY, 70, 20), "0")
-            this.ValueConArr.Push(con)
+            PosX += 105
+            con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX, PosY - 2, 80), ["赋值", "随机",
+                "删除"])
+            con.OnEvent("Change", (*) => this.OnRefresh())
+            this.OperaTypeConArr.Push(con)
 
-            PosX += 75
-            con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5 Center", PosX, PosY - 2, 80), [])
-            this.SelectCopyConArr.Push(con)
+            PosX += 90
+            con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX, PosY - 2, 120), [])
+            this.CopyVariableConArr.Push(con)
 
-            PosX := 300
-            con := MyGui.Add("Checkbox", Format("x{} y{} w{} h{} Center", PosX + 20, PosY, 30, 20), "")
-            con.Value := 0
-            this.ToggleConArr.Push(con)
+            PosX += 130
+            con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX, PosY - 2, 120), [])
+            this.MinVariableConArr.Push(con)
 
-            PosX += 50
-            con := MyGui.Add("Edit", Format("x{} y{} w{} h{} Center", PosX, PosY, 70, 20), "Num2")
-            this.NameConArr.Push(con)
-
-            PosX += 75
-            con := MyGui.Add("Edit", Format("x{} y{} w{} h{} Center", PosX, PosY, 70, 20), "0")
-            this.ValueConArr.Push(con)
-
-            PosX += 75
-            con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5 Center", PosX, PosY - 2, 80), [])
-            this.SelectCopyConArr.Push(con)
+            PosX += 130
+            con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX, PosY - 2, 120), [])
+            this.MaxVariableConArr.Push(con)
 
             PosX := 10
-            PosY += 30
+            PosY += 35
             con := MyGui.Add("Checkbox", Format("x{} y{} w{} h{} Center", PosX + 20, PosY, 30, 20), "")
-            con.Value := 0
+            con.Value := 1
             this.ToggleConArr.Push(con)
 
             PosX += 50
-            con := MyGui.Add("Edit", Format("x{} y{} w{} h{} Center", PosX, PosY, 70, 20), "Num3")
-            this.NameConArr.Push(con)
+            con := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 100, 20), "Num2")
+            this.VariableConArr.Push(con)
 
-            PosX += 75
-            con := MyGui.Add("Edit", Format("x{} y{} w{} h{} Center", PosX, PosY, 70, 20), "0")
-            this.ValueConArr.Push(con)
+            PosX += 105
+            con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX, PosY - 2, 80), ["赋值", "随机",
+                "删除"])
+            con.OnEvent("Change", (*) => this.OnRefresh())
+            this.OperaTypeConArr.Push(con)
 
-            PosX += 75
-            con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5 Center", PosX, PosY - 2, 80), [])
-            this.SelectCopyConArr.Push(con)
+            PosX += 90
+            con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX, PosY - 2, 120), [])
+            this.CopyVariableConArr.Push(con)
 
-            PosX := 300
-            con := MyGui.Add("Checkbox", Format("x{} y{} w{} h{} Center", PosX + 20, PosY, 30, 20), "")
-            con.Value := 0
-            this.ToggleConArr.Push(con)
+            PosX += 130
+            con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX, PosY - 2, 120), [])
+            this.MinVariableConArr.Push(con)
 
-            PosX += 50
-            con := MyGui.Add("Edit", Format("x{} y{} w{} h{} Center", PosX, PosY, 70, 20), "Num4")
-            this.NameConArr.Push(con)
+            PosX += 130
+            con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX, PosY - 2, 120), [])
+            this.MaxVariableConArr.Push(con)
 
-            PosX += 75
-            con := MyGui.Add("Edit", Format("x{} y{} w{} h{} Center", PosX, PosY, 70, 20), "0")
-            this.ValueConArr.Push(con)
-
-            PosX += 75
-            con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5 Center", PosX, PosY - 2, 80), [])
-            this.SelectCopyConArr.Push(con)
-
-        }
-        {
             PosX := 10
-            PosY += 40
-            MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", PosX, PosY, 580, 220), "提取相关配置：")
+            PosY += 35
+            con := MyGui.Add("Checkbox", Format("x{} y{} w{} h{} Center", PosX + 20, PosY, 30, 20), "")
+            con.Value := 1
+            this.ToggleConArr.Push(con)
 
-            PosY += 25
-            PosX := 20
-            con := MyGui.Add("Edit", Format("x{} y{} w{}", PosX, PosY, 25), "F1")
-            con.Enabled := false
+            PosX += 50
+            con := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 100, 20), "Num3")
+            this.VariableConArr.Push(con)
 
-            PosX += 30
-            this.SelectToggleCon := MyGui.Add("Checkbox", Format("x{} y{} w{} h{} Left", PosX, PosY, 150, 25),
-            "左键框选搜索范围")
-            this.SelectToggleCon.OnEvent("Click", (*) => this.OnClickSelectToggle())
+            PosX += 105
+            con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX, PosY - 2, 80), ["赋值", "随机",
+                "删除"])
+            con.OnEvent("Change", (*) => this.OnRefresh())
+            this.OperaTypeConArr.Push(con)
 
-            PosX += 200
-            MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY + 3, 110), "文本识别模型:")
-            PosX += 110
-            this.OCRTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} Center", PosX, PosY - 2, 130), ["中文",
-                "英文"])
-            this.OCRTypeCon.Value := 1
+            PosX += 90
+            con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX, PosY - 2, 120), [])
+            this.CopyVariableConArr.Push(con)
+    
+            PosX += 130
+            con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX, PosY - 2, 120), [])
+            this.MinVariableConArr.Push(con)
+    
+            PosX += 130
+            con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX, PosY - 2, 120), [])
+            this.MaxVariableConArr.Push(con)
 
-            PosY += 25
-            PosX := 20
-            MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 550),
-            "使用&&x代替数字变量位置，使用&&c代替文本变量位置`n形如：`"坐标(&&x,&&x)`"可以提取`"坐标(10.5,8.6)`"中的10.5和8.6到变量1和变量2")
+            PosX := 10
+            PosY += 35
+            con := MyGui.Add("Checkbox", Format("x{} y{} w{} h{} Center", PosX + 20, PosY, 30, 20), "")
+            con.Value := 1
+            this.ToggleConArr.Push(con)
 
-            PosY += 40
-            PosX := 20
-            MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "提取文本：")
-            this.ExtractStrCon := MyGui.Add("Edit", Format("x{} y{} w{}", PosX + 75, PosY - 5, 250), "")
-            this.ExtractTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 345, PosY - 5, 80), ["屏幕",
-                "剪切板"])
-            this.ExtractTypeCon.Value := 1
+            PosX += 50
+            con := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 100, 20), "Num4")
+            this.VariableConArr.Push(con)
 
-            PosX := 20
-            PosY += 30
-            MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", PosX, PosY, 300, 90), "搜索范围:")
+            PosX += 105
+            con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX, PosY - 2, 80), ["赋值", "随机",
+                "删除"])
+            con.OnEvent("Change", (*) => this.OnRefresh())
+            this.OperaTypeConArr.Push(con)
 
-            PosY += 30
-            PosX := 25
-            MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "起始坐标X:")
-            PosX += 75
-            this.StartPosXCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
-
-            PosX := 180
-            MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "起始坐标Y:")
-            PosX += 75
-            this.StartPosYCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
-
-            PosX := 350
-            MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "搜索次数:")
-            PosX += 75
-            this.SearchCountCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
-
-            PosY += 30
-            PosX := 25
-            MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "终止坐标X:")
-            PosX += 75
-            this.EndPosXCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
-
-            PosX := 180
-            MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "终止坐标Y:")
-            PosX += 75
-            this.EndPosYCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
-
-            PosX := 350
-            MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "每次间隔:")
-            this.SearchIntervalCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX + 75, PosY - 5, 50))
+            PosX += 90
+            con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX, PosY - 2, 120), [])
+            this.CopyVariableConArr.Push(con)
+    
+            PosX += 130
+            con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX, PosY - 2, 120), [])
+            this.MinVariableConArr.Push(con)
+    
+            PosX += 130
+            con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX, PosY - 2, 120), [])
+            this.MaxVariableConArr.Push(con)
         }
 
         PosY += 50
@@ -257,60 +213,39 @@ class VariableGui {
         this.Data := this.GetVariableData(this.SerialStr)
         macro := this.MacroEditGui.GetFinallyMacroStr()
         VariableObjArr := GetSelectVariableObjArr(macro)
-        VariableObjArr.Push("X坐标")
-        VariableObjArr.Push("Y坐标")
+        VariableObjArr.Push("当前鼠标坐标X")
+        VariableObjArr.Push("当前鼠标坐标Y")
 
-        this.CreateTypeCon.Value := this.Data.CreateType
-        this.ExtractStrCon.Value := this.Data.ExtractStr
-        this.ExtractTypeCon.Value := this.Data.ExtractType
-        this.OCRTypeCon.Value := this.Data.OCRType
-        this.StartPosXCon.Value := this.Data.StartPosX
-        this.StartPosYCon.Value := this.Data.StartPosY
-        this.EndPosXCon.Value := this.Data.EndPosX
-        this.EndPosYCon.Value := this.Data.EndPosY
-        this.SearchCountCon.Value := this.Data.SearchCount
-        this.SearchIntervalCon.Value := this.Data.SearchInterval
+        this.IsGlobalCon.Value := this.Data.IsGlobal
+        this.IsIgnoreExistCon.Value := this.Data.IsIgnoreExist
         loop 4 {
-            copyName := this.GetCopyNameText(VariableObjArr, this.Data.SelectCopyNameArr[A_Index])
             this.ToggleConArr[A_Index].Value := this.Data.ToggleArr[A_Index]
-            this.NameConArr[A_Index].Value := this.Data.NameArr[A_Index]
-            this.ValueConArr[A_Index].Value := this.Data.ValueArr[A_Index]
-            this.SelectCopyConArr[A_Index].Delete()
-            this.SelectCopyConArr[A_Index].Add(VariableObjArr)
-            this.SelectCopyConArr[A_Index].Text := copyName
+            this.VariableConArr[A_Index].Value := this.Data.VariableArr[A_Index]
+            this.OperaTypeConArr[A_Index].Value := this.Data.OperaTypeArr[A_Index]
+            this.CopyVariableConArr[A_Index].Delete()
+            this.CopyVariableConArr[A_Index].Add(VariableObjArr)
+            this.CopyVariableConArr[A_Index].Text := this.Data.CopyVariableArr[A_Index]
+            this.MinVariableConArr[A_Index].Delete()
+            this.MinVariableConArr[A_Index].Add(VariableObjArr)
+            this.MinVariableConArr[A_Index].Text := this.Data.MinVariableArr[A_Index]
+            this.MaxVariableConArr[A_Index].Delete()
+            this.MaxVariableConArr[A_Index].Add(VariableObjArr)
+            this.MaxVariableConArr[A_Index].Text := this.Data.MaxVariableArr[A_Index]
         }
-    }
-
-    GetCopyNameText(VariableObjArr, copyName) {
-        if (VariableObjArr.Length <= 0)
-            return ""
-        loop VariableObjArr.Length {
-            if (VariableObjArr[A_Index] == copyName)
-                return copyName
-        }
-
-        return VariableObjArr[1]
     }
 
     ToggleFunc(state) {
         MacroAction := (*) => this.TriggerMacro()
         if (state) {
             Hotkey("!l", MacroAction, "On")
-            Hotkey("F1", (*) => this.EnableSelectAerea(), "On")
         }
         else {
             Hotkey("!l", MacroAction, "Off")
-            Hotkey("F1", (*) => this.EnableSelectAerea(), "Off")
         }
     }
 
     OnRefresh() {
-        enableVariable := this.CreateTypeCon.Value == 1
-        enableSelectCopy := this.CreateTypeCon.Value == 2
-        loop 4 {
-            this.ValueConArr[A_Index].Enabled := enableVariable
-            this.SelectCopyConArr[A_Index].Enabled := enableSelectCopy
-        }
+
     }
 
     OnClickSureBtn() {
@@ -323,63 +258,6 @@ class VariableGui {
         action := this.SureBtnAction
         action(CommandStr)
         this.Gui.Hide()
-    }
-
-    OnClickSelectToggle() {
-        state := this.SelectToggleCon.Value
-        if (state == 1)
-            this.EnableSelectAerea()
-        else
-            this.DisSelectArea()
-    }
-
-    EnableSelectAerea() {
-        this.SelectToggleCon.Value := 1
-        Hotkey("LButton", (*) => this.SelectArea(), "On")
-        Hotkey("LButton Up", (*) => this.DisSelectArea(), "On")
-    }
-
-    DisSelectArea(*) {
-        this.SelectToggleCon.Value := 0
-        Hotkey("LButton", (*) => this.SelectArea(), "Off")
-        Hotkey("LButton Up", (*) => this.DisSelectArea(), "Off")
-    }
-
-    SelectArea(*) {
-        ; 获取起始点坐标
-        startX := startY := endX := endY := 0
-        CoordMode("Mouse", "Screen")
-        MouseGetPos(&startX, &startY)
-
-        ; 创建 GUI 用于绘制矩形框
-        MyGui := Gui("+ToolWindow -Caption +AlwaysOnTop -DPIScale")
-        MyGui.BackColor := "Red"
-        WinSetTransColor(" 150", MyGui)
-        MyGui.Opt("+LastFound")
-        GuiHwnd := WinExist()
-
-        ; 显示初始 GUI
-        MyGui.Show("NA x" startX " y" startY " w1 h1")
-
-        ; 跟踪鼠标移动
-        while GetKeyState("LButton", "P") {
-            CoordMode("Mouse", "Screen")
-            MouseGetPos(&endX, &endY)
-            width := Abs(endX - startX)
-            height := Abs(endY - startY)
-            x := Min(startX, endX)
-            y := Min(startY, endY)
-
-            MyGui.Show("NA x" x " y" y " w" width " h" height)
-        }
-        ; 销毁 GUI
-        MyGui.Destroy()
-        ; 返回坐标
-
-        this.StartPosXCon.Value := Min(startX, endX)
-        this.StartPosYCon.Value := Min(startY, endY)
-        this.EndPosXCon.Value := Max(startX, endX)
-        this.EndPosYCon.Value := Max(startY, endY)
     }
 
     CheckIfValid() {
@@ -426,21 +304,15 @@ class VariableGui {
     }
 
     SaveVariableData() {
-        this.Data.CreateType := this.CreateTypeCon.Value
-        this.Data.ExtractStr := this.ExtractStrCon.Value
-        this.Data.ExtractType := this.ExtractTypeCon.Value
-        this.Data.OCRType := this.OCRTypeCon.Value
-        this.Data.StartPosX := this.StartPosXCon.Value
-        this.Data.StartPosY := this.StartPosYCon.Value
-        this.Data.EndPosX := this.EndPosXCon.Value
-        this.Data.EndPosY := this.EndPosYCon.Value
-        this.Data.SearchCount := this.SearchCountCon.Value
-        this.Data.SearchInterval := this.SearchIntervalCon.Value
+        this.Data.IsGlobal := this.IsGlobalCon.Value
+        this.Data.IsIgnoreExist := this.IsIgnoreExistCon.Value
         loop 4 {
             this.Data.ToggleArr[A_Index] := this.ToggleConArr[A_Index].Value
-            this.Data.NameArr[A_Index] := this.NameConArr[A_Index].Value
-            this.Data.ValueArr[A_Index] := this.ValueConArr[A_Index].Value
-            this.Data.SelectCopyNameArr[A_Index] := this.SelectCopyConArr[A_Index].Text
+            this.Data.VariableArr[A_Index] := this.VariableConArr[A_Index].Value
+            this.Data.OperaTypeArr[A_Index] := this.OperaTypeConArr[A_Index].Value
+            this.Data.CopyVariableArr[A_Index] := this.CopyVariableConArr[A_Index].Text
+            this.Data.MinVariableArr[A_Index] := this.MinVariableConArr[A_Index].Text
+            this.Data.MaxVariableArr[A_Index] := this.MaxVariableConArr[A_Index].Text
         }
 
         saveStr := JSON.stringify(this.Data, 0)

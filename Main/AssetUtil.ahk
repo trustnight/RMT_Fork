@@ -577,7 +577,7 @@ InitSingleTableState(tableItem) {
         tableItem.IsWorkArr.Push(false)
 
         VariableMap := Map()
-        VariableMap["循环次数"] := 0
+        VariableMap["当前循环次数"] := 0
         tableItem.VariableMapArr.Push(VariableMap)
     }
 }
@@ -1114,7 +1114,7 @@ GetSelectVariableObjArr(macro) {
     for key in VariableMap {
         VariableArr.Push(key)
     }
-    VariableArr.Push("循环次数")
+    VariableArr.Push("当前循环次数")
     return VariableArr
 }
 

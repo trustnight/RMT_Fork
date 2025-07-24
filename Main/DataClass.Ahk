@@ -334,20 +334,14 @@ class SubMacroData {
 class VariableData {
     __New() {
         this.SerialStr := ""
-        this.CreateType := 1
+        this.IsGlobal := 0
+        this.IsIgnoreExist := 0
         this.ToggleArr := [1, 0, 0, 0]
-        this.NameArr := ["Num1", "Num2", "Num3", "Num4"]
-        this.ValueArr := [0, 0, 0, 0]
-        this.SelectCopyNameArr := ["NameA", "NameB", "NameC", "NameD"]
-        this.ExtractStr := ""
-        this.ExtractType := 1
-        this.OCRType := 1
-        this.StartPosX := 0
-        this.StartPosY := 0
-        this.EndPosX := A_ScreenWidth
-        this.EndPosY := A_ScreenHeight
-        this.SearchCount := 1
-        this.SearchInterval := 1000
+        this.OperaTypeArr := [1, 1, 1, 1]   ;1赋值 2随机 3删除
+        this.VariableArr := ["Num1", "Num2", "Num3", "Num4"]
+        this.CopyVariableArr := ["1", "0", "0", "0"]
+        this.MinVariableArr := ["0", "0", "0", "0"]
+        this.MaxVariableArr := ["10", "10", "10", "10"]
     }
 }
 
