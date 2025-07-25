@@ -197,6 +197,7 @@ class SoftData {
         this.GroupFixedCons := []
         this.FixedCons := []
         this.SB := ""
+        this.VariableMap := Map()
     }
 }
 

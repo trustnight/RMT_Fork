@@ -1,9 +1,14 @@
 #Requires AutoHotkey v2.0
+global WM_COPYDATA := 0x4a ;传递字符串，系统信息
+
 global WM_LOAD_WORK := 0x500  ;资源加载完成事件
 global WM_RELEASE_WORK := 0x501  ;资源释放事件
 global WM_CLEAR_WORK := 0x502  ;资源释放事件
 global WM_TR_MACRO := 0x503 ;触发宏事件
 global WM_STOP_MACRO := 0x504 ;停止宏事件
+global WM_SET_VARI := 0x505    ;设置变量
+global WM_DEL_VARI := 0x506    ;删除变量
+global WM_TEST_VARI := 0x507    ;测试信息
 
 ; 功能函数
 GetFloatTime(oriTime, floatValue) {
@@ -1216,6 +1221,35 @@ GetMacroCMDData(fileName, serialStr) {
     Data := JSON.parse(saveStr, , false)
     MySoftData.DataCacheMap.Set(serialStr, Data)
     return Data
+}
+
+TryGetVariableValue(&Value, tableItem, index, variableName) {
+    if (IsNumber(variableName)) {
+        Value := variableName
+        return true
+    }
+
+    if (variableName == "当前鼠标坐标X" || variableName == "当前鼠标坐标Y") {
+        CoordMode("Mouse", "Screen")
+        MouseGetPos &mouseX, &mouseY
+        Value := variableName == "当前鼠标坐标X" ? mouseX : mouseY
+        return true
+    }
+
+    TableVariableMap := tableItem.VariableMapArr[index]
+    if (TableVariableMap.Has(variableName)) {
+        Value := TableVariableMap[variableName]
+        return true
+    }
+
+    GlobalVariableMap := MySoftData.VariableMap[index]
+    if (GlobalVariableMap.Has(variableName)) {
+        Value := GlobalVariableMap[variableName]
+        return true
+    }
+
+    ShowNoVariableTip(variableName)
+    return false
 }
 
 ShowNoVariableTip(variableName) {

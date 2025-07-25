@@ -462,7 +462,6 @@ TriggerSubMacro(tableIndex, itemIndex) {
     tableItem := MySoftData.TableInfo[tableIndex]
     macro := tableItem.MacroArr[itemIndex]
     isSeries := tableItem.MacroTypeArr[itemIndex] == 1  ;触发串联指令
-    isWork := tableItem.IsWorkArr[itemIndex]
     hasWork := MyWorkPool.CheckHasWork()
 
     if (isSeries && hasWork) {
@@ -473,6 +472,35 @@ TriggerSubMacro(tableIndex, itemIndex) {
     }
     else {
         OnTriggerMacroKeyAndInit(tableItem, macro, itemIndex)
+    }
+}
+
+SetGlobalVariable(Name, Value, ignoreExist) {
+    global MySoftData
+    if (ignoreExist && MySoftData.VariableMap.Has(Name))
+        return
+    MySoftData.VariableMap[Name] := Value
+    hasWork := MyWorkPool.CheckHasWork()
+    if (hasWork) {
+        loop MyWorkPool.maxSize {
+            workPath := A_ScriptDir "\Thread\Work" A_Index ".exe"
+            str := Format("SetVari_{}_{}", Name, Value)
+            MyWorkPool.SendMessage(WM_COPYDATA, workPath, str)
+        }
+    }
+}
+
+DelGlobalVariable(Name) {
+    global MySoftData
+    if (MySoftData.VariableMap.Has(Name))
+        MySoftData.VariableMap.Delete(Name)
+    hasWork := MyWorkPool.CheckHasWork()
+    if (hasWork) {
+        loop MyWorkPool.maxSize {
+            workPath := A_ScriptDir "\Thread\Work" A_Index ".exe"
+            str := Format("DelVari_{}", Name)
+            MyWorkPool.PostMessage(WM_COPYDATA, workPath, str)
+        }
     }
 }
 

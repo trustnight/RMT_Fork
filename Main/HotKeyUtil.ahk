@@ -309,20 +309,11 @@ OnCompare(tableItem, cmd, index) {
         if (!Data.ToggleArr[A_Index])
             continue
 
-        Name := Data.NameArr[A_Index]
-        OhterName := Data.VariableArr[A_Index]
-        if (!IsNumber(Name) && !VariableMap.Has(Name)) {
-            ShowNoVariableTip(Name)
+        hasValue := TryGetVariableValue(&Value, tableItem, index, Data.NameArr[A_Index])
+        hasOtherValue := TryGetVariableValue(&OtherValue, tableItem, index, Data.VariableArr[A_Index])
+        if (!hasValue || !hasOtherValue) {
             return
         }
-
-        if (!IsNumber(OhterName) && !VariableMap.Has(OhterName)) {
-            ShowNoVariableTip(OhterName)
-            return
-        }
-
-        Value := IsNumber(Name) ? Name : VariableMap[Name]
-        OtherValue := IsNumber(OhterName) ? OhterName : VariableMap[OhterName]
 
         currentComparison := false
         switch Data.CompareTypeArr[A_Index] {
@@ -399,19 +390,13 @@ OnMMProOnce(tableItem, index, Data) {
     SendMode("Event")
     CoordMode("Mouse", "Screen")
     Speed := 100 - Data.Speed
-    VariableMap := tableItem.VariableMapArr[index]
-    if (!IsNumber(Data.PosVarX) && !VariableMap.Has(Data.PosVarX)) {
-        ShowNoVariableTip(Data.PosVarX)
+
+    hasPosVarX := TryGetVariableValue(&PosX, tableItem, index, Data.PosVarX)
+    hasPosVarY := TryGetVariableValue(&PosY, tableItem, index, Data.PosVarY)
+    if (!hasPosVarX || !hasPosVarY) {
         return
     }
 
-    if (!IsNumber(Data.PosVarY) && !VariableMap.Has(Data.PosVarY)) {
-        ShowNoVariableTip(Data.PosVarY)
-        return
-    }
-
-    PosX := IsNumber(Data.PosVarX) ? Data.PosVarX : VariableMap[Data.PosVarX]
-    PosY := IsNumber(Data.PosVarY) ? Data.PosVarY : VariableMap[Data.PosVarY]
     PosX := GetFloatValue(PosX, MySoftData.CoordXFloat)
     PosY := GetFloatValue(PosY, MySoftData.CoordYFloat)
     if (Data.IsGameView) {
@@ -531,45 +516,42 @@ OnSubMacro(tableItem, cmd, index) {
 OnVariable(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
     Data := GetMacroCMDData(VariableFile, paramArr[2])
-    count := Data.SearchCount
-    interval := Data.SearchInterval
-    tableItem.SuccessClearActionArr[index].Set(Data.ExtractStr, [])
-    VariableMap := tableItem.VariableMapArr[index]
-
-    if (Data.CreateType == 3) {     ;提取
-        OnExtractingVariablesOnce(tableItem, index, Data, count == 1)
-        loop count {
-            if (A_Index == 1)
-                continue
-
-            if (!tableItem.SuccessClearActionArr[index].Has(Data.ExtractStr)) ;第一次比较成功就退出
-                break
-
-            tempAction := OnExtractingVariablesOnce.Bind(tableItem, index, Data, A_Index == count)
-            leftTime := GetFloatTime((Integer(interval) * (A_Index - 1)), MySoftData.PreIntervalFloat)
-            tableItem.SuccessClearActionArr[index][Data.ExtractStr].Push(tempAction)
-            SetTimer tempAction, -leftTime
-        }
-        return
-    }
+    LocalVariableMap := tableItem.VariableMapArr[index]
     loop 4 {
         if (!Data.ToggleArr[A_Index])
             continue
+        VariableName := Data.VariableArr[A_Index]
+        if (Data.OperaTypeArr[A_Index] == 3) {  ;删除
+            if (Data.IsGlobal) {
+                MyDelGlobalVariable(VariableName)
+            }
+            else if (!Data.IsGlobal && LocalVariableMap.Has(VariableName))
+                LocalVariableMap.Delete(VariableName)
 
-        name := Data.NameArr[A_Index]   ;赋值
-        value := Data.ValueArr[A_Index]
-        if (Data.CreateType == 2) {     ;选择复制
-            copyName := Data.SelectCopyNameArr[A_Index]
-            if (copyName == "当前鼠标坐标X" || copyName == "当前鼠标坐标Y") {
-                CoordMode("Mouse", "Screen")
-                MouseGetPos &mouseX, &mouseY
-                value := copyName == "当前鼠标坐标X" ? mouseX : mouseY
-            }
-            else if (VariableMap.Has(copyName)) {
-                value := VariableMap[copyName]
-            }
+            continue
         }
-        VariableMap[name] := value
+
+        Value := 0
+        if (Data.OperaTypeArr[A_Index] == 1) {   ;赋值
+            hasValue := TryGetVariableValue(&Value, tableItem, index, data.CopyVariableArr[A_Index])
+            if (!hasValue)
+                return
+        }
+        if (Data.OperaTypeArr[A_Index] == 2) {  ;随机
+            hasMin := TryGetVariableValue(&minValue, tableItem, index, data.MinVariableArr[A_Index])
+            hasMax := TryGetVariableValue(&maxValue, tableItem, index, data.MaxVariableArr[A_Index])
+            if (!hasMin || !hasMax)
+                return
+            Value := Random(minValue, maxValue)
+        }
+
+        if (Data.IsGlobal) {
+            MySetGlobalVariable(VariableName, Value, Data.IsIgnoreExist)
+        }
+        else {
+            if (!Data.IsIgnoreExist || !LocalVariableMap.Has(VariableName))
+                LocalVariableMap[VariableName] := Value
+        }
     }
 }
 
@@ -722,20 +704,11 @@ OnBGMouse(tableItem, cmd, index) {
     WM_DOWN_ARR := [0x201, 0x204, 0x207]    ;左键，中键，右键
     WM_UP_ARR := [0x202, 0x205, 0x208]    ;左键，中键，右键
     WM_DCLICK_ARR := [0x203, 0x206, 0x209]    ;左键，中键，右键
-
-    VariableMap := tableItem.VariableMapArr[index]
-    if (!IsNumber(Data.PosVarX) && !VariableMap.Has(Data.PosVarX)) {
-        ShowNoVariableTip(Data.PosVarX)
+    hasPosVarX := TryGetVariableValue(&PosX, tableItem, index, Data.PosVarX)
+    hasPosVarY := TryGetVariableValue(&PosY, tableItem, index, Data.PosVarY)
+    if (!hasPosVarX || !hasPosVarY) {
         return
     }
-
-    if (!IsNumber(Data.PosVarY) && !VariableMap.Has(Data.PosVarY)) {
-        ShowNoVariableTip(Data.PosVarY)
-        return
-    }
-
-    PosX := IsNumber(Data.PosVarX) ? Data.PosVarX : VariableMap[Data.PosVarX]
-    PosY := IsNumber(Data.PosVarY) ? Data.PosVarY : VariableMap[Data.PosVarY]
     PosX := GetFloatValue(PosX, MySoftData.CoordXFloat)
     PosY := GetFloatValue(PosY, MySoftData.CoordYFloat)
 
@@ -801,13 +774,9 @@ OnInterval(tableItem, cmd, index) {
         interval := Integer(paramArr[2])
     }
     else {
-        VariableMap := tableItem.VariableMapArr[index]
-        if (!VariableMap.Has(paramArr[3])) {
-            ShowNoVariableTip(paramArr[3])
+        hasInterval := TryGetVariableValue(&interval, tableItem, index, paramArr[3])
+        if (!hasInterval)
             return
-        }
-
-        interval := VariableMap[paramArr[3]]
     }
     FloatInterval := GetFloatTime(interval, MySoftData.IntervalFloat)
     curTime := 0

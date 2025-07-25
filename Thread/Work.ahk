@@ -34,16 +34,19 @@ global MyEnglishOcr := RapidOcr(A_ScriptDir "\..", 2)
 global MyPToken := Gdip_Startup()
 global MySubMacroStopAction := WorkSubMacroStopAction
 global MyTriggerSubMacro := WorkTriggerSubMacro
+global MySetGlobalVariable := WorkSetGlobalVariable
+global MyDelGlobalVariable := WorkDelGlobalVariable
 WorkOpenCVLoadDll()
 
 ; 注册消息
-OnMessage(WM_TR_MACRO, MsgTriggerMacroHandler)
-OnMessage(WM_STOP_MACRO, MsgStopMacroHandler)
-OnMessage(WM_CLEAR_WORK, MsgExitHandler)
+OnMessage(WM_TR_MACRO, OnWorkTriggerMacro)
+OnMessage(WM_STOP_MACRO, OnWorkStopMacro)
+OnMessage(WM_CLEAR_WORK, OnExit)
+OnMessage(WM_COPYDATA, OnWorkGetCmdStr)
 
 myTitle := "RMTWork" workIndex
 mygui := Gui("+ToolWindow")          ; 创建 GUI，无标题栏
 mygui.Title := myTitle               ; 设置窗口标题（这才是 WinGetTitle 能读到的）
 mygui.Show("Hide")                   ; 隐藏窗口
 global myHwnd := mygui.Hwnd
-MsgSendHandler(WM_LOAD_WORK, workIndex, 0)
+MsgPostHandler(WM_LOAD_WORK, workIndex, 0)

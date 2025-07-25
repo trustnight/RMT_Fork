@@ -1,18 +1,43 @@
 #Requires AutoHotkey v2.0
 
-MsgTriggerMacroHandler(wParam, lParam, msg, hwnd) {
+OnWorkTriggerMacro(wParam, lParam, msg, hwnd) {
     TriggerMacro(wParam, lParam)
-    MsgSendHandler(WM_RELEASE_WORK, wParam, lParam)
+    MsgPostHandler(WM_RELEASE_WORK, wParam, lParam)
 }
 
-MsgExitHandler(wParam, lParam, msg, hwnd) {
+OnExit(wParam, lParam, msg, hwnd) {
     ExitApp()
 }
 
-MsgStopMacroHandler(wParam, lParam, msg, hwnd) {
+OnWorkStopMacro(wParam, lParam, msg, hwnd) {
     loop MySoftData.TableInfo.Length {
         tableItem := MySoftData.TableInfo[A_Index]
         KillSingleTableMacro(tableItem)
+    }
+}
+
+OnWorkSetGlobalVariable(Name, Value) {
+    global MySoftData
+    MySoftData.VariableMap[Name] := Value
+}
+
+OnWorkDelGlobalVariable(Name) {
+    global MySoftData
+    if (MySoftData.VariableMap.Has(Name))
+        MySoftData.VariableMap.Delete(Name)
+}
+
+OnWorkGetCmdStr(wParam, lParam, msg, hwnd) {
+    StringAddress := NumGet(lParam, 2 * A_PtrSize, "Ptr")  ; 检索 CopyDataStruct 的 lpData 成员.
+    Cmd := StrGet(StringAddress)  ; 从结构中复制字符串.
+    paramArr := StrSplit(cmd, "_")
+    isSetVari := StrCompare(paramArr[1], "SetVari", false) == 0
+    isDelVari := StrCompare(paramArr[1], "DelVari", false) == 0
+    if (isSetVari) {
+        OnWorkSetGlobalVariable(paramArr[2], paramArr[3])
+    }
+    else if (isDelVari) {
+        OnWorkDelGlobalVariable(paramArr[2])
     }
 }
 
@@ -22,8 +47,18 @@ TriggerMacro(tableIndex, itemIndex) {
     OnTriggerMacroKeyAndInit(tableItem, macro, itemIndex)
 }
 
-MsgSendHandler(type, wParam, lParam) {
+MsgPostHandler(type, wParam, lParam) {
     PostMessage(type, wParam, lParam, , "ahk_id " parentHwnd)
+}
+
+MsgSendHandler(str) {
+    CopyDataStruct := Buffer(3 * A_PtrSize)  ; 分配结构的内存区域.
+    ; 首先设置结构的 cbData 成员为字符串的大小, 包括它的零终止符:
+    SizeInBytes := (StrLen(str) + 1) * 2
+    NumPut("Ptr", SizeInBytes  ; 操作系统要求这个需要完成.
+        , "Ptr", StrPtr(str)  ; 设置 lpData 为到字符串自身的指针.
+        , CopyDataStruct, A_PtrSize)
+    SendMessage(WM_COPYDATA, 0, CopyDataStruct, , "ahk_id " parentHwnd)
 }
 
 InitWorkFilePath() {
@@ -61,9 +96,22 @@ WorkOpenCVLoadDll() {
 }
 
 WorkSubMacroStopAction(tableIndex, itemIndex) {
-    MsgSendHandler(WM_STOP_MACRO, tableIndex, itemIndex)
+    MsgPostHandler(WM_STOP_MACRO, tableIndex, itemIndex)
 }
 
 WorkTriggerSubMacro(tableIndex, itemIndex) {
-    MsgSendHandler(WM_TR_MACRO, tableIndex, itemIndex)
+    MsgPostHandler(WM_TR_MACRO, tableIndex, itemIndex)
+}
+
+WorkSetGlobalVariable(Name, Value, ignoreExist) {
+    global MySoftData
+    if (ignoreExist && MySoftData.VariableMap.Has(Name))
+        return
+    str := Format("SetVari_{}_{}", Name, Value)
+    MsgSendHandler(str)
+}
+
+WorkDelGlobalVariable(Name) {
+    str := Format("DelVari_{}", Name)
+    MsgSendHandler(str)
 }

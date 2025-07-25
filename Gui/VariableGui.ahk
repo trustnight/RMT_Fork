@@ -63,7 +63,7 @@ class VariableGui {
         {
             PosX := 10
             PosY += 25
-            MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", PosX, PosY, 580, 200), "变量：")
+            MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", PosX, PosY, 640, 180), "变量：")
 
             PosX := 11
             PosY += 20
@@ -81,7 +81,7 @@ class VariableGui {
             PosX += 110
             MyGui.Add("Text", Format("x{} y{} h{}", PosX, PosY, 20), "最小值选择/输入")
 
-            PosX += 110
+            PosX += 130
             MyGui.Add("Text", Format("x{} y{} h{}", PosX, PosY, 20), "最大值选择/输入")
 
             PosX := 10
@@ -159,11 +159,11 @@ class VariableGui {
             PosX += 90
             con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX, PosY - 2, 120), [])
             this.CopyVariableConArr.Push(con)
-    
+
             PosX += 130
             con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX, PosY - 2, 120), [])
             this.MinVariableConArr.Push(con)
-    
+
             PosX += 130
             con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX, PosY - 2, 120), [])
             this.MaxVariableConArr.Push(con)
@@ -187,23 +187,23 @@ class VariableGui {
             PosX += 90
             con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX, PosY - 2, 120), [])
             this.CopyVariableConArr.Push(con)
-    
+
             PosX += 130
             con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX, PosY - 2, 120), [])
             this.MinVariableConArr.Push(con)
-    
+
             PosX += 130
             con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX, PosY - 2, 120), [])
             this.MaxVariableConArr.Push(con)
         }
 
         PosY += 50
-        PosX := 250
+        PosX := 290
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{} Center", PosX, PosY, 100, 40), "确定")
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
 
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 600, 450))
+        MyGui.Show(Format("w{} h{}", 680, 320))
     }
 
     Init(cmd) {
@@ -245,7 +245,13 @@ class VariableGui {
     }
 
     OnRefresh() {
-
+        loop 4 {
+            EnableCopy := this.OperaTypeConArr[A_Index].Value == 1
+            EnableMinMax := this.OperaTypeConArr[A_Index].Value == 2
+            this.CopyVariableConArr[A_Index].Enabled := EnableCopy
+            this.MinVariableConArr[A_Index].Enabled := EnableMinMax
+            this.MaxVariableConArr[A_Index].Enabled := EnableMinMax
+        }
     }
 
     OnClickSureBtn() {
