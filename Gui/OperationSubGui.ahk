@@ -12,8 +12,7 @@ class OperationSubGui {
         this.ValueArr := []
 
         this.ExpressionCon := ""
-        this.ValueCon := ""
-        this.NameCon := ""
+        this.OperaVariableCon := ""
         this.BaseValueCon := ""
         this.BaseResultCon := ""
     }
@@ -33,9 +32,9 @@ class OperationSubGui {
         this.SymbolArr := SymbolArr
         this.ValueArr := ValurArr
 
-        this.NameCon.Delete()
-        this.NameCon.Add(VariableArr)
-        this.NameCon.Text := "空"
+        this.OperaVariableCon.Delete()
+        this.OperaVariableCon.Add(VariableArr)
+        this.OperaVariableCon.Text := "10"
         this.FocusCon.Focus()
     }
 
@@ -62,11 +61,8 @@ class OperationSubGui {
 
         PosX := 10
         PosY += 25
-        this.FocusCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 300, 20), "操作值               选择/输入")
-        PosY += 20
-        this.ValueCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 100, 20), "0")
-        PosX += 150
-        this.NameCon := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX, PosY, 100), [])
+        this.FocusCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 300, 20), "选择/输入")
+        this.OperaVariableCon := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX, PosY, 120), [])
 
         PosX := 10
         PosY += 30
@@ -112,9 +108,9 @@ class OperationSubGui {
 
     OnClickOperatorBtn(Symbol) {
         text := this.Name
-        Value := this.ValueCon.Value
-        if (this.NameCon.Text != "空" && this.NameCon.Text != "")
-            Value := "&" this.NameCon.Text
+        Value := this.OperaVariableCon.Text
+        if (!IsNumber(this.OperaVariableCon.Text))
+            Value := "&" this.OperaVariableCon.Text
 
         this.SymbolArr.Push(Symbol)
         this.ValueArr.Push(Value)

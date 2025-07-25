@@ -373,7 +373,6 @@ class OperationData {
         this.ToggleArr := [1, 0, 0, 0]
         this.NameArr := ["空", "空", "空", "空"]
         this.OperationArr := ["", "", "", ""]
-        this.UpdateTypeArr := [1, 1, 1, 1]
         this.UpdateNameArr := ["空", "空", "空", "空"]
         this.SymbolGroups := [[], [], [], []]  ;操作符号
         this.ValueGroups := [[], [], [], []]     ;运算对象

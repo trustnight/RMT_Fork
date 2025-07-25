@@ -16,7 +16,6 @@ class OperationGui {
         this.ToggleConArr := []
         this.NameConArr := []
         this.OperationConArr := []
-        this.UpdateTypeConArr := []
         this.UpdateNameConArr := []
     }
 
@@ -37,7 +36,7 @@ class OperationGui {
         MyGui.SetFont(, "Arial")
         MyGui.SetFont("S10 W550 Q2", "Consolas")
 
-        PosX := 10
+        PosX := 20
         PosY := 10
         MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 50, 30), "备注:")
         PosX += 50
@@ -53,7 +52,7 @@ class OperationGui {
         PosX := 10
         PosY += 25
         MyGui.Add("Text", Format("x{} y{}", PosX, PosY, 70, 20),
-        "开关  选择/输入       运算表达式                                 ")
+        "开关   选择/输入           运算表达式                  创建/更新")
 
         PosY += 20
         PosX := 15
@@ -70,12 +69,7 @@ class OperationGui {
         con := MyGui.Add("Button", Format("x{} y{} w{} Center", PosX + 315, PosY - 4, 50), "编辑")
         con.OnEvent("Click", (*) => this.OnEditVariableBtnClick(1))
 
-        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 375, PosY - 3, 100), ["更新自己", "创建或更新"])
-        con.Value := 1
-        con.OnEvent("Change", (*) => this.RefreshUIState())
-        this.UpdateTypeConArr.Push(con)
-
-        con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 480, PosY - 3, 120), [])
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 375, PosY - 3, 120), [])
         this.UpdateNameConArr.Push(con)
 
         PosY += 35
@@ -93,12 +87,7 @@ class OperationGui {
         con := MyGui.Add("Button", Format("x{} y{} w{} Center", PosX + 315, PosY - 4, 50), "编辑")
         con.OnEvent("Click", (*) => this.OnEditVariableBtnClick(2))
 
-        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 375, PosY - 3, 100), ["更新自己", "创建或更新"])
-        con.Value := 1
-        con.OnEvent("Change", (*) => this.RefreshUIState())
-        this.UpdateTypeConArr.Push(con)
-
-        con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 480, PosY - 3, 120), [])
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 375, PosY - 3, 120), [])
         this.UpdateNameConArr.Push(con)
 
         PosY += 35
@@ -116,12 +105,7 @@ class OperationGui {
         con := MyGui.Add("Button", Format("x{} y{} w{} Center", PosX + 315, PosY - 4, 50), "编辑")
         con.OnEvent("Click", (*) => this.OnEditVariableBtnClick(3))
 
-        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 375, PosY - 3, 100), ["更新自己", "创建或更新"])
-        con.Value := 1
-        con.OnEvent("Change", (*) => this.RefreshUIState())
-        this.UpdateTypeConArr.Push(con)
-
-        con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 480, PosY - 3, 120), [])
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 375, PosY - 3, 120), [])
         this.UpdateNameConArr.Push(con)
 
         PosY += 35
@@ -139,12 +123,7 @@ class OperationGui {
         con := MyGui.Add("Button", Format("x{} y{} w{} Center", PosX + 315, PosY - 4, 50), "编辑")
         con.OnEvent("Click", (*) => this.OnEditVariableBtnClick(4))
 
-        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 375, PosY - 3, 100), ["更新自己", "创建或更新"])
-        con.Value := 1
-        con.OnEvent("Change", (*) => this.RefreshUIState())
-        this.UpdateTypeConArr.Push(con)
-
-        con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 480, PosY - 3, 120), [])
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 375, PosY - 3, 120), [])
         this.UpdateNameConArr.Push(con)
 
         PosY += 40
@@ -171,19 +150,9 @@ class OperationGui {
             this.NameConArr[A_Index].Add(VariableObjArr)
             this.NameConArr[A_Index].Text := this.Data.NameArr[A_Index]
             this.OperationConArr[A_Index].Value := this.Data.OperationArr[A_Index]
-            this.UpdateTypeConArr[A_Index].Value := this.Data.UpdateTypeArr[A_Index]
             this.UpdateNameConArr[A_Index].Delete()
             this.UpdateNameConArr[A_Index].Add(VariableObjArr)
             this.UpdateNameConArr[A_Index].Text := this.Data.UpdateNameArr[A_Index]
-        }
-
-        this.RefreshUIState()
-    }
-
-    RefreshUIState() {
-        loop 4 {
-            showState := this.UpdateTypeConArr[A_Index].Value == 2
-            this.UpdateNameConArr[A_Index].Visible := showState
         }
     }
 
@@ -256,7 +225,6 @@ class OperationGui {
             this.Data.ToggleArr[A_Index] := this.ToggleConArr[A_Index].Value
             this.Data.NameArr[A_Index] := this.NameConArr[A_Index].Text
             this.Data.OperationArr[A_Index] := this.OperationConArr[A_Index].Value
-            this.Data.UpdateTypeArr[A_Index] := this.UpdateTypeConArr[A_Index].Value
             this.Data.UpdateNameArr[A_Index] := this.UpdateNameConArr[A_Index].Text
         }
         this.Data.IsGlobal := this.IsGlobalCon.Value
