@@ -69,9 +69,6 @@ class WorkPool {
         try {
             PostMessage(type, wParam, lParam, , "ahk_id " hwnd)
         }
-        catch {
-            MsgBox("error")
-        }
     }
 
     SendMessage(type, workPath, str) {

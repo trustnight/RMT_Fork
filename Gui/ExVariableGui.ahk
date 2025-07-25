@@ -8,7 +8,9 @@ class ExVariableGui {
         this.SureBtnAction := ""
         this.MacroEditGui := ""
         this.RemarkCon := ""
-
+    
+        this.IsGlobalCon := ""
+        this.IsIgnoreExistCon := ""
         this.ToggleConArr := []
         this.VariableConArr := []
         this.SelectToggleCon := ""
@@ -87,6 +89,13 @@ class ExVariableGui {
         this.ExtractTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 345, PosY - 5, 80), ["屏幕",
             "剪切板"])
         this.ExtractTypeCon.Value := 1
+    
+        PosX := 20
+        PosY += 30
+        this.IsGlobalCon := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 90), "全局变量")
+
+        PosX += 120
+        this.IsIgnoreExistCon := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 150), "变量存在忽略操作")
 
         PosX := 20
         PosY += 30
@@ -192,6 +201,8 @@ class ExVariableGui {
             this.VariableConArr[A_Index].Add(VariableObjArr)
             this.VariableConArr[A_Index].Text := this.Data.VariableArr[A_Index]
         }
+        this.IsGlobalCon.Value := this.Data.IsGlobal
+        this.IsIgnoreExistCon.Value := this.Data.IsIgnoreExist
         this.ExtractStrCon.Value := this.Data.ExtractStr
         this.ExtractTypeCon.Value := this.Data.ExtractType
         this.OCRTypeCon.Value := this.Data.OCRType
@@ -337,6 +348,8 @@ class ExVariableGui {
         this.Data.EndPosY := this.EndPosYCon.Value
         this.Data.SearchCount := this.SearchCountCon.Value
         this.Data.SearchInterval := this.SearchIntervalCon.Value
+        this.Data.IsGlobal := this.IsGlobalCon.Value
+        this.Data.IsIgnoreExist := this.IsIgnoreExistCon.Value
         loop 4 {
             this.Data.ToggleArr[A_Index] := this.ToggleConArr[A_Index].Value
             this.Data.VariableArr[A_Index] := this.VariableConArr[A_Index].Text

@@ -1050,7 +1050,7 @@ GetSelectVariableObjArr(macro) {
             Data := JSON.parse(saveStr, , false)
             loop 4 {
                 if (Data.ToggleArr[A_Index])
-                    VariableMap[Data.NameArr[A_Index]] := true
+                    VariableMap[Data.VariableArr[A_Index]] := true
             }
         }
         else if (IsExVariable) {
@@ -1242,7 +1242,7 @@ TryGetVariableValue(&Value, tableItem, index, variableName) {
         return true
     }
 
-    GlobalVariableMap := MySoftData.VariableMap[index]
+    GlobalVariableMap := MySoftData.VariableMap
     if (GlobalVariableMap.Has(variableName)) {
         Value := GlobalVariableMap[variableName]
         return true

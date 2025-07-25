@@ -91,7 +91,7 @@ class VariableGui {
             this.ToggleConArr.Push(con)
 
             PosX += 50
-            con := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 100, 20), "Num1")
+            con := MyGui.Add("ComboBox", Format("x{} y{} w{} h{}", PosX, PosY, 100, 20), [])
             this.VariableConArr.Push(con)
 
             PosX += 105
@@ -119,7 +119,7 @@ class VariableGui {
             this.ToggleConArr.Push(con)
 
             PosX += 50
-            con := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 100, 20), "Num2")
+            con := MyGui.Add("ComboBox", Format("x{} y{} w{} h{}", PosX, PosY, 100, 20), [])
             this.VariableConArr.Push(con)
 
             PosX += 105
@@ -147,7 +147,7 @@ class VariableGui {
             this.ToggleConArr.Push(con)
 
             PosX += 50
-            con := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 100, 20), "Num3")
+            con := MyGui.Add("ComboBox", Format("x{} y{} w{} h{}", PosX, PosY, 100, 20), [])
             this.VariableConArr.Push(con)
 
             PosX += 105
@@ -175,7 +175,7 @@ class VariableGui {
             this.ToggleConArr.Push(con)
 
             PosX += 50
-            con := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 100, 20), "Num4")
+            con := MyGui.Add("ComboBox", Format("x{} y{} w{} h{}", PosX, PosY, 100, 20), [])
             this.VariableConArr.Push(con)
 
             PosX += 105
@@ -220,7 +220,9 @@ class VariableGui {
         this.IsIgnoreExistCon.Value := this.Data.IsIgnoreExist
         loop 4 {
             this.ToggleConArr[A_Index].Value := this.Data.ToggleArr[A_Index]
-            this.VariableConArr[A_Index].Value := this.Data.VariableArr[A_Index]
+            this.VariableConArr[A_Index].Delete()
+            this.VariableConArr[A_Index].Add(VariableObjArr)
+            this.VariableConArr[A_Index].Text := this.Data.VariableArr[A_Index]
             this.OperaTypeConArr[A_Index].Value := this.Data.OperaTypeArr[A_Index]
             this.CopyVariableConArr[A_Index].Delete()
             this.CopyVariableConArr[A_Index].Add(VariableObjArr)
@@ -314,7 +316,7 @@ class VariableGui {
         this.Data.IsIgnoreExist := this.IsIgnoreExistCon.Value
         loop 4 {
             this.Data.ToggleArr[A_Index] := this.ToggleConArr[A_Index].Value
-            this.Data.VariableArr[A_Index] := this.VariableConArr[A_Index].Value
+            this.Data.VariableArr[A_Index] := this.VariableConArr[A_Index].Text
             this.Data.OperaTypeArr[A_Index] := this.OperaTypeConArr[A_Index].Value
             this.Data.CopyVariableArr[A_Index] := this.CopyVariableConArr[A_Index].Text
             this.Data.MinVariableArr[A_Index] := this.MinVariableConArr[A_Index].Text

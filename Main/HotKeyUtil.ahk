@@ -415,8 +415,11 @@ OnOutput(tableItem, cmd, index) {
     Data := GetMacroCMDData(OutputFile, paramArr[2])
     VariableMap := tableItem.VariableMapArr[index]
     OutputText := Data.Text
-    if (Data.Name != "空" && Data.Name != "")
-        OutputText := VariableMap[Data.Name]
+    if (Data.Name != "空" && Data.Name != "") {
+        hasValue := TryGetVariableValue(&OutputText, tableItem, index, Data.Name)
+        if (!hasValue)
+            return
+    }
     if (Data.IsCover) {
         A_Clipboard := OutputText
     }
@@ -555,56 +558,6 @@ OnVariable(tableItem, cmd, index) {
     }
 }
 
-OnExtractingVariablesOnce(tableItem, index, variableData, isFinally) {
-    X1 := variableData.StartPosX
-    Y1 := variableData.StartPosY
-    X2 := variableData.EndPosX
-    Y2 := variableData.EndPosY
-    if (variableData.ExtractType == 1) {
-        TextObjs := GetScreenTextObjArr(X1, Y1, X2, Y2, variableData.OCRType)
-        TextObjs := TextObjs == "" ? [] : TextObjs
-    }
-    else {
-        if (!IsClipboardText())
-            return
-        TextObjs := []
-        obj := Object()
-        obj.Text := A_Clipboard
-        TextObjs.Push(obj)
-    }
-
-    isOk := false
-    VariableMap := tableItem.VariableMapArr[index]
-    for index, value in TextObjs {
-        baseVariableArr := ExtractNumbers(value.Text, variableData.ExtractStr)
-        if (baseVariableArr == "")
-            continue
-
-        loop baseVariableArr.Length {
-            if (variableData.ToggleArr[A_Index]) {
-                name := variableData.NameArr[A_Index]
-                value := baseVariableArr[A_Index]
-                VariableMap[name] := value
-            }
-        }
-
-        isOk := true
-        break
-    }
-
-    if (isOk || isFinally) {
-        ;清除后续的搜索和搜索记录
-        if (tableItem.SuccessClearActionArr[index].Has(variableData.ExtractStr)) {
-            SuccessClearActionArr := tableItem.SuccessClearActionArr[index].Get(variableData.ExtractStr)
-            loop SuccessClearActionArr.Length {
-                action := SuccessClearActionArr[A_Index]
-                SetTimer action, 0
-            }
-            tableItem.SuccessClearActionArr[index].Delete(variableData.ExtractStr)
-        }
-    }
-}
-
 OnExVariable(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
     Data := GetMacroCMDData(ExVariableFile, paramArr[2])
@@ -627,13 +580,13 @@ OnExVariable(tableItem, cmd, index) {
     }
 }
 
-OnExVariableOnce(tableItem, index, variableData, isFinally) {
-    X1 := variableData.StartPosX
-    Y1 := variableData.StartPosY
-    X2 := variableData.EndPosX
-    Y2 := variableData.EndPosY
-    if (variableData.ExtractType == 1) {
-        TextObjs := GetScreenTextObjArr(X1, Y1, X2, Y2, variableData.OCRType)
+OnExVariableOnce(tableItem, index, Data, isFinally) {
+    X1 := Data.StartPosX
+    Y1 := Data.StartPosY
+    X2 := Data.EndPosX
+    Y2 := Data.EndPosY
+    if (Data.ExtractType == 1) {
+        TextObjs := GetScreenTextObjArr(X1, Y1, X2, Y2, Data.OCRType)
         TextObjs := TextObjs == "" ? [] : TextObjs
     }
     else {
@@ -646,17 +599,23 @@ OnExVariableOnce(tableItem, index, variableData, isFinally) {
     }
 
     isOk := false
-    VariableMap := tableItem.VariableMapArr[index]
     for index, value in TextObjs {
-        baseVariableArr := ExtractNumbers(value.Text, variableData.ExtractStr)
+        baseVariableArr := ExtractNumbers(value.Text, Data.ExtractStr)
         if (baseVariableArr == "")
             continue
 
         loop baseVariableArr.Length {
-            if (variableData.ToggleArr[A_Index]) {
-                name := variableData.VariableArr[A_Index]
+            if (Data.ToggleArr[A_Index]) {
+                name := Data.VariableArr[A_Index]
                 value := baseVariableArr[A_Index]
-                VariableMap[name] := value
+                if (Data.IsGlobal) {
+                    MySetGlobalVariable(name, Value, Data.IsIgnoreExist)
+                }
+                else {
+                    LocalVariableMap := tableItem.VariableMapArr[index]
+                    if (!Data.IsIgnoreExist || !LocalVariableMap.Has(name))
+                        LocalVariableMap[name] := Value
+                }
             }
         }
 
@@ -666,13 +625,13 @@ OnExVariableOnce(tableItem, index, variableData, isFinally) {
 
     if (isOk || isFinally) {
         ;清除后续的搜索和搜索记录
-        if (tableItem.SuccessClearActionArr[index].Has(variableData.ExtractStr)) {
-            SuccessClearActionArr := tableItem.SuccessClearActionArr[index].Get(variableData.ExtractStr)
+        if (tableItem.SuccessClearActionArr[index].Has(Data.ExtractStr)) {
+            SuccessClearActionArr := tableItem.SuccessClearActionArr[index].Get(Data.ExtractStr)
             loop SuccessClearActionArr.Length {
                 action := SuccessClearActionArr[A_Index]
                 SetTimer action, 0
             }
-            tableItem.SuccessClearActionArr[index].Delete(variableData.ExtractStr)
+            tableItem.SuccessClearActionArr[index].Delete(Data.ExtractStr)
         }
     }
 }

@@ -348,9 +348,11 @@ class VariableData {
 
 class ExVariableData {
     __New() {
+        this.SerialStr := ""
+        this.IsGlobal := 0
+        this.IsIgnoreExist := 0
         this.ToggleArr := [1, 0, 0, 0]
         this.VariableArr := ["Num1", "Num2", "Num3", "Num4"]
-        this.SerialStr := ""
         this.ExtractStr := "HP:&x"
         this.ExtractType := 1
         this.OCRType := 1
@@ -366,6 +368,8 @@ class ExVariableData {
 class OperationData {
     __New() {
         this.SerialStr := ""
+        this.IsGlobal := 0
+        this.IsIgnoreExist := 0
         this.ToggleArr := [1, 0, 0, 0]
         this.NameArr := ["空", "空", "空", "空"]
         this.OperationArr := ["", "", "", ""]
