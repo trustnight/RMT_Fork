@@ -133,6 +133,8 @@ class SoftData {
         this.BootStartCtrl := ""
         this.NoVariableTip := false
         this.NoVariableTipCtrl := ""
+        this.ScreenShotType := 1
+        this.ScreenShotTypeCtrl := ""
         this.MutiThread := false
         this.MutiThreadCtrl := ""
         this.MutiThreadNum := 3
@@ -239,18 +241,19 @@ class SearchData {
     __New() {
         this.SerialStr := ""
         this.SearchType := 1       ;1 图片  2 颜色  3 文本
-        this.SearchColor := ""
-        this.SearchText := ""
+        this.SearchColor := "FFFFFF"
+        this.SearchText := "检索文本"
         this.SearchImagePath := ""
         this.Similar := 90 ; 图片搜索模糊匹配度100  - 50
-        this.OCRType := 1
+        this.OCRType := 1   ;1中文  2英文
+        this.SearchTextType := 1    ;1字符 2变量
         this.StartPosX := 0
         this.StartPosY := 0
         this.EndPosX := A_ScreenWidth
         this.EndPosY := A_ScreenHeight
         this.SearchCount := 1
         this.SearchInterval := 1000
-        this.AutoType := 1
+        this.MouseActionType := 1   ;   1无动作 2移动到目标 3移动到目标点击
         this.ClickCount := 1
         this.Speed := 90
         this.TrueCommandStr := ""
@@ -268,9 +271,11 @@ class SearchData {
 
 class CompareData {
     __New() {
+        this.IsGlobal := 0
+        this.IsIgnoreExist := 0
         this.ToggleArr := [1, 0, 0, 0]
         this.NameArr := ["空", "空", "空", "空"]
-        this.CompareTypeArr := [1, 1, 1, 1]  ;1大于 2大于等于 3等于 4小于等 5小于
+        this.CompareTypeArr := [1, 1, 1, 1]  ;1大于 2大于等于 3等于 4小于等 5小于 6字符包含
         this.VariableArr := ["空", "空", "空", "空"]
         this.TrueMacro := ""
         this.FalseMacro := ""
@@ -338,7 +343,7 @@ class VariableData {
         this.IsGlobal := 0
         this.IsIgnoreExist := 0
         this.ToggleArr := [1, 0, 0, 0]
-        this.OperaTypeArr := [1, 1, 1, 1]   ;1赋值 2随机 3删除
+        this.OperaTypeArr := [1, 1, 1, 1]   ;1赋值 2随机 3字符 4删除
         this.VariableArr := ["Num1", "Num2", "Num3", "Num4"]
         this.CopyVariableArr := ["1", "0", "0", "0"]
         this.MinVariableArr := ["0", "0", "0", "0"]
@@ -371,9 +376,9 @@ class OperationData {
         this.IsGlobal := 0
         this.IsIgnoreExist := 0
         this.ToggleArr := [1, 0, 0, 0]
-        this.NameArr := ["空", "空", "空", "空"]
+        this.NameArr := ["Num1", "Num2", "Num3", "Num4"]
         this.OperationArr := ["", "", "", ""]
-        this.UpdateNameArr := ["空", "空", "空", "空"]
+        this.UpdateNameArr := ["Num1", "Num2", "Num3", "Num4"]
         this.SymbolGroups := [[], [], [], []]  ;操作符号
         this.ValueGroups := [[], [], [], []]     ;运算对象
     }

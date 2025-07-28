@@ -206,6 +206,11 @@ OnSearchOnce(tableItem, Data, index, isFinally) {
     }
     else if (Data.SearchType == 3) {
         text := Data.SearchText
+        if (Data.SearchTextType == 2) {
+            hasValue := TryGetVariableValue(&text, tableItem, index, Data.SearchText)
+            if (!hasValue)
+                return
+        }
         found := CheckScreenContainText(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, text, Data.OCRType)
     }
 
@@ -243,11 +248,11 @@ OnSearchOnce(tableItem, Data, index, isFinally) {
 
         Pos[1] := GetFloatValue(Pos[1], MySoftData.CoordXFloat)
         Pos[2] := GetFloatValue(Pos[2], MySoftData.CoordYFloat)
-        if (Data.AutoType == 3) {
+        if (Data.MouseActionType == 3) {
             SetDefaultMouseSpeed(Speed)
             Click(Format("{} {} {}"), Pos[1], Pos[2], Data.ClickCount)
         }
-        else if (Data.AutoType == 2) {
+        else if (Data.MouseActionType == 2) {
             MouseMove(Pos[1], Pos[2], Speed)
         }
 
@@ -322,6 +327,7 @@ OnCompare(tableItem, cmd, index) {
             case 3: currentComparison := Value == OtherValue
             case 4: currentComparison := Value <= OtherValue
             case 5: currentComparison := Value < OtherValue
+            case 6: currentComparison := CheckContainText(Value, OtherValue)
         }
 
         if (Data.LogicalType == 1) {
@@ -337,7 +343,14 @@ OnCompare(tableItem, cmd, index) {
 
     if (Data.SaveToggle) {
         SaveValue := result ? Data.TrueValue : Data.FalseValue
-        VariableMap[Data.SaveName] := SaveValue
+        if (Data.IsGlobal) {
+            MySetGlobalVariable(Data.SaveName, SaveValue, Data.IsIgnoreExist)
+        }
+        else {
+            LocalVariableMap := tableItem.VariableMapArr[index]
+            if (!Data.IsIgnoreExist || !LocalVariableMap.Has(Data.SaveName))
+                LocalVariableMap[Data.SaveName] := SaveValue
+        }
     }
 
     MacroType := tableItem.MacroTypeArr[index]
@@ -524,7 +537,7 @@ OnVariable(tableItem, cmd, index) {
         if (!Data.ToggleArr[A_Index])
             continue
         VariableName := Data.VariableArr[A_Index]
-        if (Data.OperaTypeArr[A_Index] == 3) {  ;删除
+        if (Data.OperaTypeArr[A_Index] == 4) {  ;删除
             if (Data.IsGlobal) {
                 MyDelGlobalVariable(VariableName)
             }
@@ -535,17 +548,20 @@ OnVariable(tableItem, cmd, index) {
         }
 
         Value := 0
-        if (Data.OperaTypeArr[A_Index] == 1) {   ;赋值
-            hasValue := TryGetVariableValue(&Value, tableItem, index, data.CopyVariableArr[A_Index])
+        if (Data.OperaTypeArr[A_Index] == 1) {   ;数值
+            hasValue := TryGetVariableValue(&Value, tableItem, index, Data.CopyVariableArr[A_Index])
             if (!hasValue)
                 return
         }
         if (Data.OperaTypeArr[A_Index] == 2) {  ;随机
-            hasMin := TryGetVariableValue(&minValue, tableItem, index, data.MinVariableArr[A_Index])
-            hasMax := TryGetVariableValue(&maxValue, tableItem, index, data.MaxVariableArr[A_Index])
+            hasMin := TryGetVariableValue(&minValue, tableItem, index, Data.MinVariableArr[A_Index])
+            hasMax := TryGetVariableValue(&maxValue, tableItem, index, Data.MaxVariableArr[A_Index])
             if (!hasMin || !hasMax)
                 return
             Value := Random(minValue, maxValue)
+        }
+        if (Data.OperaTypeArr[A_Index] == 3) {  ;字符
+            Value := Data.CopyVariableArr[A_Index]
         }
 
         if (Data.IsGlobal) {
@@ -639,19 +655,21 @@ OnExVariableOnce(tableItem, index, Data, isFinally) {
 OnOperation(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
     Data := GetMacroCMDData(OperationFile, paramArr[2])
-    VariableMap := tableItem.VariableMapArr[index]
     loop 4 {
-        if (!Data.ToggleArr[A_Index] || Data.NameArr[A_Index] == "空")
+        if (!Data.ToggleArr[A_Index])
             continue
         Name := Data.NameArr[A_Index]
         SymbolArr := Data.SymbolGroups[A_Index]
         ValueArr := Data.ValueGroups[A_Index]
-        Value := GetVariableOperationResult(VariableMap, Name, SymbolArr, ValueArr)
-        if (Data.UpdateTypeArr[A_Index] == 1) {
-            VariableMap[Name] := Value
+        Value := GetVariableOperationResult(tableItem, index, Name, SymbolArr, ValueArr)
+
+        if (Data.IsGlobal) {
+            MySetGlobalVariable(Data.UpdateNameArr[A_Index], Value, Data.IsIgnoreExist)
         }
         else {
-            VariableMap[Data.UpdateNameArr[A_Index]] := Value
+            LocalVariableMap := tableItem.VariableMapArr[index]
+            if (!Data.IsIgnoreExist || !LocalVariableMap.Has(Data.UpdateNameArr[A_Index]))
+                LocalVariableMap[Data.UpdateNameArr[A_Index]] := Value
         }
     }
 }
@@ -858,7 +876,11 @@ OnToolTextFilterSelectImage(*) {
     if (path == "")
         return
     ocr := ToolCheckInfo.OCRTypeCtrl.Value == 1 ? MyChineseOcr : MyEnglishOcr
-    result := ocr.ocr_from_file(path)
+    param := RapidOcr.OcrParam()
+    param.boxThresh := 0.1       ; 降低二值化阈值，避免漏检小字符
+    param.boxScoreThresh := 0.3  ; 降低置信度阈值，保留更多候选框
+    param.padding := 10          ; 减少检测框扩展边距，避免合并相邻字符
+    result := ocr.ocr_from_file(path, param)
     ToolCheckInfo.ToolTextCtrl.Value := result
     A_Clipboard := result
 }
@@ -884,7 +906,11 @@ OnToolTextCheckScreenShot() {
 
         SaveClipToBitmap(filePath)
         ocr := ToolCheckInfo.OCRTypeCtrl.Value == 1 ? MyChineseOcr : MyEnglishOcr
-        result := ocr.ocr_from_file(filePath)
+        param := RapidOcr.OcrParam()
+        param.boxThresh := 0.1       ; 降低二值化阈值，避免漏检小字符
+        param.boxScoreThresh := 0.3  ; 降低置信度阈值，保留更多候选框
+        param.padding := 10          ; 减少检测框扩展边距，避免合并相邻字符
+        result := ocr.ocr_from_file(filePath, param)
         ToolCheckInfo.ToolTextCtrl.Value := result
         A_Clipboard := result
         ; 停止监听

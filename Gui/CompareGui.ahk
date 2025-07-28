@@ -11,6 +11,8 @@ class CompareGui {
         this.MacroGui := ""
 
         this.Data := ""
+        this.IsGlobalCon := ""
+        this.IsIgnoreExistCon := ""
         this.ToggleConArr := []
         this.NameConArr := []
         this.CompareTypeConArr := []
@@ -60,12 +62,22 @@ class CompareGui {
 
         PosX := 10
         PosY += 30
+        this.IsGlobalCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 110), "结果变量选项：")
+
+        PosX += 115
+        this.IsGlobalCon := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 90), "全局变量")
+
+        PosX += 120
+        this.IsIgnoreExistCon := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 150), "变量存在忽略操作")
+
+        PosX := 10
+        PosY += 30
         MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 80, 30), "逻辑关系：")
         this.LogicalTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 85, PosY - 3, 60), ["且", "或"])
 
         PosY += 30
         PosX := 10
-        MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "开关  选择/输入                    选择/输入")
+        MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "开关  选择/输入                       选择/输入")
 
         PosY += 20
         PosX := 15
@@ -73,14 +85,14 @@ class CompareGui {
         this.ToggleConArr.Push(con)
         con.Value := 1
 
-        con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 35, PosY - 3, 100), [])
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 35, PosY - 3, 120), [])
         this.NameConArr.Push(con)
 
-        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 140, PosY - 3, 80), ["大于", "大于等于", "等于", "小于等于",
-            "小于"])
+        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 160, PosY - 3, 80), ["大于", "大于等于", "等于", "小于等于",
+            "小于", "字符包含"])
         con.Value := 1
         this.CompareTypeConArr.Push(con)
-        con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 225, PosY - 3, 100), [])
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 245, PosY - 3, 120), [])
         this.VariableConArr.Push(con)
 
         PosY += 35
@@ -89,14 +101,14 @@ class CompareGui {
         this.ToggleConArr.Push(con)
         con.Value := 1
 
-        con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 35, PosY - 3, 100), [])
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 35, PosY - 3, 120), [])
         this.NameConArr.Push(con)
 
-        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 140, PosY - 3, 80), ["大于", "大于等于", "等于", "小于等于",
-            "小于"])
+        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 160, PosY - 3, 80), ["大于", "大于等于", "等于", "小于等于",
+            "小于", "字符包含"])
         con.Value := 1
         this.CompareTypeConArr.Push(con)
-        con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 225, PosY - 3, 100), [])
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 245, PosY - 3, 120), [])
         this.VariableConArr.Push(con)
 
         PosY += 35
@@ -105,14 +117,14 @@ class CompareGui {
         this.ToggleConArr.Push(con)
         con.Value := 1
 
-        con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 35, PosY - 3, 100), [])
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 35, PosY - 3, 120), [])
         this.NameConArr.Push(con)
 
-        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 140, PosY - 3, 80), ["大于", "大于等于", "等于", "小于等于",
-            "小于"])
+        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 160, PosY - 3, 80), ["大于", "大于等于", "等于", "小于等于",
+            "小于", "字符包含"])
         con.Value := 1
         this.CompareTypeConArr.Push(con)
-        con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 225, PosY - 3, 100), [])
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 245, PosY - 3, 120), [])
         this.VariableConArr.Push(con)
 
         PosY += 35
@@ -121,14 +133,14 @@ class CompareGui {
         this.ToggleConArr.Push(con)
         con.Value := 1
 
-        con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 35, PosY - 3, 100), [])
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 35, PosY - 3, 120), [])
         this.NameConArr.Push(con)
 
-        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 140, PosY - 3, 80), ["大于", "大于等于", "等于", "小于等于",
-            "小于"])
+        con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 160, PosY - 3, 80), ["大于", "大于等于", "等于", "小于等于",
+            "小于", "字符包含"])
         con.Value := 1
         this.CompareTypeConArr.Push(con)
-        con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 225, PosY - 3, 100), [])
+        con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 245, PosY - 3, 120), [])
         this.VariableConArr.Push(con)
 
         PosY += 30
@@ -197,6 +209,8 @@ class CompareGui {
         this.TrueValueCon.Value := this.Data.TrueValue
         this.FalseValueCon.Value := this.Data.FalseValue
         this.LogicalTypeCon.Value := this.Data.LogicalType
+        this.IsGlobalCon.Value := this.Data.IsGlobal
+        this.IsIgnoreExistCon.Value := this.Data.IsIgnoreExist
         loop 4 {
             this.ToggleConArr[A_Index].Value := this.Data.ToggleArr[A_Index]
             this.NameConArr[A_Index].Delete()
@@ -323,6 +337,8 @@ class CompareGui {
         this.Data.TrueValue := this.TrueValueCon.Value
         this.Data.FalseValue := this.FalseValueCon.Value
         this.Data.LogicalType := this.LogicalTypeCon.Value
+        this.Data.IsGlobal := this.IsGlobalCon.Value
+        this.Data.IsIgnoreExist := this.IsIgnoreExistCon.Value
         loop 4 {
             this.Data.ToggleArr[A_Index] := this.ToggleConArr[A_Index].Value
             this.Data.NameArr[A_Index] := this.NameConArr[A_Index].Text

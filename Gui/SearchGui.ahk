@@ -28,7 +28,7 @@ class SearchGui {
         this.FoundCommandStrCon := ""
         this.UnFoundCommandStrCon := ""
         this.SearchTypeCon := ""
-        this.AutoTypeCon := ""
+        this.MouseActionTypeCon := ""
         this.SpeedCon := ""
         this.MacroGui := ""
     }
@@ -138,9 +138,9 @@ class SearchGui {
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "鼠标动作:")
         PosX += 75
-        this.AutoTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} Center", PosX, PosY - 5, 130), ["无动作",
+        this.MouseActionTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} Center", PosX, PosY - 5, 130), ["无动作",
             "移动至目标", "移动至目标点击"])
-        this.AutoTypeCon.Value := 1
+        this.MouseActionTypeCon.Value := 1
         PosY += 30
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 120), "移动速度(0~100):")
@@ -221,7 +221,7 @@ class SearchGui {
         this.EndPosYCon.Value := this.Data.EndPosY
         this.SearchCountCon.Value := this.Data.SearchCount
         this.SearchIntervalCon.Value := this.Data.SearchInterval
-        this.AutoTypeCon.Value := this.Data.AutoType
+        this.MouseActionTypeCon.Value := this.Data.MouseActionType
         this.SpeedCon.Value := this.Data.Speed
         this.ClickCountCon.Value := this.Data.ClickCount
         this.FoundCommandStrCon.Value := this.Data.TrueCommandStr
@@ -528,7 +528,7 @@ class SearchGui {
         data.EndPosY := this.EndPosYCon.Value
         data.SearchCount := this.SearchCountCon.Value
         data.SearchInterval := this.SearchIntervalCon.Value
-        data.AutoType := this.AutoTypeCon.Value
+        data.MouseActionType := this.MouseActionTypeCon.Value
         data.ClickCount := this.ClickCountCon.Value
         data.Speed := this.SpeedCon.Value
         data.TrueCommandStr := this.FoundCommandStrCon.Value

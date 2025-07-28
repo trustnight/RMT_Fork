@@ -178,13 +178,13 @@ class ExVariableGui {
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "每次间隔:")
         this.SearchIntervalCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX + 75, PosY - 5, 50))
 
-        PosY += 50
+        PosY += 40
         PosX := 250
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{} Center", PosX, PosY, 100, 40), "确定")
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
 
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 600, 380))
+        MyGui.Show(Format("w{} h{}", 600, 400))
     }
 
     Init(cmd) {

@@ -25,12 +25,14 @@ class SearchProGui {
         this.HexColorCon := ""
         this.HexColorTipCon := ""
         this.TextCon := ""
+        this.TextTipCon := ""
+        this.TextTypeCon := ""
         this.SearchCountCon := ""
         this.SearchIntervalCon := ""
         this.FoundCommandStrCon := ""
         this.UnFoundCommandStrCon := ""
         this.SearchTypeCon := ""
-        this.AutoTypeCon := ""
+        this.MouseActionTypeCon := ""
         this.SpeedCon := ""
         this.ResultToggleCon := ""
         this.ResultSaveNameCon := ""
@@ -151,9 +153,9 @@ class SearchProGui {
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "鼠标动作:")
         PosX += 75
-        this.AutoTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} Center", PosX, PosY - 5, 130), ["无动作",
+        this.MouseActionTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} Center", PosX, PosY - 5, 130), ["无动作",
             "移动至目标", "移动至目标点击"])
-        this.AutoTypeCon.Value := 1
+        this.MouseActionTypeCon.Value := 1
         PosY += 30
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 120), "移动速度(0~100):")
@@ -194,7 +196,12 @@ class SearchProGui {
         PosX := 330
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 40), "文本:")
         PosX += 40
-        this.TextCon := MyGui.Add("Edit", Format("x{} y{} w{} h{} Center", PosX, PosY - 3, 150, 20), "检索文本")
+        this.TextCon := MyGui.Add("Edit", Format("x{} y{} w{} h{} Center", PosX, PosY - 3, 100, 20), "检索文本")
+        PosX += 110
+        this.TextTipCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 40), "类型:")
+        PosX += 40
+        this.TextTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} Center", PosX, PosY - 3, 80), ["文本字符",
+            "文本变量"])
         PosY += 35
         TempPosY := PosY
         PosX := 10
@@ -261,13 +268,14 @@ class SearchProGui {
         this.ImageCon.Value := this.Data.SearchImagePath
         this.HexColorCon.Value := this.Data.SearchColor
         this.TextCon.Value := this.Data.SearchText
+        this.TextTypeCon.Value := this.Data.SearchTextType
         this.StartPosXCon.Value := this.Data.StartPosX
         this.StartPosYCon.Value := this.Data.StartPosY
         this.EndPosXCon.Value := this.Data.EndPosX
         this.EndPosYCon.Value := this.Data.EndPosY
         this.SearchCountCon.Value := this.Data.SearchCount
         this.SearchIntervalCon.Value := this.Data.SearchInterval
-        this.AutoTypeCon.Value := this.Data.AutoType
+        this.MouseActionTypeCon.Value := this.Data.MouseActionType
         this.SpeedCon.Value := this.Data.Speed
         this.ClickCountCon.Value := this.Data.ClickCount
         this.FoundCommandStrCon.Value := this.Data.TrueCommandStr
@@ -467,6 +475,8 @@ class SearchProGui {
         }
 
         this.TextCon.Enabled := isText
+        this.TextTipCon.Enabled := isText
+        this.TextTypeCon.Enabled := isText
         this.MousePosCon.Focus()
     }
 
@@ -583,13 +593,14 @@ class SearchProGui {
         data.SearchType := this.SearchTypeCon.Value
         data.SearchColor := this.HexColorCon.Value
         data.SearchText := this.TextCon.Value
+        data.SearchTextType := this.TextTypeCon.Value
         data.StartPosX := this.StartPosXCon.Value
         data.StartPosY := this.StartPosYCon.Value
         data.EndPosX := this.EndPosXCon.Value
         data.EndPosY := this.EndPosYCon.Value
         data.SearchCount := this.SearchCountCon.Value
         data.SearchInterval := this.SearchIntervalCon.Value
-        data.AutoType := this.AutoTypeCon.Value
+        data.MouseActionType := this.MouseActionTypeCon.Value
         data.ClickCount := this.ClickCountCon.Value
         data.Speed := this.SpeedCon.Value
         data.TrueCommandStr := this.FoundCommandStrCon.Value

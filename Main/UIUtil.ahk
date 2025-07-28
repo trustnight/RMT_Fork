@@ -476,9 +476,16 @@ AddSettingUI(index) {
     MySoftData.MutiThreadCtrl := MyGui.Add("CheckBox", Format("x{} y{}", posX + 635, posY), "指令串联多线程")
     MySoftData.MutiThreadCtrl.Value := MySoftData.MutiThread
 
-    posY += 30
+    posY += 40
     MySoftData.NoVariableTipCtrl := MyGui.Add("CheckBox", Format("x{} y{}", posX + 25, posY), "无变量提醒")
     MySoftData.NoVariableTipCtrl.Value := MySoftData.NoVariableTip
+
+    posY += 50
+    MyGui.Add("GroupBox", Format("x{} y{} w870 h110", posX + 10, posY), "下拉框选项")
+    posY += 30
+    MyGui.Add("Text", Format("x{} y{} w110 Right", posX + 25, posY), "软件截图方式：")
+    MySoftData.ScreenShotTypeCtrl := MyGui.Add("DropDownList", Format("x{} y{} w100", posX + 140, posY - 5), ["微软截图", "RMT截图"])
+    MySoftData.ScreenShotTypeCtrl.Value := MySoftData.ScreenShotType
 
     tableItem := MySoftData.TableInfo[index]
     tableItem.UnderPosY := posY

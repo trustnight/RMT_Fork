@@ -273,6 +273,7 @@ LoadSetting() {
     MySoftData.MutiThread := IniRead(IniFile, IniSection, "MutiThread", false)
     MySoftData.MutiThreadNum := IniRead(IniFile, IniSection, "MutiThreadNum", 3)
     MySoftData.NoVariableTip := IniRead(IniFile, IniSection, "NoVariableTip", true)
+    MySoftData.ScreenShotType := IniRead(IniFile, IniSection, "ScreenShotType", 1)
     MySoftData.AgreeAgreement := IniRead(IniFile, IniSection, "AgreeAgreement", false)
     MySoftData.WinPosX := IniRead(IniFile, IniSection, "WinPosX", 0)
     MySoftData.WinPosY := IniRead(IniFile, IniSection, "WinPosY", 0)
@@ -1076,7 +1077,7 @@ GetSelectVariableObjArr(macro) {
             saveStr := IniRead(OperationFile, IniSection, paramArr[2], "")
             Data := JSON.parse(saveStr, , false)
             loop 4 {
-                if (Data.ToggleArr[A_Index] && Data.UpdateTypeArr[A_Index] == 2)
+                if (Data.ToggleArr[A_Index])
                     VariableMap[Data.UpdateNameArr[A_Index]] := true
             }
         }
@@ -1142,24 +1143,27 @@ GetOperationResult(BaseValue, SymbolArr, ValueArr) {
     return sum
 }
 
-GetVariableOperationResult(VariableMap, Name, SymbolArr, ValueArr) {
-    sum := VariableMap[Name]
+GetVariableOperationResult(tableItem, tableIndex, Name, SymbolArr, ValueArr) {
+    hasValue := TryGetVariableValue(&sum, tableItem, tableIndex, Name)
+    if (!hasValue)
+        return
+
     for index, Symbol in SymbolArr {
-        Value := ValueArr[index]
-        if (SubStr(ValueArr[index], 1, 1) == "&") {
-            ValueName := SubStr(ValueArr[index], 2)
-            Value := VariableMap[ValueName]
-        }
+        Variable := ValueArr[index]
+        hasValue := TryGetVariableValue(&Value, tableItem, tableIndex, Variable)
+        if (!hasValue)
+            return
+
         if (Symbol == "+")
-            sum += Number(Value)
+            sum += Value
         if (Symbol == "-")
-            sum -= Number(Value)
+            sum -= Value
         if (Symbol == "*")
-            sum *= Number(Value)
+            sum *= Value
         if (Symbol == "/")
-            sum /= Number(Value)
+            sum /= Value
         if (Symbol == "^")
-            sum ^= Number(Value)
+            sum ^= Value
         if (Symbol == "..")
             sum .= Value
     }
@@ -1255,4 +1259,13 @@ TryGetVariableValue(&Value, tableItem, index, variableName) {
 ShowNoVariableTip(variableName) {
     if (MySoftData.NoVariableTip)
         MsgBox("当前环境不存在变量 " variableName)
+}
+
+ScreenShot(X1, Y1, X2, Y2, FileName) {
+    width := X2 - X1
+    height := Y2 - Y1
+    pBitmap := Gdip_BitmapFromScreen(X1 "|" Y1 "|" width "|" height)
+    Gdip_SaveBitmapToFile(pBitmap, FileName)
+    ; 释放位图资源
+    Gdip_DisposeImage(pBitmap)
 }
