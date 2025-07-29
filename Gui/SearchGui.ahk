@@ -372,11 +372,7 @@ class SearchGui {
         {
             ; 获取当前日期和时间，用于生成唯一的文件名
             CurrentDateTime := FormatTime(, "HHmmss")
-            filePath := A_WorkingDir "\Images\" CurrentDateTime ".png"
-            if (!DirExist(A_WorkingDir "\Images")) {
-                DirCreate(A_WorkingDir "\Images")
-            }
-
+            filePath := A_WorkingDir "\Images\ScreenShot\" CurrentDateTime ".png"
             ; MyWinClip.SaveBitmap(filePath, "png")
             SaveClipToBitmap(filePath)
             this.ImageCon.Value := filePath
@@ -388,10 +384,7 @@ class SearchGui {
 
     OnScreenShotGetArea(x1, y1, x2, y2) {
         CurrentDateTime := FormatTime(, "HHmmss")
-        filePath := A_WorkingDir "\Images\" CurrentDateTime ".png"
-        if (!DirExist(A_WorkingDir "\Images")) {
-            DirCreate(A_WorkingDir "\Images")
-        }
+        filePath := A_WorkingDir "\Images\ScreenShot\" CurrentDateTime ".png"
 
         ScreenShot(x1, y1, x2, y2, filePath)
         this.ImageCon.Value := filePath

@@ -70,6 +70,7 @@ OnSaveSetting(*) {
     IniWrite(MySoftData.MutiThreadCtrl.Value, IniFile, IniSection, "MutiThread")
     IniWrite(MySoftData.NoVariableTipCtrl.Value, IniFile, IniSection, "NoVariableTip")
     IniWrite(MySoftData.ScreenShotTypeCtrl.Value, IniFile, IniSection, "ScreenShotType")
+    IniWrite(MySoftData.SearchImageTypeCtrl.Value, IniFile, IniSection, "SearchImageType")
     IniWrite(ToolCheckInfo.ToolCheckHotKeyCtrl.Value, IniFile, IniSection, "ToolCheckHotKey")
     IniWrite(ToolCheckInfo.ToolRecordMacroHotKeyCtrl.Value, IniFile, IniSection, "RecordMacroHotKey")
     IniWrite(ToolCheckInfo.ToolTextFilterHotKeyCtrl.Value, IniFile, IniSection, "ToolTextFilterHotKey")
@@ -430,6 +431,10 @@ InitFilePath() {
         DirCreate(A_WorkingDir "\Images\Soft")
     }
 
+    if (!DirExist(A_WorkingDir "\Images\ScreenShot")) {
+        DirCreate(A_WorkingDir "\Images\ScreenShot")
+    }
+
     FileInstall("Images\Soft\WeiXin.png", "Images\Soft\WeiXin.png", 1)
     FileInstall("Images\Soft\ZhiFuBao.png", "Images\Soft\ZhiFuBao.png", 1)
     FileInstall("Images\Soft\rabit.ico", "Images\Soft\rabit.ico", 1)
@@ -674,10 +679,6 @@ ScreenShot(X1, Y1, X2, Y2, FileName) {
 }
 
 OnToolTextFilterScreenShot(*) {
-    if (!DirExist(A_WorkingDir "\Images")) {
-        DirCreate(A_WorkingDir "\Images")
-    }
-
     if (MySoftData.ScreenShotTypeCtrl.Value == 1) {
         A_Clipboard := ""  ; 清空剪贴板
         Run("ms-screenclip:")
@@ -689,7 +690,7 @@ OnToolTextFilterScreenShot(*) {
 }
 
 OnToolTextFilterGetArea(x1, y1, x2, y2) {
-    filePath := A_WorkingDir "\Images\TextFilter.png"
+    filePath := A_WorkingDir "\Images\ScreenShot\TextFilter.png"
     ScreenShot(x1, y1, x2, y2, filePath)
     ocr := ToolCheckInfo.OCRTypeCtrl.Value == 1 ? MyChineseOcr : MyEnglishOcr
     param := RapidOcr.OcrParam()
@@ -705,7 +706,7 @@ OnToolTextCheckScreenShot() {
     ; 如果剪贴板中有图像
     if DllCall("IsClipboardFormatAvailable", "uint", 8)  ; 8 是 CF_BITMAP 格式
     {
-        filePath := A_WorkingDir "\Images\TextFilter.png"
+        filePath := A_WorkingDir "\Images\ScreenShot\TextFilter.png"
         SaveClipToBitmap(filePath)
         ocr := ToolCheckInfo.OCRTypeCtrl.Value == 1 ? MyChineseOcr : MyEnglishOcr
         param := RapidOcr.OcrParam()

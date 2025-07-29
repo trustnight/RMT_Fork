@@ -274,6 +274,7 @@ LoadSetting() {
     MySoftData.MutiThreadNum := IniRead(IniFile, IniSection, "MutiThreadNum", 3)
     MySoftData.NoVariableTip := IniRead(IniFile, IniSection, "NoVariableTip", true)
     MySoftData.ScreenShotType := IniRead(IniFile, IniSection, "ScreenShotType", 1)
+    MySoftData.SearchImageType := IniRead(IniFile, IniSection, "SearchImageType", 1)
     MySoftData.AgreeAgreement := IniRead(IniFile, IniSection, "AgreeAgreement", false)
     MySoftData.WinPosX := IniRead(IniFile, IniSection, "WinPosX", 0)
     MySoftData.WinPosY := IniRead(IniFile, IniSection, "WinPosY", 0)
