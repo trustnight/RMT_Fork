@@ -490,6 +490,7 @@ AddSettingUI(index) {
     MyGui.Add("Text", Format("x{} y{} w110 Right", posX + 325, posY), "软件识图方式：")
     MySoftData.SearchImageTypeCtrl := MyGui.Add("DropDownList", Format("x{} y{} w100", posX + 440, posY - 5), ["OpenCV", "RMT识图"])
     MySoftData.SearchImageTypeCtrl.Value := MySoftData.SearchImageType
+    MySoftData.SearchImageTypeCtrl.Enabled := A_PtrSize == 8
 
     tableItem := MySoftData.TableInfo[index]
     tableItem.UnderPosY := posY

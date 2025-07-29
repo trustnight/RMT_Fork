@@ -274,7 +274,7 @@ LoadSetting() {
     MySoftData.MutiThreadNum := IniRead(IniFile, IniSection, "MutiThreadNum", 3)
     MySoftData.NoVariableTip := IniRead(IniFile, IniSection, "NoVariableTip", true)
     MySoftData.ScreenShotType := IniRead(IniFile, IniSection, "ScreenShotType", 1)
-    MySoftData.SearchImageType := IniRead(IniFile, IniSection, "SearchImageType", 1)
+    MySoftData.SearchImageType := IniRead(IniFile, IniSection, "SearchImageType", GetDefaultSearchImageType())
     MySoftData.AgreeAgreement := IniRead(IniFile, IniSection, "AgreeAgreement", false)
     MySoftData.WinPosX := IniRead(IniFile, IniSection, "WinPosX", 0)
     MySoftData.WinPosY := IniRead(IniFile, IniSection, "WinPosY", 0)
@@ -284,6 +284,13 @@ LoadSetting() {
     loop MySoftData.TabNameArr.Length {
         ReadTableItemInfo(A_Index)
     }
+}
+
+GetDefaultSearchImageType() {
+    if (A_PtrSize == 8)     ;64位
+        return 1
+    else 
+        return 2            ;32位
 }
 
 ReadTableItemInfo(index) {
@@ -840,17 +847,31 @@ GetScreenTextObjArr(X1, Y1, X2, Y2, mode) {
     ; 锁定位图以获取位图数据
     Gdip_LockBits(pBitmap, 0, 0, Width, Height, &Stride, &Scan0, &BitmapData)
 
-    ; 创建 BITMAP_DATA 结构
-    BITMAP_DATA := Buffer(24)  ; BITMAP_DATA 结构大小为 24 字节
-    NumPut("ptr", Scan0, BITMAP_DATA, 0)  ; bits
-    NumPut("uint", Stride, BITMAP_DATA, 8)  ; pitch
-    NumPut("int", Width, BITMAP_DATA, 12)  ; width
-    NumPut("int", Height, BITMAP_DATA, 16)  ; height
-    NumPut("int", 4, BITMAP_DATA, 20)  ; bytespixel (假设是 32 位图像)
+    if (A_PtrSize == 8) {
+        ; 64位系统结构
+        BITMAP_DATA := Buffer(24)  ; 64位下结构总大小为24字节
+        NumPut("ptr", Scan0, BITMAP_DATA, 0)   ; bits (8字节)
+        NumPut("uint", Stride, BITMAP_DATA, 8)  ; pitch (4字节)
+        NumPut("int", Width, BITMAP_DATA, 12)   ; width (4字节)
+        NumPut("int", Height, BITMAP_DATA, 16)  ; height (4字节)
+        NumPut("int", 4, BITMAP_DATA, 20)      ; bytespixel (4字节)
+    } else {
+        ; 32位系统结构
+        BITMAP_DATA := Buffer(20)  ; 32位下结构总大小为20字节
+        NumPut("ptr", Scan0, BITMAP_DATA, 0)   ; bits (4字节)
+        NumPut("uint", Stride, BITMAP_DATA, 4)  ; pitch (4字节)
+        NumPut("int", Width, BITMAP_DATA, 8)    ; width (4字节)
+        NumPut("int", Height, BITMAP_DATA, 12)  ; height (4字节)
+        NumPut("int", 4, BITMAP_DATA, 16)       ; bytespixel (4字节)
+    }
 
     ; 调用 ocr_from_bitmapdata 方法
     ocr := mode == 1 ? MyChineseOcr : MyEnglishOcr
-    result := ocr.ocr_from_bitmapdata(BITMAP_DATA, , true)
+    param := RapidOcr.OcrParam()
+    param.boxThresh := 0.1       ; 降低二值化阈值，避免漏检小字符
+    param.boxScoreThresh := 0.3  ; 降低置信度阈值，保留更多候选框
+    param.padding := 10          ; 减少检测框扩展边距，避免合并相邻字符
+    result := ocr.ocr_from_bitmapdata(BITMAP_DATA, param, true)
 
     ; 解锁位图
     Gdip_UnlockBits(pBitmap, &BitmapData)
