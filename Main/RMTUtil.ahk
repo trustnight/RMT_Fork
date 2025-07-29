@@ -663,3 +663,107 @@ OnFinishRecordMacro() {
     }
     A_Clipboard := macro
 }
+
+ScreenShot(X1, Y1, X2, Y2, FileName) {
+    width := X2 - X1
+    height := Y2 - Y1
+    pBitmap := Gdip_BitmapFromScreen(X1 "|" Y1 "|" width "|" height)
+    Gdip_SaveBitmapToFile(pBitmap, FileName)
+    ; 释放位图资源
+    Gdip_DisposeImage(pBitmap)
+}
+
+OnToolTextFilterScreenShot(*) {
+    if (!DirExist(A_WorkingDir "\Images")) {
+        DirCreate(A_WorkingDir "\Images")
+    }
+
+    if (MySoftData.ScreenShotTypeCtrl.Value == 1) {
+        A_Clipboard := ""  ; 清空剪贴板
+        Run("ms-screenclip:")
+        SetTimer(OnToolTextCheckScreenShot, 500)  ; 每 500 毫秒检查一次剪贴板
+    }
+    else {
+        EnableSelectAerea(OnToolTextFilterGetArea)
+    }
+}
+
+OnToolTextFilterGetArea(x1, y1, x2, y2) {
+    filePath := A_WorkingDir "\Images\TextFilter.png"
+    ScreenShot(x1, y1, x2, y2, filePath)
+    ocr := ToolCheckInfo.OCRTypeCtrl.Value == 1 ? MyChineseOcr : MyEnglishOcr
+    param := RapidOcr.OcrParam()
+    param.boxThresh := 0.1       ; 降低二值化阈值，避免漏检小字符
+    param.boxScoreThresh := 0.3  ; 降低置信度阈值，保留更多候选框
+    param.padding := 10          ; 减少检测框扩展边距，避免合并相邻字符
+    result := ocr.ocr_from_file(filePath, param)
+    ToolCheckInfo.ToolTextCtrl.Value := result
+    A_Clipboard := result
+}
+
+OnToolTextCheckScreenShot() {
+    ; 如果剪贴板中有图像
+    if DllCall("IsClipboardFormatAvailable", "uint", 8)  ; 8 是 CF_BITMAP 格式
+    {
+        filePath := A_WorkingDir "\Images\TextFilter.png"
+        SaveClipToBitmap(filePath)
+        ocr := ToolCheckInfo.OCRTypeCtrl.Value == 1 ? MyChineseOcr : MyEnglishOcr
+        param := RapidOcr.OcrParam()
+        param.boxThresh := 0.1       ; 降低二值化阈值，避免漏检小字符
+        param.boxScoreThresh := 0.3  ; 降低置信度阈值，保留更多候选框
+        param.padding := 10          ; 减少检测框扩展边距，避免合并相邻字符
+        result := ocr.ocr_from_file(filePath, param)
+        ToolCheckInfo.ToolTextCtrl.Value := result
+        A_Clipboard := result
+        ; 停止监听
+        SetTimer(, 0)
+    }
+}
+
+EnableSelectAerea(action) {
+    Hotkey("LButton", (*) => SelectArea(action), "On")
+    Hotkey("LButton Up", (*) => DisSelectArea(action), "On")
+}
+
+DisSelectArea(action) {
+    Hotkey("LButton", (*) => SelectArea(action), "Off")
+    Hotkey("LButton Up", (*) => DisSelectArea(action), "Off")
+}
+
+SelectArea(action) {
+    ; 获取起始点坐标
+    startX := startY := endX := endY := 0
+    CoordMode("Mouse", "Screen")
+    MouseGetPos(&startX, &startY)
+
+    ; 创建 GUI 用于绘制矩形框
+    MyGui := Gui("+ToolWindow -Caption +AlwaysOnTop -DPIScale")
+    MyGui.BackColor := "Red"
+    WinSetTransColor(" 150", MyGui)
+    MyGui.Opt("+LastFound")
+    GuiHwnd := WinExist()
+
+    ; 显示初始 GUI
+    MyGui.Show("NA x" startX " y" startY " w1 h1")
+
+    ; 跟踪鼠标移动
+    while GetKeyState("LButton", "P") {
+        CoordMode("Mouse", "Screen")
+        MouseGetPos(&endX, &endY)
+        width := Abs(endX - startX)
+        height := Abs(endY - startY)
+        x := Min(startX, endX)
+        y := Min(startY, endY)
+
+        MyGui.Show("NA x" x " y" y " w" width " h" height)
+    }
+    ; 销毁 GUI
+    MyGui.Destroy()
+    ; 返回坐标
+
+    startX := Min(startX, endX)
+    startY := Min(startY, endY)
+    endX := Max(startX, endX)
+    endY := Max(startY, endY)
+    action(startX, startY, endX, endY)
+}

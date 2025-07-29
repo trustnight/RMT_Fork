@@ -1260,12 +1260,3 @@ ShowNoVariableTip(variableName) {
     if (MySoftData.NoVariableTip)
         MsgBox("当前环境不存在变量 " variableName)
 }
-
-ScreenShot(X1, Y1, X2, Y2, FileName) {
-    width := X2 - X1
-    height := Y2 - Y1
-    pBitmap := Gdip_BitmapFromScreen(X1 "|" Y1 "|" width "|" height)
-    Gdip_SaveBitmapToFile(pBitmap, FileName)
-    ; 释放位图资源
-    Gdip_DisposeImage(pBitmap)
-}

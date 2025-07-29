@@ -7,6 +7,8 @@ class SearchProGui {
         this.SureBtnAction := ""
         this.RemarkCon := ""
         this.PosAction := () => this.RefreshMouseInfo()
+        this.SetAreaAction := (x1, y1, x2, y2) => this.OnSetSearchArea(x1, y1, x2, y2)
+        this.CheckClipboardAction := () => this.CheckClipboard()
         this.SelectToggleCon := ""
         this.MacroEditGui := ""
         this.Data := ""
@@ -377,14 +379,14 @@ class SearchProGui {
         if (state) {
             SetTimer this.PosAction, 100
             Hotkey("!l", MacroAction, "On")
-            Hotkey("F1", (*) => this.EnableSelectAerea(), "On")
+            Hotkey("F1", (*) => this.OnF1(), "On")
             Hotkey("F2", (*) => this.SureColor(), "On")
             Hotkey("F3", (*) => this.OnScreenShotBtnClick(), "On")
         }
         else {
             SetTimer this.PosAction, 0
             Hotkey("!l", MacroAction, "Off")
-            Hotkey("F1", (*) => this.EnableSelectAerea(), "Off")
+            Hotkey("F1", (*) => this.OnF1(), "Off")
             Hotkey("F2", (*) => this.SureColor(), "Off")
             Hotkey("F3", (*) => this.OnScreenShotBtnClick(), "Off")
         }
@@ -421,10 +423,46 @@ class SearchProGui {
     }
 
     OnScreenShotBtnClick() {
-        A_Clipboard := ""  ; 清空剪贴板
-        Run("ms-screenclip:")
-        action := () => this.CheckClipboard()
-        SetTimer(action, 500)  ; 每 500 毫秒检查一次剪贴板
+        if (MySoftData.ScreenShotTypeCtrl.Value == 1) {
+            A_Clipboard := ""  ; 清空剪贴板
+            Run("ms-screenclip:")
+            SetTimer(this.CheckClipboardAction, 500)  ; 每 500 毫秒检查一次剪贴板
+        }
+        else {
+            EnableSelectAerea(this.OnScreenShotGetArea.Bind(this))
+        }
+    }
+
+    CheckClipboard() {
+        ; 如果剪贴板中有图像
+        if DllCall("IsClipboardFormatAvailable", "uint", 8)  ; 8 是 CF_BITMAP 格式
+        {
+            ; 获取当前日期和时间，用于生成唯一的文件名
+            CurrentDateTime := FormatTime(, "HHmmss")
+            filePath := A_WorkingDir "\Images\" CurrentDateTime ".png"
+            if (!DirExist(A_WorkingDir "\Images")) {
+                DirCreate(A_WorkingDir "\Images")
+            }
+
+            ; MyWinClip.SaveBitmap(filePath, "png")
+            SaveClipToBitmap(filePath)
+            this.ImageCon.Value := filePath
+            this.Data.SearchImagePath := filePath
+            ; 停止监听
+            SetTimer(, 0)
+        }
+    }
+
+    OnScreenShotGetArea(x1, y1, x2, y2) {
+        CurrentDateTime := FormatTime(, "HHmmss")
+        filePath := A_WorkingDir "\Images\" CurrentDateTime ".png"
+        if (!DirExist(A_WorkingDir "\Images")) {
+            DirCreate(A_WorkingDir "\Images")
+        }
+
+        ScreenShot(x1, y1, x2, y2, filePath)
+        this.ImageCon.Value := filePath
+        this.Data.SearchImagePath := filePath
     }
 
     OnSureFoundMacroBtnClick(CommandStr) {
@@ -498,58 +536,22 @@ class SearchProGui {
     OnClickSelectToggle() {
         state := this.SelectToggleCon.Value
         if (state == 1)
-            this.EnableSelectAerea()
+            EnableSelectAerea(this.SetAreaAction)
         else
-            this.DisSelectArea()
+            DisSelectArea(this.SetAreaAction)
     }
 
-    EnableSelectAerea() {
+    OnF1() {
         this.SelectToggleCon.Value := 1
-        Hotkey("LButton", (*) => this.SelectArea(), "On")
-        Hotkey("LButton Up", (*) => this.DisSelectArea(), "On")
+        EnableSelectAerea(this.SetAreaAction)
     }
 
-    DisSelectArea() {
+    OnSetSearchArea(x1, y1, x2, y2) {
         this.SelectToggleCon.Value := 0
-        Hotkey("LButton", (*) => this.SelectArea(), "Off")
-        Hotkey("LButton Up", (*) => this.DisSelectArea(), "Off")
-    }
-
-    SelectArea(*) {
-        ; 获取起始点坐标
-        startX := startY := endX := endY := 0
-        CoordMode("Mouse", "Screen")
-        MouseGetPos(&startX, &startY)
-
-        ; 创建 GUI 用于绘制矩形框
-        MyGui := Gui("+ToolWindow -Caption +AlwaysOnTop -DPIScale")
-        MyGui.BackColor := "Red"
-        WinSetTransColor(" 150", MyGui)
-        MyGui.Opt("+LastFound")
-        GuiHwnd := WinExist()
-
-        ; 显示初始 GUI
-        MyGui.Show("NA x" startX " y" startY " w1 h1")
-
-        ; 跟踪鼠标移动
-        while GetKeyState("LButton", "P") {
-            CoordMode("Mouse", "Screen")
-            MouseGetPos(&endX, &endY)
-            width := Abs(endX - startX)
-            height := Abs(endY - startY)
-            x := Min(startX, endX)
-            y := Min(startY, endY)
-
-            MyGui.Show("NA x" x " y" y " w" width " h" height)
-        }
-        ; 销毁 GUI
-        MyGui.Destroy()
-        ; 返回坐标
-
-        this.StartPosXCon.Value := Min(startX, endX)
-        this.StartPosYCon.Value := Min(startY, endY)
-        this.EndPosXCon.Value := Max(startX, endX)
-        this.EndPosYCon.Value := Max(startY, endY)
+        this.StartPosXCon.Value := x1
+        this.StartPosYCon.Value := y1
+        this.EndPosXCon.Value := x2
+        this.EndPosYCon.Value := y2
     }
 
     SureColor() {
@@ -564,26 +566,6 @@ class SearchProGui {
         this.HexColorTipCon.Visible := true
         this.HexColorTipCon.Opt(Format("+Background0x{}", this.HexColorCon.Value))
         this.HexColorTipCon.Redraw()
-    }
-
-    CheckClipboard(*) {
-        ; 如果剪贴板中有图像
-        if DllCall("IsClipboardFormatAvailable", "uint", 8)  ; 8 是 CF_BITMAP 格式
-        {
-            ; 获取当前日期和时间，用于生成唯一的文件名
-            CurrentDateTime := FormatTime(, "HHmmss")
-            filePath := A_WorkingDir "\Images\" CurrentDateTime ".png"
-            if (!DirExist(A_WorkingDir "\Images")) {
-                DirCreate(A_WorkingDir "\Images")
-            }
-
-            ; MyWinClip.SaveBitmap(filePath, "png")
-            SaveClipToBitmap(filePath)
-            this.ImageCon.Value := filePath
-            this.Data.SearchImagePath := filePath
-            ; 停止监听
-            SetTimer(, 0)
-        }
     }
 
     SaveSearchData() {

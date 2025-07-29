@@ -889,35 +889,6 @@ OnClearToolText(*) {
     ToolCheckInfo.ToolTextCtrl.Value := ""
 }
 
-OnToolTextFilterScreenShot(*) {
-    A_Clipboard := ""  ; 清空剪贴板
-    Run("ms-screenclip:")
-    SetTimer(OnToolTextCheckScreenShot, 500)  ; 每 500 毫秒检查一次剪贴板
-}
-
-OnToolTextCheckScreenShot() {
-    ; 如果剪贴板中有图像
-    if DllCall("IsClipboardFormatAvailable", "uint", 8)  ; 8 是 CF_BITMAP 格式
-    {
-        filePath := A_WorkingDir "\Images\TextFilter.png"
-        if (!DirExist(A_WorkingDir "\Images")) {
-            DirCreate(A_WorkingDir "\Images")
-        }
-
-        SaveClipToBitmap(filePath)
-        ocr := ToolCheckInfo.OCRTypeCtrl.Value == 1 ? MyChineseOcr : MyEnglishOcr
-        param := RapidOcr.OcrParam()
-        param.boxThresh := 0.1       ; 降低二值化阈值，避免漏检小字符
-        param.boxScoreThresh := 0.3  ; 降低置信度阈值，保留更多候选框
-        param.padding := 10          ; 减少检测框扩展边距，避免合并相邻字符
-        result := ocr.ocr_from_file(filePath, param)
-        ToolCheckInfo.ToolTextCtrl.Value := result
-        A_Clipboard := result
-        ; 停止监听
-        SetTimer(, 0)
-    }
-}
-
 OnShowWinChanged(*) {
     global MySoftData ; 访问全局变量
     MySoftData.IsExecuteShow := !MySoftData.IsExecuteShow

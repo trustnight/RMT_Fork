@@ -8,7 +8,8 @@ class ExVariableGui {
         this.SureBtnAction := ""
         this.MacroEditGui := ""
         this.RemarkCon := ""
-    
+        this.SetAreaAction := (x1, y1, x2, y2) => this.OnSetSearchArea(x1, y1, x2, y2)
+
         this.IsGlobalCon := ""
         this.IsIgnoreExistCon := ""
         this.ToggleConArr := []
@@ -89,7 +90,7 @@ class ExVariableGui {
         this.ExtractTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 345, PosY - 5, 80), ["屏幕",
             "剪切板"])
         this.ExtractTypeCon.Value := 1
-    
+
         PosX := 20
         PosY += 30
         this.IsGlobalCon := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 90), "全局变量")
@@ -218,11 +219,11 @@ class ExVariableGui {
         MacroAction := (*) => this.TriggerMacro()
         if (state) {
             Hotkey("!l", MacroAction, "On")
-            Hotkey("F1", (*) => this.EnableSelectAerea(), "On")
+            Hotkey("F1", (*) => this.OnF1(), "On")
         }
         else {
             Hotkey("!l", MacroAction, "Off")
-            Hotkey("F1", (*) => this.EnableSelectAerea(), "Off")
+            Hotkey("F1", (*) => this.OnF1(), "Off")
         }
     }
 
@@ -241,58 +242,22 @@ class ExVariableGui {
     OnClickSelectToggle() {
         state := this.SelectToggleCon.Value
         if (state == 1)
-            this.EnableSelectAerea()
+            EnableSelectAerea(this.SetAreaAction)
         else
-            this.DisSelectArea()
+            DisSelectArea(this.SetAreaAction)
     }
 
-    EnableSelectAerea() {
+    OnF1() {
         this.SelectToggleCon.Value := 1
-        Hotkey("LButton", (*) => this.SelectArea(), "On")
-        Hotkey("LButton Up", (*) => this.DisSelectArea(), "On")
+        EnableSelectAerea(this.SetAreaAction)
     }
 
-    DisSelectArea(*) {
+    OnSetSearchArea(x1, y1, x2, y2) {
         this.SelectToggleCon.Value := 0
-        Hotkey("LButton", (*) => this.SelectArea(), "Off")
-        Hotkey("LButton Up", (*) => this.DisSelectArea(), "Off")
-    }
-
-    SelectArea(*) {
-        ; 获取起始点坐标
-        startX := startY := endX := endY := 0
-        CoordMode("Mouse", "Screen")
-        MouseGetPos(&startX, &startY)
-
-        ; 创建 GUI 用于绘制矩形框
-        MyGui := Gui("+ToolWindow -Caption +AlwaysOnTop -DPIScale")
-        MyGui.BackColor := "Red"
-        WinSetTransColor(" 150", MyGui)
-        MyGui.Opt("+LastFound")
-        GuiHwnd := WinExist()
-
-        ; 显示初始 GUI
-        MyGui.Show("NA x" startX " y" startY " w1 h1")
-
-        ; 跟踪鼠标移动
-        while GetKeyState("LButton", "P") {
-            CoordMode("Mouse", "Screen")
-            MouseGetPos(&endX, &endY)
-            width := Abs(endX - startX)
-            height := Abs(endY - startY)
-            x := Min(startX, endX)
-            y := Min(startY, endY)
-
-            MyGui.Show("NA x" x " y" y " w" width " h" height)
-        }
-        ; 销毁 GUI
-        MyGui.Destroy()
-        ; 返回坐标
-
-        this.StartPosXCon.Value := Min(startX, endX)
-        this.StartPosYCon.Value := Min(startY, endY)
-        this.EndPosXCon.Value := Max(startX, endX)
-        this.EndPosYCon.Value := Max(startY, endY)
+        this.StartPosXCon.Value := x1
+        this.StartPosYCon.Value := y1
+        this.EndPosXCon.Value := x2
+        this.EndPosYCon.Value := y2
     }
 
     CheckIfValid() {
