@@ -1228,7 +1228,7 @@ GetMacroCMDData(fileName, serialStr) {
     return Data
 }
 
-TryGetVariableValue(&Value, tableItem, index, variableName) {
+TryGetVariableValue(&Value, tableItem, index, variableName, variTip := true) {
     if (IsNumber(variableName)) {
         Value := variableName
         return true
@@ -1253,7 +1253,8 @@ TryGetVariableValue(&Value, tableItem, index, variableName) {
         return true
     }
 
-    ShowNoVariableTip(variableName)
+    if (variTip)
+        ShowNoVariableTip(variableName)
     return false
 }
 

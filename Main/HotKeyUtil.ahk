@@ -321,20 +321,26 @@ OnCompare(tableItem, cmd, index) {
         if (!Data.ToggleArr[A_Index])
             continue
 
-        hasValue := TryGetVariableValue(&Value, tableItem, index, Data.NameArr[A_Index])
-        hasOtherValue := TryGetVariableValue(&OtherValue, tableItem, index, Data.VariableArr[A_Index])
-        if (!hasValue || !hasOtherValue) {
-            return
+        if (Data.CompareTypeArr[A_Index] == 7) {        ;变量是否存在
+            hasValue := TryGetVariableValue(&Value, tableItem, index, Data.NameArr[A_Index], false)
+            currentComparison := hasValue
         }
+        else{
+            hasValue := TryGetVariableValue(&Value, tableItem, index, Data.NameArr[A_Index])
+            hasOtherValue := TryGetVariableValue(&OtherValue, tableItem, index, Data.VariableArr[A_Index])
+            if (!hasValue || !hasOtherValue) {
+                return
+            }
 
-        currentComparison := false
-        switch Data.CompareTypeArr[A_Index] {
-            case 1: currentComparison := Value > OtherValue
-            case 2: currentComparison := Value >= OtherValue
-            case 3: currentComparison := Value == OtherValue
-            case 4: currentComparison := Value <= OtherValue
-            case 5: currentComparison := Value < OtherValue
-            case 6: currentComparison := CheckContainText(Value, OtherValue)
+            currentComparison := false
+            switch Data.CompareTypeArr[A_Index] {
+                case 1: currentComparison := Value > OtherValue
+                case 2: currentComparison := Value >= OtherValue
+                case 3: currentComparison := Value == OtherValue
+                case 4: currentComparison := Value <= OtherValue
+                case 5: currentComparison := Value < OtherValue
+                case 6: currentComparison := CheckContainText(Value, OtherValue)
+            }
         }
 
         if (Data.LogicalType == 1) {

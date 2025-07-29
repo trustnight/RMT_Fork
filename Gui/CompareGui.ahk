@@ -89,9 +89,11 @@ class CompareGui {
         this.NameConArr.Push(con)
 
         con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 160, PosY - 3, 80), ["大于", "大于等于", "等于", "小于等于",
-            "小于", "字符包含"])
+            "小于", "字符包含", "变量存在"])
         con.Value := 1
+        con.OnEvent("Change", (*) => this.OnRefresh())
         this.CompareTypeConArr.Push(con)
+
         con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 245, PosY - 3, 120), [])
         this.VariableConArr.Push(con)
 
@@ -105,9 +107,11 @@ class CompareGui {
         this.NameConArr.Push(con)
 
         con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 160, PosY - 3, 80), ["大于", "大于等于", "等于", "小于等于",
-            "小于", "字符包含"])
+            "小于", "字符包含", "变量存在"])
         con.Value := 1
+        con.OnEvent("Change", (*) => this.OnRefresh())
         this.CompareTypeConArr.Push(con)
+
         con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 245, PosY - 3, 120), [])
         this.VariableConArr.Push(con)
 
@@ -121,9 +125,11 @@ class CompareGui {
         this.NameConArr.Push(con)
 
         con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 160, PosY - 3, 80), ["大于", "大于等于", "等于", "小于等于",
-            "小于", "字符包含"])
+            "小于", "字符包含", "变量存在"])
         con.Value := 1
+        con.OnEvent("Change", (*) => this.OnRefresh())
         this.CompareTypeConArr.Push(con)
+
         con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 245, PosY - 3, 120), [])
         this.VariableConArr.Push(con)
 
@@ -137,9 +143,11 @@ class CompareGui {
         this.NameConArr.Push(con)
 
         con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 160, PosY - 3, 80), ["大于", "大于等于", "等于", "小于等于",
-            "小于", "字符包含"])
+            "小于", "字符包含", "变量存在"])
         con.Value := 1
+        con.OnEvent("Change", (*) => this.OnRefresh())
         this.CompareTypeConArr.Push(con)
+    
         con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 245, PosY - 3, 120), [])
         this.VariableConArr.Push(con)
 
@@ -243,6 +251,14 @@ class CompareGui {
         }
         else {
             Hotkey("!l", MacroAction, "Off")
+        }
+    }
+
+    OnRefresh() {
+        loop 4 {
+            OperaTypeValue := this.CompareTypeConArr[A_Index].Value
+            EnableVari := OperaTypeValue != 7
+            this.VariableConArr[A_Index].Enabled := EnableVari
         }
     }
 
