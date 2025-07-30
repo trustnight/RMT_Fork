@@ -435,6 +435,10 @@ InitFilePath() {
         DirCreate(A_WorkingDir "\Images\ScreenShot")
     }
 
+    if (!DirExist(A_WorkingDir "\Images\FreePaste")) {
+        DirCreate(A_WorkingDir "\Images\FreePaste")
+    }
+
     FileInstall("Images\Soft\WeiXin.png", "Images\Soft\WeiXin.png", 1)
     FileInstall("Images\Soft\ZhiFuBao.png", "Images\Soft\ZhiFuBao.png", 1)
     FileInstall("Images\Soft\rabit.ico", "Images\Soft\rabit.ico", 1)

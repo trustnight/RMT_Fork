@@ -289,7 +289,7 @@ LoadSetting() {
 GetDefaultSearchImageType() {
     if (A_PtrSize == 8)     ;64位
         return 1
-    else 
+    else
         return 2            ;32位
 }
 

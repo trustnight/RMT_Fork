@@ -8,6 +8,7 @@
 #Include Gui\TriggerKeyGui.ahk
 #Include Gui\TriggerStrGui.ahk
 #Include Gui\EditHotkeyGui.ahk
+#Include Gui\FreePasteGui.ahk
 #Include Gui\MacroEditGui.ahk
 #Include Gui\ReplaceKeyGui.ahk
 #Include Gui\ScrollBar.ahk
@@ -36,6 +37,7 @@ global MyTriggerStrGui := TriggerStrGui()
 global MyEditHotkeyGui := EditHotkeyGui()
 global MyMacroGui := MacroEditGui()
 global MyReplaceKeyGui := ReplaceKeyGui()
+global MyFreePasteGui := FreePasteGui()
 global MySubMacroStopAction := SubMacroStopAction
 global MyTriggerSubMacro := TriggerSubMacro
 global MySetGlobalVariable := SetGlobalVariable
@@ -55,3 +57,7 @@ global MyChineseOcr := RapidOcr(A_ScriptDir)
 global MyEnglishOcr := RapidOcr(A_ScriptDir, 2)
 global MyPToken := Gdip_Startup()
 OpenCVLoadDll()
+    
+A:: {
+    MyFreePasteGui.ShowGui()
+}
