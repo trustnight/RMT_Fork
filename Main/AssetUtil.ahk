@@ -868,9 +868,7 @@ GetScreenTextObjArr(X1, Y1, X2, Y2, mode) {
     ; 调用 ocr_from_bitmapdata 方法
     ocr := mode == 1 ? MyChineseOcr : MyEnglishOcr
     param := RapidOcr.OcrParam()
-    param.boxThresh := 0.1       ; 降低二值化阈值，避免漏检小字符
     param.boxScoreThresh := 0.3  ; 降低置信度阈值，保留更多候选框
-    param.padding := 10          ; 减少检测框扩展边距，避免合并相邻字符
     result := ocr.ocr_from_bitmapdata(BITMAP_DATA, param, true)
 
     ; 解锁位图

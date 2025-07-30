@@ -380,6 +380,7 @@ OnAddSetting(*) {
 
     SaveWinPos()
     RefreshGui()
+    RefreshGui()
 }
 
 AddSettingUI(index) {

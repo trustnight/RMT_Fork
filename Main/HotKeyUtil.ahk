@@ -890,9 +890,7 @@ OnToolTextFilterSelectImage(*) {
         return
     ocr := ToolCheckInfo.OCRTypeCtrl.Value == 1 ? MyChineseOcr : MyEnglishOcr
     param := RapidOcr.OcrParam()
-    param.boxThresh := 0.1       ; 降低二值化阈值，避免漏检小字符
     param.boxScoreThresh := 0.3  ; 降低置信度阈值，保留更多候选框
-    param.padding := 10          ; 减少检测框扩展边距，避免合并相邻字符
     result := ocr.ocr_from_file(path, param)
     ToolCheckInfo.ToolTextCtrl.Value := result
     A_Clipboard := result
