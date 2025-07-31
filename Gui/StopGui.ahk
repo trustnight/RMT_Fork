@@ -73,7 +73,7 @@ class StopGui {
 
     Init(cmd) {
         cmdArr := cmd != "" ? StrSplit(cmd, "_") : []
-        this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : this.GetSerialStr()
+        this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : GetSerialStr("Stop")
         this.RemarkCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : ""
         this.Data := this.GetStopData(this.SerialStr)
 
@@ -132,11 +132,6 @@ class StopGui {
             CommandStr .= "_" this.RemarkCon.Value
         }
         return CommandStr
-    }
-
-    GetSerialStr() {
-        CurrentDateTime := FormatTime(, "HHmmss")
-        return "Stop" CurrentDateTime
     }
 
     GetStopData(SerialStr) {

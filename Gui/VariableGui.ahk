@@ -208,7 +208,7 @@ class VariableGui {
 
     Init(cmd) {
         cmdArr := cmd != "" ? StrSplit(cmd, "_") : []
-        this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : this.GetSerialStr()
+        this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : GetSerialStr("Variable")
         this.RemarkCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : ""
         this.Data := this.GetVariableData(this.SerialStr)
         macro := this.MacroEditGui.GetFinallyMacroStr()
@@ -293,11 +293,6 @@ class VariableGui {
             CommandStr .= "_" this.RemarkCon.Value
         }
         return CommandStr
-    }
-
-    GetSerialStr() {
-        CurrentDateTime := FormatTime(, "HHmmss")
-        return "Variable" CurrentDateTime
     }
 
     GetVariableData(SerialStr) {

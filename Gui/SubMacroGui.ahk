@@ -90,7 +90,7 @@ class SubMacroGui {
 
     Init(cmd) {
         cmdArr := cmd != "" ? StrSplit(cmd, "_") : []
-        this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : this.GetSerialStr()
+        this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : GetSerialStr("SubMacro")
         this.RemarkCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : ""
         this.Data := this.GetSubMacroData(this.SerialStr)
 
@@ -188,11 +188,6 @@ class SubMacroGui {
             CommandStr .= "_" this.RemarkCon.Value
         }
         return CommandStr
-    }
-
-    GetSerialStr() {
-        CurrentDateTime := FormatTime(, "HHmmss")
-        return "SubMacro" CurrentDateTime
     }
 
     GetSubMacroData(SerialStr) {

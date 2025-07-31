@@ -207,7 +207,7 @@ class SearchGui {
 
     Init(cmd) {
         cmdArr := cmd != "" ? StrSplit(cmd, "_") : []
-        this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : this.GetSerialStr()
+        this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : GetSerialStr("Search")
         this.RemarkCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : ""
         macro := this.MacroEditGui.GetFinallyMacroStr()
         VariableArr := GetSelectVariableObjArr(macro)
@@ -238,11 +238,6 @@ class SearchGui {
             CommandStr .= "_" this.RemarkCon.Value
         }
         return CommandStr
-    }
-
-    GetSerialStr() {
-        CurrentDateTime := FormatTime(, "HHmmss")
-        return "Search" CurrentDateTime
     }
 
     GetCompareData(SerialStr) {

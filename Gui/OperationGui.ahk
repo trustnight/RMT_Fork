@@ -139,7 +139,7 @@ class OperationGui {
 
     Init(cmd) {
         cmdArr := cmd != "" ? StrSplit(cmd, "_") : []
-        this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : this.GetSerialStr()
+        this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : GetSerialStr("Operation")
         this.RemarkCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : ""
         this.Data := this.GetOperationData(this.SerialStr)
         macro := this.MacroEditGui.GetFinallyMacroStr()
@@ -204,11 +204,6 @@ class OperationGui {
 
     CheckIfValid() {
         return true
-    }
-
-    GetSerialStr() {
-        CurrentDateTime := FormatTime(, "HHmmss")
-        return "Operation" CurrentDateTime
     }
 
     GetOperationData(SerialStr) {

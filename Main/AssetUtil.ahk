@@ -1283,3 +1283,9 @@ ShowNoVariableTip(variableName) {
     if (MySoftData.NoVariableTip)
         MsgBox("当前环境不存在变量 " variableName)
 }
+
+GetSerialStr(CmdStr) {
+    currentDateTime := FormatTime(, "HHmmss")
+    randomNum := Random(0, 9)
+    return CmdStr CurrentDateTime randomNum
+}

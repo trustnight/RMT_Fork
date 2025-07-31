@@ -111,7 +111,7 @@ class MMProGui {
 
     Init(cmd) {
         cmdArr := cmd != "" ? StrSplit(cmd, "_") : []
-        this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : this.GetSerialStr()
+        this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : GetSerialStr("MMPro")
         this.Data := this.GetMMProData(this.SerialStr)
         this.RemarkCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : ""
         macro := this.MacroEditGui.GetFinallyMacroStr()
@@ -203,11 +203,6 @@ class MMProGui {
         MouseGetPos &mouseX, &mouseY
         this.PosVarXCon.Text := mouseX
         this.PosVarYCon.Text := mouseY
-    }
-
-    GetSerialStr() {
-        CurrentDateTime := FormatTime(, "HHmmss")
-        return "MMPro" CurrentDateTime
     }
 
     GetMMProData(SerialStr) {

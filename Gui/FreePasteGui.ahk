@@ -23,7 +23,7 @@ class FreePasteGui {
         }
 
         if (isImage) {
-            CurrentDateTime := FormatTime(, "HHmmss")
+            CurrentDateTime := FormatTime(, "yyyy年MM月dd日HH:mm:ss")
             filePath := A_WorkingDir "\Images\FreePaste\" CurrentDateTime ".png"
             SaveClipToBitmap(filePath)
             pic := curGui.Add("Picture", "", filePath)

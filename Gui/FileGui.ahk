@@ -98,7 +98,7 @@ class FileGui {
 
     Init(cmd) {
         cmdArr := cmd != "" ? StrSplit(cmd, "_") : []
-        this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : this.GetSerialStr()
+        this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : GetSerialStr("File")
         this.RemarkCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : ""
         this.Data := this.GetFileData(this.SerialStr)
 
@@ -181,11 +181,6 @@ class FileGui {
         tableItem.VariableMapArr[1] := Map()
 
         OnRunFile(tableItem, this.GetCommandStr(), 1)
-    }
-
-    GetSerialStr() {
-        CurrentDateTime := FormatTime(, "HHmmss")
-        return "File" CurrentDateTime
     }
 
     GetFileData(SerialStr) {
