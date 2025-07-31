@@ -79,7 +79,11 @@ class ToolCheck {
         this.ToolTextCtrl := ""
         this.ToolRecordMacroHotKeyCtrl := ""
         this.ToolCheckRecordMacroCtrl := ""
+        this.ScreenShotHotKeyCtrl := ""
+        this.FreePasteHotKeyCtrl := ""
 
+        this.ScreenShotHotKey := ""
+        this.FreePasteHotKey := ""
         this.ToolRecordMacroHotKey := ""
         this.IsToolRecord := false
         this.ToolTextFilterHotKey := ""

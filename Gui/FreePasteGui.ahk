@@ -2,20 +2,16 @@
 
 class FreePasteGui {
     __new() {
-        this.ClipCache := ""
     }
 
     ShowGui() {
-        if (this.ClipCache == A_Clipboard)
-            return
-        this.ClipCache := A_Clipboard
         this.AddGui()
     }
 
     AddGui() {
         ; 检测剪贴板格式
         isImage := DllCall("IsClipboardFormatAvailable", "UInt", 8)  ; CF_DIB = 8
-        isText := IsClipboardText() && A_Clipboard != "" && A_Clipboard != "`n" && A_Clipboard != "`r`n"
+        isText := IsClipboardText()
 
         if (isImage || isText) {
             ; 创建GUI
@@ -31,13 +27,8 @@ class FreePasteGui {
             filePath := A_WorkingDir "\Images\FreePaste\" CurrentDateTime ".png"
             SaveClipToBitmap(filePath)
             pic := curGui.Add("Picture", "", filePath)
-
             ; 获取实际图片尺寸
-            pic.GetPos(, , &imgW, &imgH)
-            curGui.Show("w" imgW " h" imgH)
-
-            pic.OnEvent("Click", this.GuiDrag.Bind(this, curGui))
-            pic.OnEvent("DoubleClick", this.DoubleClick.Bind(this, curGui))
+            pic.GetPos(, , &width, &height)
         }
         else if (isText) {
             clipText := A_Clipboard
@@ -47,8 +38,11 @@ class FreePasteGui {
             textCtrl.GetPos(, , &textW, &textH)
             width := textW + curGui.MarginX * 2
             height := textH + curGui.MarginY * 2
+        }
+
+        if (isImage || isText) {
             ; 添加透明覆盖控件（覆盖整个窗口）
-            overlay := curGui.Add("Text", "x0 y0 w" width " h" height " BackgroundTrans")
+            overlay := curGui.Add("Text", "x0 y0 w" width " h" height " BackgroundTrans +E0x200")
             ; 将事件绑定到覆盖控件
             overlay.OnEvent("Click", this.GuiDrag.Bind(this, curGui))
             overlay.OnEvent("DoubleClick", this.DoubleClick.Bind(this, curGui))

@@ -74,6 +74,8 @@ OnSaveSetting(*) {
     IniWrite(ToolCheckInfo.ToolCheckHotKeyCtrl.Value, IniFile, IniSection, "ToolCheckHotKey")
     IniWrite(ToolCheckInfo.ToolRecordMacroHotKeyCtrl.Value, IniFile, IniSection, "RecordMacroHotKey")
     IniWrite(ToolCheckInfo.ToolTextFilterHotKeyCtrl.Value, IniFile, IniSection, "ToolTextFilterHotKey")
+    IniWrite(ToolCheckInfo.ScreenShotHotKeyCtrl.Value, IniFile, IniSection, "ScreenShotHotKey")
+    IniWrite(ToolCheckInfo.FreePasteHotKeyCtrl.Value, IniFile, IniSection, "FreePasteHotKey")
     IniWrite(ToolCheckInfo.RecordKeyboardCtrl.Value, IniFile, IniSection, "RecordKeyboardValue")
     IniWrite(ToolCheckInfo.RecordMouseCtrl.Value, IniFile, IniSection, "RecordMouseValue")
     IniWrite(ToolCheckInfo.RecordJoyCtrl.Value, IniFile, IniSection, "RecordJoyValue")
@@ -379,6 +381,8 @@ BindKey() {
     BindShortcut(MySoftData.KillMacroHotkey, OnKillAllMacro)
     BindShortcut(ToolCheckInfo.ToolCheckHotKey, OnToolCheckHotkey)
     BindShortcut(ToolCheckInfo.ToolTextFilterHotKey, OnToolTextFilterScreenShot)
+    BindShortcut(ToolCheckInfo.ScreenShotHotKey, OnToolScreenShot)
+    BindShortcut(ToolCheckInfo.FreePasteHotKey, OnToolFreePaste)
     BindShortcut(ToolCheckInfo.ToolRecordMacroHotKey, OnToolRecordMacro)
     BindTabHotKey()
     BindScrollHotkey("~WheelUp", OnChangeSrollValue)
@@ -767,4 +771,25 @@ SelectArea(action) {
     endX := Max(startX, endX)
     endY := Max(startY, endY)
     action(startX, startY, endX, endY)
+}
+
+OnToolScreenShot(*) {
+    if (MySoftData.ScreenShotTypeCtrl.Value == 1) {
+        Run("ms-screenclip:")
+    }
+    else {
+        EnableSelectAerea(OnToolScreenShotGetArea)
+    }
+}
+
+OnToolScreenShotGetArea(x1, y1, x2, y2) {
+    width := X2 - X1
+    height := Y2 - Y1
+    pBitmap := Gdip_BitmapFromScreen(X1 "|" Y1 "|" width "|" height)
+    Gdip_SetBitmapToClipboard(pBitmap)
+    Gdip_DisposeImage(pBitmap)
+}
+
+OnToolFreePaste(*) {
+    MyFreePasteGui.ShowGui()
 }
