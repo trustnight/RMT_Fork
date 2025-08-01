@@ -23,8 +23,9 @@ global ToolCheckInfo := ToolCheck()
 global MyvJoy := SuperCvJoyInterface().GetMyvJoy()
 global MyJoyMacro := JoyMacro()
 global MyWinClip := WinClip()
+LoadMainSetting()   ;加载配置
 InitWorkFilePath()  ;初始化文件路径
-LoadSetting()   ;加载配置
+LoadCurMacroSetting()   ;加载当前配置宏
 InitData()
 InitWork()
 

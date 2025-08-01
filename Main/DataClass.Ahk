@@ -172,6 +172,8 @@ class SoftData {
         this.RecordToggleCon := ""
 
         this.MyGui := {}
+        this.CurSettingName := ""
+        this.SettingArrStr := ""
         this.TabPosX := 0
         this.TabPosY := 0
         this.BtnAdd := ""

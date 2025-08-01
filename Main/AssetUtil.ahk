@@ -247,8 +247,11 @@ InitJoyAxis() {
 }
 
 ;资源读取
-LoadSetting() {
+LoadMainSetting() {
     global ToolCheckInfo, MySoftData
+    global IniSection := "UserSettings"
+    MySoftData.CurSettingName := IniRead(IniFile, IniSection, "CurSettingName", "RMT默认配置")
+    MySoftData.SettingArrStr := IniRead(IniFile, IniSection, "SettingArrStr", "RMT默认配置")
     MySoftData.HasSaved := IniRead(IniFile, IniSection, "HasSaved", false)
     MySoftData.NormalPeriod := IniRead(IniFile, IniSection, "NormalPeriod", 50)
     MySoftData.HoldFloat := IniRead(IniFile, IniSection, "HoldFloat", 0)
@@ -283,9 +286,6 @@ LoadSetting() {
     MySoftData.IsSavedWinPos := IniRead(IniFile, IniSection, "IsSavedWinPos", false)
     MySoftData.TableIndex := IniRead(IniFile, IniSection, "TableIndex", 1)
     MySoftData.TableInfo := CreateTableItemArr()
-    loop MySoftData.TabNameArr.Length {
-        ReadTableItemInfo(A_Index)
-    }
 }
 
 GetDefaultSearchImageType() {
@@ -295,20 +295,26 @@ GetDefaultSearchImageType() {
         return 2            ;32位
 }
 
+LoadCurMacroSetting() {
+    loop MySoftData.TabNameArr.Length {
+        ReadTableItemInfo(A_Index)
+    }
+}
+
 ReadTableItemInfo(index) {
     global MySoftData
     symbol := GetTableSymbol(index)
     defaultInfo := GetTableItemDefaultInfo(index)
-    savedTKArrStr := IniRead(IniFile, IniSection, symbol "TKArr", "")
-    savedModeArrStr := IniRead(IniFile, IniSection, symbol "ModeArr", "")
-    savedForbidArrStr := IniRead(IniFile, IniSection, symbol "ForbidArr", "")
-    savedProcessNameStr := IniRead(IniFile, IniSection, symbol "ProcessNameArr", "")
-    savedRemarkArrStr := IniRead(IniFile, IniSection, symbol "RemarkArr", "")
-    savedLoopCountStr := IniRead(IniFile, IniSection, symbol "LoopCountArr", "")
-    savedHoldTimeArrStr := IniRead(IniFile, IniSection, symbol "HoldTimeArr", "")
-    savedTriggerTypeArrStr := IniRead(IniFile, IniSection, symbol "TriggerTypeArr", "")
-    savedMacroTypeStr := IniRead(IniFile, IniSection, symbol "MacroTypeArr", "")
-    savedSerialStr := IniRead(IniFile, IniSection, symbol "SerialArr", "")
+    savedTKArrStr := IniRead(MacroFile, IniSection, symbol "TKArr", "")
+    savedModeArrStr := IniRead(MacroFile, IniSection, symbol "ModeArr", "")
+    savedForbidArrStr := IniRead(MacroFile, IniSection, symbol "ForbidArr", "")
+    savedProcessNameStr := IniRead(MacroFile, IniSection, symbol "ProcessNameArr", "")
+    savedRemarkArrStr := IniRead(MacroFile, IniSection, symbol "RemarkArr", "")
+    savedLoopCountStr := IniRead(MacroFile, IniSection, symbol "LoopCountArr", "")
+    savedHoldTimeArrStr := IniRead(MacroFile, IniSection, symbol "HoldTimeArr", "")
+    savedTriggerTypeArrStr := IniRead(MacroFile, IniSection, symbol "TriggerTypeArr", "")
+    savedMacroTypeStr := IniRead(MacroFile, IniSection, symbol "MacroTypeArr", "")
+    savedSerialStr := IniRead(MacroFile, IniSection, symbol "SerialArr", "")
 
     if (!MySoftData.HasSaved) {
         if (savedTKArrStr == "")
@@ -346,7 +352,7 @@ ReadTableItemInfo(index) {
     SetArr(savedSerialStr, "π", tableItem.SerialArr)
 
     loop tableItem.ModeArr.length {
-        str := IniRead(IniFile, IniSection, symbol "MacroArr" A_Index, "")
+        str := IniRead(MacroFile, IniSection, symbol "MacroArr" A_Index, "")
         if (str == "" && !MySoftData.HasSaved && A_Index == 1)
             str := GetGetTableItemDefaultMacro(index)
         tableItem.MacroArr.Push(str)
@@ -459,16 +465,16 @@ GetTableItemDefaultInfo(index) {
 SaveTableItemInfo(index) {
     SavedInfo := GetSavedTableItemInfo(index)
     symbol := GetTableSymbol(index)
-    IniWrite(SavedInfo[1], IniFile, IniSection, symbol "TKArr")
-    IniWrite(SavedInfo[2], IniFile, IniSection, symbol "ModeArr")
-    IniWrite(SavedInfo[3], IniFile, IniSection, symbol "HoldTimeArr")
-    IniWrite(SavedInfo[4], IniFile, IniSection, symbol "ForbidArr")
-    IniWrite(SavedInfo[5], IniFile, IniSection, symbol "ProcessNameArr")
-    IniWrite(SavedInfo[6], IniFile, IniSection, symbol "RemarkArr")
-    IniWrite(SavedInfo[7], IniFile, IniSection, symbol "LoopCountArr")
-    IniWrite(SavedInfo[8], IniFile, IniSection, symbol "TriggerTypeArr")
-    IniWrite(SavedInfo[9], IniFile, IniSection, symbol "MacroTypeArr")
-    IniWrite(SavedInfo[10], IniFile, IniSection, symbol "SerialArr")
+    IniWrite(SavedInfo[1], MacroFile, IniSection, symbol "TKArr")
+    IniWrite(SavedInfo[2], MacroFile, IniSection, symbol "ModeArr")
+    IniWrite(SavedInfo[3], MacroFile, IniSection, symbol "HoldTimeArr")
+    IniWrite(SavedInfo[4], MacroFile, IniSection, symbol "ForbidArr")
+    IniWrite(SavedInfo[5], MacroFile, IniSection, symbol "ProcessNameArr")
+    IniWrite(SavedInfo[6], MacroFile, IniSection, symbol "RemarkArr")
+    IniWrite(SavedInfo[7], MacroFile, IniSection, symbol "LoopCountArr")
+    IniWrite(SavedInfo[8], MacroFile, IniSection, symbol "TriggerTypeArr")
+    IniWrite(SavedInfo[9], MacroFile, IniSection, symbol "MacroTypeArr")
+    IniWrite(SavedInfo[10], MacroFile, IniSection, symbol "SerialArr")
     SaveTableItemMacro(index)
 }
 
@@ -480,7 +486,7 @@ SaveTableItemMacro(index) {
         MacroStr := Trim(MacroStr, "`n")
         MacroStr := Trim(MacroStr, ",")
         MacroStr := StrReplace(MacroStr, "`n", ",")
-        IniWrite(MacroStr, IniFile, IniSection, symbol "MacroArr" A_Index)
+        IniWrite(MacroStr, MacroFile, IniSection, symbol "MacroArr" A_Index)
     }
 }
 

@@ -91,7 +91,7 @@ OnTableDelete(tableItem, index) {
     if (tableItem.ModeArr.Length == 0) {
         return
     }
-    result := MsgBox("是否删除当前配置", "提示", 1)
+    result := MsgBox("是否删除当前宏", "提示", 1)
     if (result == "Cancel")
         return
 
@@ -428,6 +428,10 @@ InitFilePath() {
     if (!DirExist(A_WorkingDir "\Setting")) {
         DirCreate(A_WorkingDir "\Setting")
     }
+    if (!DirExist(A_WorkingDir "\Setting\" MySoftData.CurSettingName)) {
+        DirCreate(A_WorkingDir "\Setting\" MySoftData.CurSettingName)
+    }
+
     if (!DirExist(A_WorkingDir "\Images")) {
         DirCreate(A_WorkingDir "\Images")
     }
@@ -449,20 +453,19 @@ InitFilePath() {
     FileInstall("Images\Soft\IcoPause.ico", "Images\Soft\IcoPause.ico", 1)
 
     global VBSPath := A_WorkingDir "\VBS\PlayAudio.vbs"
-    global IniFile := A_WorkingDir "\Setting\MainSettings.ini"
-    global SearchFile := A_WorkingDir "\Setting\SearchFile.ini"
-    global SearchProFile := A_WorkingDir "\Setting\SearchProFile.ini"
-    global CompareFile := A_WorkingDir "\Setting\CompareFile.ini"
-    global MMProFile := A_WorkingDir "\Setting\MMProFile.ini"
-    global FileFile := A_WorkingDir "\Setting\FileFile.ini"
-    global OutputFile := A_WorkingDir "\Setting\OutputFile.ini"
-    global StopFile := A_WorkingDir "\Setting\StopFile.ini"
-    global VariableFile := A_WorkingDir "\Setting\VariableFile.ini"
-    global ExVariableFile := A_WorkingDir "\Setting\ExVariableFile.ini"
-    global SubMacroFile := A_WorkingDir "\Setting\SubMacroFile.ini"
-    global OperationFile := A_WorkingDir "\Setting\OperationFile.ini"
-    global BGMouseFile := A_WorkingDir "\Setting\BGMouseFile.ini"
-    global IniSection := "UserSettings"
+    global MacroFile := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\MacroFile.ini"
+    global SearchFile := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\SearchFile.ini"
+    global SearchProFile := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\SearchProFile.ini"
+    global CompareFile := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\CompareFile.ini"
+    global MMProFile := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\MMProFile.ini"
+    global FileFile := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\FileFile.ini"
+    global OutputFile := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\OutputFile.ini"
+    global StopFile := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\StopFile.ini"
+    global VariableFile := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\VariableFile.ini"
+    global ExVariableFile := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\ExVariableFile.ini"
+    global SubMacroFile := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\SubMacroFile.ini"
+    global OperationFile := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\OperationFile.ini"
+    global BGMouseFile := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\BGMouseFile.ini"
 }
 
 SubMacroStopAction(tableIndex, itemIndex) {

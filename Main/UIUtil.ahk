@@ -111,7 +111,7 @@ AddOperBtnUI() {
     MySoftData.FixedCons.Push(ReloadBtnCtrl)
     posY += 40
 
-    MySoftData.BtnAdd := MyGui.Add("Button", Format("x{} y{} w{} h{} center", 15, posY, 100, 30), "新增配置")
+    MySoftData.BtnAdd := MyGui.Add("Button", Format("x{} y{} w{} h{} center", 15, posY, 100, 30), "新增宏")
     MySoftData.BtnAdd.OnEvent("Click", OnAddSetting)
     posY += 40
 
@@ -131,6 +131,10 @@ AddOperBtnUI() {
     ; MySoftData.FixedCons.Push(con)
     ; con := MyGui.Add("Text", Format("x{} y{} w{} center", 15, posY + 80, 100), "QQ:2660681757")
     ; MySoftData.FixedCons.Push(con)
+
+    posY := 450
+    MySoftData.BtnSave := MyGui.Add("Button", Format("x{} y{} w{} h{} center", 15, posY, 100, 30), "配置管理")
+    MySoftData.BtnSave.OnEvent("Click", (*) => MySettingMgrGui.ShowGui())
 
     posY := 490
     MySoftData.BtnSave := MyGui.Add("Button", Format("x{} y{} w{} h{} center", 15, posY, 100, 30), "应用并保存")

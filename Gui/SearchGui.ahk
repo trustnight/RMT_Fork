@@ -94,8 +94,8 @@ class SearchGui {
         PosY += 25
         this.MousePosCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 230, 20), "当前鼠标坐标:0,0")
         PosX += 330
-        this.MouseColorCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 140, 20), "当前鼠标颜色:FFFFFF")
-        PosX += 140
+        this.MouseColorCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 150, 20), "当前鼠标颜色:FFFFFF")
+        PosX += 150
         this.MouseColorTipCon := MyGui.Add("Text", Format("x{} y{} w{} Background{}", PosX, PosY, 20, "FF0000"), "")
         PosX := 10
         PosY += 30
