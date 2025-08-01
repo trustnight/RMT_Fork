@@ -325,7 +325,7 @@ OnCompare(tableItem, cmd, index) {
             hasValue := TryGetVariableValue(&Value, tableItem, index, Data.NameArr[A_Index], false)
             currentComparison := hasValue
         }
-        else{
+        else {
             hasValue := TryGetVariableValue(&Value, tableItem, index, Data.NameArr[A_Index])
             hasOtherValue := TryGetVariableValue(&OtherValue, tableItem, index, Data.VariableArr[A_Index])
             if (!hasValue || !hasOtherValue) {
@@ -628,7 +628,7 @@ OnExVariableOnce(tableItem, index, Data, isFinally) {
     }
 
     isOk := false
-    for index, value in TextObjs {
+    for _, value in TextObjs {
         baseVariableArr := ExtractNumbers(value.Text, Data.ExtractStr)
         if (baseVariableArr == "")
             continue
@@ -890,7 +890,7 @@ OnToolTextFilterSelectImage(*) {
         return
     ocr := ToolCheckInfo.OCRTypeCtrl.Value == 1 ? MyChineseOcr : MyEnglishOcr
     param := RapidOcr.OcrParam()
-    param.boxScoreThresh := 0.3  ; 降低置信度阈值，保留更多候选框
+    param.boxScoreThresh := 0.4  ; 降低置信度阈值，保留更多候选框
     result := ocr.ocr_from_file(path, param)
     ToolCheckInfo.ToolTextCtrl.Value := result
     A_Clipboard := result

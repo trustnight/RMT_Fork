@@ -702,7 +702,7 @@ OnToolTextFilterGetArea(x1, y1, x2, y2) {
     ScreenShot(x1, y1, x2, y2, filePath)
     ocr := ToolCheckInfo.OCRTypeCtrl.Value == 1 ? MyChineseOcr : MyEnglishOcr
     param := RapidOcr.OcrParam()
-    param.boxScoreThresh := 0.3  ; 降低置信度阈值，保留更多候选框
+    param.boxScoreThresh := 0.4  ; 降低置信度阈值，保留更多候选框
     result := ocr.ocr_from_file(filePath, param)
     ToolCheckInfo.ToolTextCtrl.Value := result
     A_Clipboard := result
@@ -716,7 +716,7 @@ OnToolTextCheckScreenShot() {
         SaveClipToBitmap(filePath)
         ocr := ToolCheckInfo.OCRTypeCtrl.Value == 1 ? MyChineseOcr : MyEnglishOcr
         param := RapidOcr.OcrParam()
-        param.boxScoreThresh := 0.3  ; 降低置信度阈值，保留更多候选框
+        param.boxScoreThresh := 0.4  ; 降低置信度阈值，保留更多候选框
         result := ocr.ocr_from_file(filePath, param)
         ToolCheckInfo.ToolTextCtrl.Value := result
         A_Clipboard := result
@@ -793,3 +793,8 @@ OnToolScreenShotGetArea(x1, y1, x2, y2) {
 OnToolFreePaste(*) {
     MyFreePasteGui.ShowGui()
 }
+
+; 语言播报
+; spovice:=ComObject("sapi.spvoice")
+; spovice.Speak("世界你好")
+; spovice.Speak("You can read simple text.")

@@ -257,14 +257,14 @@ LoadSetting() {
     MySoftData.CoordXFloat := IniRead(IniFile, IniSection, "CoordXFloat", 0)
     MySoftData.CoordYFloat := IniRead(IniFile, IniSection, "CoordYFloat", 0)
     MySoftData.IsLastSaved := IniRead(IniFile, IniSection, "LastSaved", false)
-    MySoftData.PauseHotkey := IniRead(IniFile, IniSection, "PauseHotkey", "!P")
+    MySoftData.PauseHotkey := IniRead(IniFile, IniSection, "PauseHotkey", "!p")
     MySoftData.KillMacroHotkey := IniRead(IniFile, IniSection, "KillMacroHotkey", "!k")
     ToolCheckInfo.IsToolCheck := IniRead(IniFile, IniSection, "IsToolCheck", false)
     ToolCheckInfo.ToolCheckHotKey := IniRead(IniFile, IniSection, "ToolCheckHotKey", "!o")
     ToolCheckInfo.ToolRecordMacroHotKey := IniRead(IniFile, IniSection, "RecordMacroHotKey", "!r")
     ToolCheckInfo.ToolTextFilterHotKey := IniRead(IniFile, IniSection, "ToolTextFilterHotKey", "!u")
     ToolCheckInfo.ScreenShotHotKey := IniRead(IniFile, IniSection, "ScreenShotHotKey", "!l")
-    ToolCheckInfo.FreePasteHotKey := IniRead(IniFile, IniSection, "FreePasteHotKey", "!M")
+    ToolCheckInfo.FreePasteHotKey := IniRead(IniFile, IniSection, "FreePasteHotKey", "!m")
     ToolCheckInfo.RecordKeyboardValue := IniRead(IniFile, IniSection, "RecordKeyboardValue", true)
     ToolCheckInfo.RecordMouseValue := IniRead(IniFile, IniSection, "RecordMouseValue", true)
     ToolCheckInfo.RecordJoyValue := IniRead(IniFile, IniSection, "RecordJoyValue", true)
@@ -870,7 +870,7 @@ GetScreenTextObjArr(X1, Y1, X2, Y2, mode) {
     ; 调用 ocr_from_bitmapdata 方法
     ocr := mode == 1 ? MyChineseOcr : MyEnglishOcr
     param := RapidOcr.OcrParam()
-    param.boxScoreThresh := 0.3  ; 降低置信度阈值，保留更多候选框
+    param.boxScoreThresh := 0.4  ; 降低置信度阈值，保留更多候选框
     result := ocr.ocr_from_bitmapdata(BITMAP_DATA, param, true)
 
     ; 解锁位图
@@ -1060,12 +1060,12 @@ GetSelectVariableObjArr(macro) {
     loop cmdArr.Length {
         paramArr := StrSplit(cmdArr[A_Index], "_")
         IsVariable := StrCompare(paramArr[1], "变量", false) == 0
-        IsExVariable := StrCompare(paramArr[1], "提取变量", false) == 0
+        IsExVariable := StrCompare(paramArr[1], "变量提取", false) == 0
         IsSearchPro := StrCompare(paramArr[1], "搜索Pro", false) == 0
         IsOperation := StrCompare(paramArr[1], "运算", false) == 0
         IsIf := StrCompare(paramArr[1], "如果", false) == 0
         IsSubMacro := StrCompare(paramArr[1], "子宏", false) == 0
-        if (!IsVariable && !IsSearchPro && !IsOperation && !IsIf && !IsSubMacro)
+        if (!IsVariable && !IsExVariable && !IsSearchPro && !IsOperation && !IsIf && !IsSubMacro)
             continue
 
         if (IsVariable) {

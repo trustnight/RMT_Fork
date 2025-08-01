@@ -57,3 +57,4 @@ global MyChineseOcr := RapidOcr(A_ScriptDir)
 global MyEnglishOcr := RapidOcr(A_ScriptDir, 2)
 global MyPToken := Gdip_Startup()
 OpenCVLoadDll()
+    
