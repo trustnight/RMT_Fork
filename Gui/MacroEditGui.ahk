@@ -159,7 +159,7 @@ class MacroEditGui {
         this.DefaultFocusCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "编辑模式：")
         PosX += 80
         this.EditModeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} h{}", PosX, PosY - 3, 150, 100), ["末尾追加指令",
-            "调整光标行指令", "光标行插入指令"])
+            "调整光标行指令", "光标行首插入指令"])
         this.EditModeCon.OnEvent("Change", (*) => this.OnChangeEditMode())
 
         PosX += 180
