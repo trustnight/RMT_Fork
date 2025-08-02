@@ -63,7 +63,6 @@ MsgSendHandler(str) {
 
 InitWorkFilePath() {
     global VBSPath := A_WorkingDir "\..\VBS\PlayAudio.vbs"
-    global IniFile := A_WorkingDir "\..\Setting\" MySoftData.CurSettingName "\MainSettings.ini"
     global MacroFile := A_WorkingDir "\..\Setting\" MySoftData.CurSettingName "\MacroFile.ini"
     global SearchFile := A_WorkingDir "\..\Setting\" MySoftData.CurSettingName "\SearchFile.ini"
     global SearchProFile := A_WorkingDir "\..\Setting\" MySoftData.CurSettingName "\SearchProFile.ini"

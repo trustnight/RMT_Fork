@@ -28,7 +28,6 @@ DetectHiddenWindows true
 Persistent
 
 global MySoftData := SoftData()
-global IniFile := A_WorkingDir "\Setting\MainSettings.ini"
 global ToolCheckInfo := ToolCheck()
 global MyvJoy := SuperCvJoyInterface().GetMyvJoy()
 global MyJoyMacro := JoyMacro()
@@ -40,6 +39,7 @@ global MyMacroGui := MacroEditGui()
 global MyReplaceKeyGui := ReplaceKeyGui()
 global MyFreePasteGui := FreePasteGui()
 global MySettingMgrGui := SettingMgrGui()
+global IniFile := A_WorkingDir "\Setting\MainSettings.ini"
 global MySubMacroStopAction := SubMacroStopAction
 global MyTriggerSubMacro := TriggerSubMacro
 global MySetGlobalVariable := SetGlobalVariable
@@ -53,7 +53,6 @@ InitData()          ;初始化软件数据
 InitUI()            ;初始化UI
 BindSave()          ;绑定保存方法
 BindKey()           ;绑定快捷键
-
 ;放后面初始化，因为这初始化时间比较长
 global MyWorkPool := WorkPool()
 global MyChineseOcr := RapidOcr(A_ScriptDir)
