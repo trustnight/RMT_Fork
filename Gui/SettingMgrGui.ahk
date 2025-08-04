@@ -5,6 +5,7 @@ class SettingMgrGui {
         this.Gui := ""
 
         this.SettingList := []
+        this.CurSettingCon := ""
         this.OperSettingCon := ""
         this.OperNameEditCon := ""
     }
@@ -20,6 +21,7 @@ class SettingMgrGui {
     }
 
     Refresh() {
+        this.CurSettingCon.Value := MySoftData.CurSettingName
         this.SettingList := StrSplit(MySoftData.SettingArrStr, "π")
         this.OperSettingCon.Delete()
         this.OperSettingCon.Add(this.SettingList)
@@ -34,6 +36,13 @@ class SettingMgrGui {
 
         PosX := 10
         PosY := 10
+        MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "当前配置：")
+
+        PosX += 80
+        this.CurSettingCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 200), "")
+
+        PosX := 10
+        PosY += 30
         MyGui.Add("GroupBox", Format("x{} y{} w400 h110", PosX, PosY), "配置操作")
 
         PosX := 70
@@ -68,7 +77,7 @@ class SettingMgrGui {
         con := MyGui.Add("Button", Format("x{} y{} w120", PosX, PosY), "复制当前配置")
         con.OnEvent("Click", this.OnCopyBtnClick.Bind(this))
 
-        MyGui.Show(Format("w{} h{}", 420, 260))
+        MyGui.Show(Format("w{} h{}", 420, 300))
     }
 
     OnLoadBtnClick(*) {
@@ -83,21 +92,55 @@ class SettingMgrGui {
             return
         }
 
-        result := MsgBox("是否删除该配置", "提示", 1)
+        result := MsgBox(Format("是否删除{}配置", this.OperSettingCon.Text), "提示", 1)
         if (result == "Cancel")
             return
-        
-        if (DirExist(A_WorkingDir "\Setting\" MySoftData.CurSettingName)) {
-            DirDelete(A_WorkingDir "\Setting\" MySoftData.CurSettingName)
+
+        if (DirExist(A_WorkingDir "\Setting\" this.OperSettingCon.Text)) {
+            DirDelete(A_WorkingDir "\Setting\" this.OperSettingCon.Text, true)
         }
-        MsgBox("删除配置: " MySoftData.CurSettingName)
+        SettingArrStr := ""
+        for settingName in this.SettingList {
+            if (this.OperSettingCon.Text == settingName)
+                continue
+            SettingArrStr .= settingName "π"
+        }
+        SettingArrStr := RTrim(SettingArrStr, "π")
+        MySoftData.SettingArrStr := SettingArrStr
+        IniWrite(MySoftData.SettingArrStr, IniFile, IniSection, "SettingArrStr")
+        MsgBox("删除配置: " this.OperSettingCon.Text)
+        this.Refresh()
     }
 
     OnAddBtnClick(*) {
+        isVaild := this.IsValidName()
+        if (!isVaild)
+            return
+
+        MySoftData.SettingArrStr .= "π" this.OperNameEditCon.Value
+        IniWrite(MySoftData.SettingArrStr, IniFile, IniSection, "SettingArrStr")
+        MsgBox("成功新增配置： " this.OperNameEditCon.Value)
+        this.Refresh()
+    }
+
+    OnCopyBtnClick(*) {
+        isVaild := this.IsValidName()
+        if (!isVaild)
+            return
+        MySoftData.SettingArrStr .= "π" this.OperNameEditCon.Value
+        IniWrite(MySoftData.SettingArrStr, IniFile, IniSection, "SettingArrStr")
+        SourcePath := A_WorkingDir "\Setting\" MySoftData.CurSettingName
+        DestPath := A_WorkingDir "\Setting\" this.OperNameEditCon.Value
+        DirCopy(SourcePath, DestPath, 1)
+        MsgBox(Format("成功复制<{}>配置到<{}>中", MySoftData.CurSettingName, this.OperNameEditCon.Value))
+        this.Refresh()
+    }
+
+    IsValidName() {
         isVaild := this.IsValidFolderName(this.OperNameEditCon.Value)
         if (!isVaild) {
             MsgBox("新配置名不符合文件目录命名规则，请修改新配置名")
-            return
+            return false
         }
 
         for settingName in this.SettingList {
@@ -107,14 +150,7 @@ class SettingMgrGui {
             }
         }
 
-        MySoftData.SettingArrStr .= "π" this.OperNameEditCon.Value
-        IniWrite(MySoftData.SettingArrStr, IniFile, IniSection, "SettingArrStr")
-        this.Refresh()
-        MsgBox("成功新增配置： " this.OperNameEditCon.Value)
-    }
-
-    OnCopyBtnClick(*) {
-        MsgBox("复制配置")
+        return true
     }
 
     IsValidFolderName(folderName) {

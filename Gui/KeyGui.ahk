@@ -578,14 +578,14 @@ class KeyGui {
             con.OnEvent("Click", (*) => this.OnCheckKey("RButton"))
 
             PosX += 60
-            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "下滑")
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "下滚轮")
             con.OnEvent("Click", (*) => this.OnCheckKey("WheelDown"))
 
-            PosX += 60
-            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "上滑")
+            PosX += 75
+            con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "上滚轮")
             con.OnEvent("Click", (*) => this.OnCheckKey("WheelUp"))
 
-            PosX += 60
+            PosX += 75
             con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY), "滚轮左键")
             con.OnEvent("Click", (*) => this.OnCheckKey("WheelLeft"))
 

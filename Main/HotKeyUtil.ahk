@@ -943,7 +943,7 @@ SendGameModeKey(Key, state, tableItem, index) {
     VK := GetKeyVK(Key)
     SC := GetKeySC(Key)
 
-    if (VK == 1 || VK == 2 || VK == 4) {   ; 鼠标左键、右键、中键
+    if (VK == 1 || VK == 2 || VK == 4 || VK == 158 || VK == 159 || VK == 5 || VK == 6) {   ; 鼠标左键、右键、中键、下滑，上滑
         SendGameMouseKey(key, state, tableItem, index)
         return
     }
@@ -971,26 +971,50 @@ SendGameModeKey(Key, state, tableItem, index) {
 }
 
 SendGameMouseKey(key, state, tableItem, index) {
-    ; 鼠标按下和松开的标志
+    scrollStep := 0
+    mouseData := 0  ; 用于存储滚轮或侧键的数据（120/-120 或 0x0001/0x0002）
+
     if (StrCompare(Key, "LButton", false) == 0) {
-        mouseDown := 0x0002
-        mouseUp := 0x0004
+        mouseDown := 0x0002  ; MOUSEEVENTF_LEFTDOWN
+        mouseUp := 0x0004    ; MOUSEEVENTF_LEFTUP
     }
     else if (StrCompare(Key, "RButton", false) == 0) {
-        mouseDown := 0x0008
-        mouseUp := 0x0010
+        mouseDown := 0x0008  ; MOUSEEVENTF_RIGHTDOWN
+        mouseUp := 0x0010    ; MOUSEEVENTF_RIGHTUP
     }
     else if (StrCompare(Key, "MButton", false) == 0) {
-        mouseDown := 0x0020
-        mouseUp := 0x0040
+        mouseDown := 0x0020  ; MOUSEEVENTF_MIDDLEDOWN
+        mouseUp := 0x0040    ; MOUSEEVENTF_MIDDLEUP
+    }
+    else if (StrCompare(Key, "WheelUp", false) == 0) {
+        mouseDown := 0x0800  ; MOUSEEVENTF_WHEEL
+        mouseUp := 0x0000    ; 滚轮没有 "UP" 事件
+        mouseData := 120     ; +120 表示向上滚动
+    }
+    else if (StrCompare(Key, "WheelDown", false) == 0) {
+        mouseDown := 0x0800  ; MOUSEEVENTF_WHEEL
+        mouseUp := 0x0000    ; 滚轮没有 "UP" 事件
+        mouseData := -120    ; -120 表示向下滚动
+    }
+    else if (StrCompare(Key, "XButton1", false) == 0) {
+        mouseDown := 0x0080  ; MOUSEEVENTF_XDOWN
+        mouseUp := 0x0100    ; MOUSEEVENTF_XUP
+        mouseData := 0x0001  ; 表示 XButton1
+    }
+    else if (StrCompare(Key, "XButton2", false) == 0) {
+        mouseDown := 0x0080  ; MOUSEEVENTF_XDOWN
+        mouseUp := 0x0100    ; MOUSEEVENTF_XUP
+        mouseData := 0x0002  ; 表示 XButton2
     }
 
     if (state == 1) {
-        DllCall("mouse_event", "UInt", mouseDown, "UInt", 0, "UInt", 0, "UInt", 0, "UInt", 0)
+        DllCall("mouse_event", "UInt", mouseDown, "UInt", 0, "UInt", 0, "UInt", mouseData, "UInt", 0)
         tableItem.HoldKeyArr[index][key] := "GameMouse"
     }
     else {
-        DllCall("mouse_event", "UInt", mouseUp, "UInt", 0, "UInt", 0, "UInt", 0, "UInt", 0)
+        if (mouseUp != 0) {  ; 只有非滚轮事件才发送 UP
+            DllCall("mouse_event", "UInt", mouseUp, "UInt", 0, "UInt", 0, "UInt", mouseData, "UInt", 0)
+        }
         if (tableItem.HoldKeyArr[index].Has(key)) {
             tableItem.HoldKeyArr[index].Delete(key)
         }
