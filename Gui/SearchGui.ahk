@@ -131,30 +131,33 @@ class SearchGui {
         this.MouseActionTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} Center", PosX, PosY - 5, 130), ["无动作",
             "移动至目标", "移动至目标点击1次", "移动至目标点击2次"])
         this.MouseActionTypeCon.Value := 1
-    
-        PosY := SplitPosY
-        PosX := 330
-        btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 80, 30), "选择图片")
-        btnCon.OnEvent("Click", (*) => this.OnClickSetPicBtn())
-        btnCon.Focus()
-        this.ImageBtn := btnCon
-        PosY += 40
-        btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 80, 30), "截图")
-        btnCon.OnEvent("Click", (*) => this.OnScreenShotBtnClick())
-        this.ScreenshotBtn := btnCon
-        PosY -= 40
-        PosX := 430
-        this.ImageCon := MyGui.Add("Picture", Format("x{} y{} w{} h{}", PosX, PosY, 80, 80), "")
-        
-        PosX := 330
-        PosY += 110
+
+        PosY += 35
+        PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "搜索颜色:")
         PosX += 80
         this.HexColorCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 80), "FFFFFF")
         PosX += 90
         this.HexColorTipCon := MyGui.Add("Text", Format("x{} y{} w{} Background{}", PosX, PosY, 20, "FF0000"), "")
-        
+
+        PosY := SplitPosY
+        PosX := 330
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "搜索图片:")
+        PosY += 20
+        PosX := 330
+        btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 80, 30), "选择图片")
+        btnCon.OnEvent("Click", (*) => this.OnClickSetPicBtn())
+        btnCon.Focus()
+        this.ImageBtn := btnCon
         PosY += 35
+        btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 80, 30), "截图")
+        btnCon.OnEvent("Click", (*) => this.OnScreenShotBtnClick())
+        this.ScreenshotBtn := btnCon
+        PosY -= 55
+        PosX := 430
+        this.ImageCon := MyGui.Add("Picture", Format("x{} y{} w{} h{}", PosX, PosY, 80, 80), "")
+
+        PosY += 95
         PosX := 330
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "搜索文本:")
         PosX += 80
@@ -184,7 +187,7 @@ class SearchGui {
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 100, 40), "确定")
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 640, 500))
+        MyGui.Show(Format("w{} h{}", 640, 410))
     }
 
     Init(cmd) {
