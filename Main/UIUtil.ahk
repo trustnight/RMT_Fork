@@ -78,11 +78,26 @@ AddUI() {
 
 AddOperBtnUI() {
     MyGui := MySoftData.MyGui
-    con := MyGui.Add("GroupBox", Format("x{} y{} w{} h{} center", 10, 10, 110, 520), "全局操作")
+    posY := 10
+    con := MyGui.Add("GroupBox", Format("x{} y{} w{} h{} center", 10, posY, 110, 95), "当前配置")
+    MySoftData.FixedCons.Push(con)
+    MySoftData.GroupFixedCons.Push(con)
+    
+    ; 当前配置
+    posY += 25
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{} Center", 15, posY, 100, 40), MySoftData.CurSettingName)
+    MySoftData.FixedCons.Push(con)
+    posY += 30
+    con := MyGui.Add("Button", Format("x{} y{} w{} h{} center", 15, posY, 100, 30), "配置管理")
+    con.OnEvent("Click", (*) => MySettingMgrGui.ShowGui())
+    MySoftData.FixedCons.Push(con)
+
+    posY += 50
+    con := MyGui.Add("GroupBox", Format("x{} y{} w{} h{} center", 10, posY, 110, 415), "全局操作")
     MySoftData.FixedCons.Push(con)
     MySoftData.GroupFixedCons.Push(con)
 
-    posY := 35
+    posY += 25
     ; 暂停模块
     MySoftData.PauseToggleCtrl := MyGui.Add("CheckBox", Format("x{} y{} w{} h{}", 15, posY, 100, 20), "暂停")
     MySoftData.PauseToggleCtrl.Value := MySoftData.IsPause
@@ -131,10 +146,6 @@ AddOperBtnUI() {
     ; MySoftData.FixedCons.Push(con)
     ; con := MyGui.Add("Text", Format("x{} y{} w{} center", 15, posY + 80, 100), "QQ:2660681757")
     ; MySoftData.FixedCons.Push(con)
-
-    posY := 450
-    MySoftData.BtnSave := MyGui.Add("Button", Format("x{} y{} w{} h{} center", 15, posY, 100, 30), "配置管理")
-    MySoftData.BtnSave.OnEvent("Click", (*) => MySettingMgrGui.ShowGui())
 
     posY := 490
     MySoftData.BtnSave := MyGui.Add("Button", Format("x{} y{} w{} h{} center", 15, posY, 100, 30), "应用并保存")
@@ -505,11 +516,13 @@ AddSettingUI(index) {
     MyGui.Add("GroupBox", Format("x{} y{} w870 h100", posX + 10, posY), "下拉框选项")
     posY += 30
     MyGui.Add("Text", Format("x{} y{}", posX + 25, posY), "软件截图方式：")
-    MySoftData.ScreenShotTypeCtrl := MyGui.Add("DropDownList", Format("x{} y{} w100", posX + 120, posY - 5), ["微软截图", "RMT截图"])
+    MySoftData.ScreenShotTypeCtrl := MyGui.Add("DropDownList", Format("x{} y{} w100", posX + 120, posY - 5), ["微软截图",
+        "RMT截图"])
     MySoftData.ScreenShotTypeCtrl.Value := MySoftData.ScreenShotType
 
     MyGui.Add("Text", Format("x{} y{} w110", posX + 315, posY), "软件识图方式：")
-    MySoftData.SearchImageTypeCtrl := MyGui.Add("DropDownList", Format("x{} y{} w100", posX + 410, posY - 5), ["OpenCV", "RMT识图"])
+    MySoftData.SearchImageTypeCtrl := MyGui.Add("DropDownList", Format("x{} y{} w100", posX + 410, posY - 5), ["OpenCV",
+        "RMT识图"])
     MySoftData.SearchImageTypeCtrl.Value := MySoftData.SearchImageType
     MySoftData.SearchImageTypeCtrl.Enabled := A_PtrSize == 8
 
@@ -790,7 +803,7 @@ AddToolUI(index) {
 
     con := MyGui.Add("Button", Format("x{} y{} w{} h{}", posX + 400, posY - 5, 120, 25), "从图片提取文本")
     con.OnEvent("Click", OnToolTextFilterSelectImage)
-    
+
     posY += 25
     MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "相关选项：")
 

@@ -213,11 +213,7 @@ OnSearchOnce(tableItem, Data, index, isFinally) {
     }
     else if (Data.SearchType == 3) {
         text := Data.SearchText
-        if (Data.SearchTextType == 2) {
-            hasValue := TryGetVariableValue(&text, tableItem, index, Data.SearchText)
-            if (!hasValue)
-                return
-        }
+        hasValue := TryGetVariableValue(&text, tableItem, index, Data.SearchText, false)
         found := CheckScreenContainText(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, text, Data.OCRType)
     }
 

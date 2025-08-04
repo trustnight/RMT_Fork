@@ -25,13 +25,10 @@ class SearchGui {
         this.HexColorCon := ""
         this.HexColorTipCon := ""
         this.TextCon := ""
-        this.SearchCountCon := ""
-        this.SearchIntervalCon := ""
         this.FoundCommandStrCon := ""
         this.UnFoundCommandStrCon := ""
         this.SearchTypeCon := ""
         this.MouseActionTypeCon := ""
-        this.SpeedCon := ""
         this.MacroGui := ""
     }
 
@@ -129,54 +126,39 @@ class SearchGui {
         this.EndPosYCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
         PosY += 30
         PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "搜索次数:")
-        PosX += 75
-        this.SearchCountCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
-        PosX := 150
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "每次间隔:")
-        PosX += 75
-        this.SearchIntervalCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
-        PosY += 30
-        PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "鼠标动作:")
         PosX += 75
         this.MouseActionTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} Center", PosX, PosY - 5, 130), ["无动作",
-            "移动至目标", "移动至目标点击"])
+            "移动至目标", "移动至目标点击1次", "移动至目标点击2次"])
         this.MouseActionTypeCon.Value := 1
-        PosY += 30
-        PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 120), "移动速度(0~100):")
-        PosX += 120
-        this.SpeedCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50), "90")
-        PosY += 30
-        PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 120), "鼠标点击次数:")
-        PosX += 120
-        this.ClickCountCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50), "1")
+    
         PosY := SplitPosY
         PosX := 330
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 80, 30), "选择图片")
         btnCon.OnEvent("Click", (*) => this.OnClickSetPicBtn())
         btnCon.Focus()
         this.ImageBtn := btnCon
-        PosX += 100
+        PosY += 40
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 80, 30), "截图")
         btnCon.OnEvent("Click", (*) => this.OnScreenShotBtnClick())
         this.ScreenshotBtn := btnCon
-        PosY += 30
+        PosY -= 40
+        PosX := 430
+        this.ImageCon := MyGui.Add("Picture", Format("x{} y{} w{} h{}", PosX, PosY, 80, 80), "")
+        
         PosX := 330
-        this.ImageCon := MyGui.Add("Picture", Format("x{} y{} w{} h{}", PosX, PosY, 100, 100), "")
         PosY += 110
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 40), "颜色:")
-        PosX += 40
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "搜索颜色:")
+        PosX += 80
         this.HexColorCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 80), "FFFFFF")
         PosX += 90
         this.HexColorTipCon := MyGui.Add("Text", Format("x{} y{} w{} Background{}", PosX, PosY, 20, "FF0000"), "")
+        
         PosY += 35
         PosX := 330
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 40), "文本:")
-        PosX += 40
-        this.TextCon := MyGui.Add("Edit", Format("x{} y{} w{} h{} Center", PosX, PosY - 3, 150, 20), "检索文本")
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "搜索文本:")
+        PosX += 80
+        this.TextCon := MyGui.Add("Edit", Format("x{} y{} w{} h{} Center", PosX, PosY - 3, 80, 20), "检索文本")
         PosY += 35
         TempPosY := PosY
         PosX := 10
@@ -214,18 +196,16 @@ class SearchGui {
 
         this.Data := this.GetCompareData(this.SerialStr)
         this.SearchTypeCon.Value := this.Data.SearchType
+        this.ImageCon.GetPos(&imagePosX, &imagePosY)
         this.ImageCon.Value := this.Data.SearchImagePath
+        this.ImageCon.Move(imagePosX, imagePosY, 80, 80)
         this.HexColorCon.Value := this.Data.SearchColor
         this.TextCon.Value := this.Data.SearchText
         this.StartPosXCon.Value := this.Data.StartPosX
         this.StartPosYCon.Value := this.Data.StartPosY
         this.EndPosXCon.Value := this.Data.EndPosX
         this.EndPosYCon.Value := this.Data.EndPosY
-        this.SearchCountCon.Value := this.Data.SearchCount
-        this.SearchIntervalCon.Value := this.Data.SearchInterval
         this.MouseActionTypeCon.Value := this.Data.MouseActionType
-        this.SpeedCon.Value := this.Data.Speed
-        this.ClickCountCon.Value := this.Data.ClickCount
         this.FoundCommandStrCon.Value := this.Data.TrueCommandStr
         this.UnFoundCommandStrCon.Value := this.Data.FalseCommandStr
         this.OnChangeSearchType()
@@ -266,10 +246,10 @@ class SearchGui {
             return false
         }
 
-        if (!IsNumber(this.SearchCountCon.Value) || Number(this.SearchCountCon.Value) <= 0) {
-            MsgBox("搜索次数请输入大于0的数字")
-            return false
-        }
+        ; if (!IsNumber(this.SearchCountCon.Value) || Number(this.SearchCountCon.Value) <= 0) {
+        ;     MsgBox("搜索次数请输入大于0的数字")
+        ;     return false
+        ; }
 
         if (this.SearchTypeCon.Value == 1 && this.Data.SearchImagePath == "") {
             MsgBox("请选择图片")
@@ -496,11 +476,7 @@ class SearchGui {
         data.StartPosY := this.StartPosYCon.Value
         data.EndPosX := this.EndPosXCon.Value
         data.EndPosY := this.EndPosYCon.Value
-        data.SearchCount := this.SearchCountCon.Value
-        data.SearchInterval := this.SearchIntervalCon.Value
         data.MouseActionType := this.MouseActionTypeCon.Value
-        data.ClickCount := this.ClickCountCon.Value
-        data.Speed := this.SpeedCon.Value
         data.TrueCommandStr := this.FoundCommandStrCon.Value
         data.FalseCommandStr := this.UnFoundCommandStrCon.Value
         saveStr := JSON.stringify(data, 0)

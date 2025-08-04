@@ -22,19 +22,21 @@ class SearchProGui {
         this.ImageCon := ""
         this.ImageBtn := ""
         this.SimilarCon := ""
+        this.OCRLabelCon := ""
         this.OCRTypeCon := ""
         this.ScreenshotBtn := ""
+        this.ImageTypeTipCon := ""
+        this.ImageTypeCon := ""
         this.HexColorCon := ""
         this.HexColorTipCon := ""
         this.TextCon := ""
-        this.TextTipCon := ""
-        this.TextTypeCon := ""
         this.SearchCountCon := ""
         this.SearchIntervalCon := ""
         this.FoundCommandStrCon := ""
         this.UnFoundCommandStrCon := ""
         this.SearchTypeCon := ""
         this.MouseActionTypeCon := ""
+        this.ClickCountCon := ""
         this.SpeedCon := ""
         this.ResultToggleCon := ""
         this.ResultSaveNameCon := ""
@@ -168,43 +170,49 @@ class SearchProGui {
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 120), "鼠标点击次数:")
         PosX += 120
         this.ClickCountCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50), "1")
-        PosY += 30
-        PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 120), "文本识别模型:")
-        PosX += 120
-        this.OCRTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} Center", PosX, PosY - 5, 130), ["中文",
-            "英文"])
-        this.OCRTypeCon.Value := 1
+
         PosY := SplitPosY
+        PosX := 330
+        this.ImageTypeTipCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "识别模型:")
+        PosX += 80
+        this.ImageTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} Center", PosX, PosY - 3, 80), ["OpenCV",
+            "RMT识图"])
+
+        PosY += 30
         PosX := 330
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 80, 30), "选择图片")
         btnCon.OnEvent("Click", (*) => this.OnClickSetPicBtn())
         btnCon.Focus()
         this.ImageBtn := btnCon
-        PosX += 100
-        btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 80, 30), "截图")
+        PosX += 90
+        btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 70, 30), "截图")
         btnCon.OnEvent("Click", (*) => this.OnScreenShotBtnClick())
         this.ScreenshotBtn := btnCon
-        PosY += 30
-        PosX := 330
-        this.ImageCon := MyGui.Add("Picture", Format("x{} y{} w{} h{}", PosX, PosY, 100, 100), "")
+        PosY := SplitPosY - 20
+        PosX := 510
+        this.ImageCon := MyGui.Add("Picture", Format("x{} y{} w{} h{}", PosX, PosY, 80, 80), "")
+
         PosY += 110
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 40), "颜色:")
-        PosX += 40
+        PosX := 330
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "搜索颜色:")
+        PosX += 80
         this.HexColorCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 80), "FFFFFF")
         PosX += 90
         this.HexColorTipCon := MyGui.Add("Text", Format("x{} y{} w{} Background{}", PosX, PosY, 20, "FF0000"), "")
-        PosY += 35
+
+        PosY += 30
         PosX := 330
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 40), "文本:")
-        PosX += 40
-        this.TextCon := MyGui.Add("Edit", Format("x{} y{} w{} h{} Center", PosX, PosY - 3, 100, 20), "检索文本")
-        PosX += 110
-        this.TextTipCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 40), "类型:")
-        PosX += 40
-        this.TextTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} Center", PosX, PosY - 3, 80), ["文本字符",
-            "文本变量"])
-        PosY += 35
+        this.OCRLabelCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "识别模型:")
+        PosX += 80
+        this.OCRTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} Center", PosX, PosY - 3, 80), ["中文",
+            "英文"])
+        PosY += 30
+        PosX := 330
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "搜索文本:")
+        PosX += 80
+        this.TextCon := MyGui.Add("Edit", Format("x{} y{} w{} h{} Center", PosX, PosY - 3, 80, 20), "检索文本")
+
+        PosY += 30
         TempPosY := PosY
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 170, 20), "找到后的指令:（可选）")
@@ -253,7 +261,7 @@ class SearchProGui {
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 100, 40), "确定")
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 640, 570))
+        MyGui.Show(Format("w{} h{}", 640, 540))
     }
 
     Init(cmd) {
@@ -267,10 +275,12 @@ class SearchProGui {
         this.SearchTypeCon.Value := this.Data.SearchType
         this.SimilarCon.Value := this.Data.Similar
         this.OCRTypeCon.Value := this.Data.OCRType
+        this.ImageTypeCon.Value := this.Data.SearchImageType
+        this.ImageCon.GetPos(&imagePosX, &imagePosY)
         this.ImageCon.Value := this.Data.SearchImagePath
+        this.ImageCon.Move(imagePosX, imagePosY, 80, 80)
         this.HexColorCon.Value := this.Data.SearchColor
         this.TextCon.Value := this.Data.SearchText
-        this.TextTypeCon.Value := this.Data.SearchTextType
         this.StartPosXCon.Value := this.Data.StartPosX
         this.StartPosYCon.Value := this.Data.StartPosY
         this.EndPosXCon.Value := this.Data.EndPosX
@@ -492,6 +502,9 @@ class SearchProGui {
 
         this.ImageBtn.Enabled := isImage
         this.ScreenshotBtn.Enabled := isImage
+        this.ImageTypeCon.Enabled := isImage
+        this.ImageTypeTipCon.Enabled := isImage
+        this.ImageCon.Enabled := isImage
 
         this.HexColorCon.Enabled := isColor
         this.HexColorTipCon.Visible := showColorTip
@@ -501,8 +514,8 @@ class SearchProGui {
         }
 
         this.TextCon.Enabled := isText
-        this.TextTipCon.Enabled := isText
-        this.TextTypeCon.Enabled := isText
+        this.OCRLabelCon.Enabled := isText
+        this.OCRTypeCon.Enabled := isText
         this.MousePosCon.Focus()
     }
 
@@ -560,10 +573,10 @@ class SearchProGui {
         data := this.Data
         data.Similar := this.SimilarCon.Value
         data.OCRType := this.OCRTypeCon.Value
+        data.SearchImageType := this.ImageTypeCon.Value
         data.SearchType := this.SearchTypeCon.Value
         data.SearchColor := this.HexColorCon.Value
         data.SearchText := this.TextCon.Value
-        data.SearchTextType := this.TextTypeCon.Value
         data.StartPosX := this.StartPosXCon.Value
         data.StartPosY := this.StartPosYCon.Value
         data.EndPosX := this.EndPosXCon.Value

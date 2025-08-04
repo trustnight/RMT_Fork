@@ -254,7 +254,7 @@ class SearchData {
         this.SearchImagePath := ""
         this.Similar := 90 ; 图片搜索模糊匹配度100  - 50
         this.OCRType := 1   ;1中文  2英文
-        this.SearchTextType := 1    ;1字符 2变量
+        this.SearchImageType := 1 ; 1 opencv 2 rmt
         this.StartPosX := 0
         this.StartPosY := 0
         this.EndPosX := A_ScreenWidth
