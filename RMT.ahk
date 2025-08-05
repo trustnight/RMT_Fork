@@ -7,6 +7,7 @@
 #Include Plugins\WinClip.ahk
 #Include Gui\TriggerKeyGui.ahk
 #Include Gui\TriggerStrGui.ahk
+#Include Gui\TimingGui.ahk
 #Include Gui\SettingMgrGui.ahk
 #Include Gui\EditHotkeyGui.ahk
 #Include Gui\FreePasteGui.ahk
@@ -39,6 +40,7 @@ global MyMacroGui := MacroEditGui()
 global MyReplaceKeyGui := ReplaceKeyGui()
 global MyFreePasteGui := FreePasteGui()
 global MySettingMgrGui := SettingMgrGui()
+global MyTimingGui := TimingGui()
 global IniFile := A_WorkingDir "\Setting\MainSettings.ini"
 global MySubMacroStopAction := SubMacroStopAction
 global MyTriggerSubMacro := TriggerSubMacro

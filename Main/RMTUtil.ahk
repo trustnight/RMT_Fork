@@ -112,6 +112,8 @@ OnTableDelete(tableItem, index) {
         tableItem.RemarkArr.RemoveAt(index)
     if (tableItem.SerialArr.Length >= index)
         tableItem.SerialArr.RemoveAt(index)
+    if (tableItem.TimingSerialArr.Length >= index)
+        tableItem.TimingSerialArr.RemoveAt(index)
     if (tableItem.MacroTypeArr.Length >= index)
         tableItem.MacroTypeArr.RemoveAt(index)
     tableItem.IndexConArr.RemoveAt(index)
@@ -357,6 +359,11 @@ OnTableEditTriggerKey(tableItem, index) {
     MyTriggerKeyGui.ShowGui(triggerKey, args)
 }
 
+OnTableEditTiming(tableItem, index) {
+    SerialStr := tableItem.TimingSerialArr[index]
+    MyTimingGui.ShowGui(SerialStr)
+}
+
 OnTableEditTriggerStr(tableItem, index) {
     triggerStr := tableItem.TKConArr[index].Value
     MyTriggerStrGui.SureBtnAction := (sureTriggerStr) => tableItem.TKConArr[index].Value := sureTriggerStr
@@ -457,6 +464,7 @@ InitFilePath() {
     global SearchProFile := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\SearchProFile.ini"
     global CompareFile := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\CompareFile.ini"
     global MMProFile := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\MMProFile.ini"
+    global TimingFile := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\TimingFile.ini"
     global FileFile := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\FileFile.ini"
     global OutputFile := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\OutputFile.ini"
     global StopFile := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\StopFile.ini"

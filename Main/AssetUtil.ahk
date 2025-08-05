@@ -307,6 +307,7 @@ ReadTableItemInfo(index) {
     savedTriggerTypeArrStr := IniRead(MacroFile, IniSection, symbol "TriggerTypeArr", "")
     savedMacroTypeStr := IniRead(MacroFile, IniSection, symbol "MacroTypeArr", "")
     savedSerialStr := IniRead(MacroFile, IniSection, symbol "SerialArr", "")
+    savedTimingSerialStr := IniRead(MacroFile, IniSection, symbol "TimingSerialArr", "")
 
     if (!MySoftData.HasSaved) {
         if (savedTKArrStr == "")
@@ -342,6 +343,7 @@ ReadTableItemInfo(index) {
     SetArr(savedTriggerTypeArrStr, "π", tableItem.TriggerTypeArr)
     SetArr(savedMacroTypeStr, "π", tableItem.MacroTypeArr)
     SetArr(savedSerialStr, "π", tableItem.SerialArr)
+    SetArr(savedTimingSerialStr, "π", tableItem.TimingSerialArr)
 
     loop tableItem.ModeArr.length {
         str := IniRead(MacroFile, IniSection, symbol "MacroArr" A_Index, "")
@@ -467,6 +469,7 @@ SaveTableItemInfo(index) {
     IniWrite(SavedInfo[8], MacroFile, IniSection, symbol "TriggerTypeArr")
     IniWrite(SavedInfo[9], MacroFile, IniSection, symbol "MacroTypeArr")
     IniWrite(SavedInfo[10], MacroFile, IniSection, symbol "SerialArr")
+    IniWrite(SavedInfo[11], MacroFile, IniSection, symbol "TimingSerialArr")
     SaveTableItemMacro(index)
 }
 
@@ -495,6 +498,7 @@ GetSavedTableItemInfo(index) {
     TriggerTypeArrStr := ""
     MacroTypeArrStr := ""
     SerialArrStr := ""
+    TimingSerialArrStr := ""
 
     tableItem := MySoftData.TableInfo[index]
     symbol := GetTableSymbol(index)
@@ -511,6 +515,8 @@ GetSavedTableItemInfo(index) {
         LoopCountArrStr .= GetItemSaveCountValue(tableItem.Index, A_Index)
         MacroTypeArrStr .= tableItem.MacroTypeConArr.Length >= A_Index ? tableItem.MacroTypeConArr[A_Index].Value : 1
         SerialArrStr .= tableItem.SerialArr.Length >= A_Index ? tableItem.SerialArr[A_Index] : "000000"
+        TimingSerialArrStr .= tableItem.TimingSerialArr.Length >= A_Index ? tableItem.TimingSerialArr[A_Index] :
+            "Timing000000"
         if (tableItem.ModeArr.Length > A_Index) {
             TKArrStr .= "π"
             ModeArrStr .= "π"
@@ -522,11 +528,12 @@ GetSavedTableItemInfo(index) {
             TriggerTypeArrStr .= "π"
             MacroTypeArrStr .= "π"
             SerialArrStr .= "π"
+            TimingSerialArrStr .= "π"
         }
     }
 
     return [TKArrStr, ModeArrStr, HoldTimeArrStr, ForbidArrStr, ProcessNameArrStr, RemarkArrStr,
-        LoopCountArrStr, TriggerTypeArrStr, MacroTypeArrStr, SerialArrStr]
+        LoopCountArrStr, TriggerTypeArrStr, MacroTypeArrStr, SerialArrStr, TimingSerialArrStr]
 }
 
 SaveWinPos() {
@@ -769,6 +776,8 @@ CheckIfAddSetTable(index) {
         return true
     if (symbol == "String")
         return true
+    if (symbol == "Timing")
+        return true
     if (symbol == "SubMacro")
         return true
     if (symbol == "Replace")
@@ -779,6 +788,22 @@ CheckIfAddSetTable(index) {
 CheckIsStringMacroTable(index) {
     symbol := GetTableSymbol(index)
     if (symbol == "String")
+        return true
+    return false
+}
+
+CheckIsTimingMacroTable(index) {
+    symbol := GetTableSymbol(index)
+    if (symbol == "Timing")
+        return true
+    return false
+}
+
+CheckIsNoTriggerKey(index) {
+    symbol := GetTableSymbol(index)
+    if (symbol == "SubMacro")
+        return true
+    if (symbol == "Timing")
         return true
     return false
 }

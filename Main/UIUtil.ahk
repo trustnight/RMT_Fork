@@ -161,7 +161,7 @@ AddOperBtnUI() {
 }
 
 GetUIAddFunc(index) {
-    UIAddFuncArr := [AddMacroHotkeyUI, AddMacroHotkeyUI, AddMacroHotkeyUI, AddMacroHotkeyUI,
+    UIAddFuncArr := [AddMacroHotkeyUI, AddMacroHotkeyUI, AddMacroHotkeyUI, AddMacroHotkeyUI, AddMacroHotkeyUI,
         AddToolUI, AddSettingUI, AddHelpUI, AddRewardUI]
     return UIAddFuncArr[index]
 }
@@ -170,15 +170,15 @@ GetUIAddFunc(index) {
 AddMacroHotkeyUI(index) {
     global MySoftData
     tableItem := MySoftData.TableInfo[index]
-    isSubMacro := CheckIsSubMacroTable(index)
-    offsetPosx := isSubMacro ? -60 : 0
+    isNoTriggerKey := CheckIsNoTriggerKey(index)
+    offsetPosx := isNoTriggerKey ? -60 : 0
     tableItem.underPosY := MySoftData.TabPosY
     ; 配置规则说明
     UpdateUnderPosY(index, 30)
 
     MyGui := MySoftData.MyGui
     con := MyGui.Add("Text", Format("x{} y{} w100", MySoftData.TabPosX + 20, tableItem.underPosY), "宏触发按键")
-    con.Visible := !isSubMacro
+    con.Visible := !isNoTriggerKey
 
     MyGui.Add("Text", Format("x{} y{} w80", MySoftData.TabPosX + 120 + offsetPosx, tableItem.underPosY), "循环次数")
     MyGui.Add("Text", Format("x{} y{} w550", MySoftData.TabPosX + 205 + offsetPosx, tableItem.underPosY), "宏指令")
@@ -196,12 +196,15 @@ LoadSavedSettingUI(index) {
     isMacro := CheckIsMacroTable(index)
     isNormal := CheckIsNormalTable(index)
     isSubMacro := CheckIsSubMacroTable(index)
+    isNoTriggerKey := CheckIsNoTriggerKey(index)
+    isTiming := CheckIsTimingMacroTable(index)
     curIndex := 0
     MyGui := MySoftData.MyGui
     TabPosX := MySoftData.TabPosX
-    subMacroWidth := isSubMacro ? 75 : 0
+    subMacroWidth := isNoTriggerKey ? 75 : 0
     isTriggerStr := CheckIsStringMacroTable(index)
     EditTriggerAction := isTriggerStr ? OnTableEditTriggerStr : OnTableEditTriggerKey
+    EditTriggerAction := isTiming ? OnTableEditTiming : EditTriggerAction
     EditMacroAction := isMacro ? OnTableEditMacro : OnTableEditReplaceKey
     loop tableItem.ModeArr.Length {
         heightValue := 60
@@ -212,11 +215,11 @@ LoadSavedSettingUI(index) {
         ["按下", "松开", "松止", "开关", "长按"])
         newTriggerTypeCon.Value := tableItem.TriggerTypeArr.Length >= A_Index ? tableItem.TriggerTypeArr[A_Index] : 1
         newTriggerTypeCon.Enabled := isNormal
-        newTriggerTypeCon.Visible := isSubMacro ? false : true
+        newTriggerTypeCon.Visible := isNoTriggerKey ? false : true
 
         newTkControl := MyGui.Add("Edit", Format("x{} y{} w{} h{} Center", TabPosX + 10, tableItem.underPosY + 25, 100,
             20), "")
-        newTkControl.Visible := isSubMacro ? false : true
+        newTkControl.Visible := isNoTriggerKey ? false : true
         newTkControl.Value := tableItem.TKArr.Length >= A_Index ? tableItem.TKArr[A_Index] : ""
 
         newLoopCountControl := MyGui.Add("ComboBox", Format("x{} y{} w80 R5 center", TabPosX + 115 - subMacroWidth,
@@ -297,9 +300,12 @@ OnAddSetting(*) {
     isMacro := CheckIsMacroTable(TableIndex)
     isNormal := CheckIsNormalTable(TableIndex)
     isSubMacro := CheckIsSubMacroTable(TableIndex)
-    subMacroWidth := isSubMacro ? 75 : 0
+    isNoTriggerKey := CheckIsNoTriggerKey(TableIndex)
+    isTiming := CheckIsTimingMacroTable(TableIndex)
+    subMacroWidth := isNoTriggerKey ? 75 : 0
     isTriggerStr := CheckIsStringMacroTable(TableIndex)
     EditTriggerAction := isTriggerStr ? OnTableEditTriggerStr : OnTableEditTriggerKey
+    EditTriggerAction := isTiming ? OnTableEditTiming : EditTriggerAction
     EditMacroAction := isMacro ? OnTableEditMacro : OnTableEditReplaceKey
     tableItem.TKArr.Push("")
     tableItem.MacroArr.Push("")
@@ -310,6 +316,7 @@ OnAddSetting(*) {
     tableItem.LoopCountArr.Push("1")
     tableItem.HoldTimeArr.Push(500)
     tableItem.SerialArr.Push(FormatTime(, "HHmmss"))
+    tableItem.TimingSerialArr.Push(GetSerialStr("Timing"))
     tableItem.IsWorkArr.Push(0)
 
     heightValue := 60
@@ -325,11 +332,11 @@ OnAddSetting(*) {
         "松止", "开关", "长按"])
     newTriggerTypeCon.Value := 1
     newTriggerTypeCon.Enabled := isNormal
-    newTriggerTypeCon.Visible := isSubMacro ? false : true
+    newTriggerTypeCon.Visible := isNoTriggerKey ? false : true
 
     newTkControl := MyGui.Add("Edit", Format("x{} y{} w{} h{} Center", TabPosX + 10, tableItem.underPosY + 25, 100, 20),
     "")
-    newTkControl.Visible := isSubMacro ? false : true
+    newTkControl.Visible := isNoTriggerKey ? false : true
 
     newLoopCountControl := MyGui.Add("ComboBox", Format("x{} y{} w80 R5 center", TabPosX + 115 - subMacroWidth,
         tableItem.underPosY

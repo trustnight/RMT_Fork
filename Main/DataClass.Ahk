@@ -24,6 +24,7 @@ class TableItem {
         this.IndexConArr := []
         this.TriggerTypeConArr := []
         this.MacroTypeConArr := []
+        this.TimingSerialArr := []
 
         this.SerialArr := []
         this.CmdActionArr := []
@@ -180,8 +181,8 @@ class SoftData {
         this.EditHotKeyCtrl := ""
         this.EditHotStrCtrl := ""
 
-        this.TabNameArr := ["按键宏", "字串宏", "宏", "按键替换", "工具", "设置", "帮助", "打赏作者"]
-        this.TabSymbolArr := ["Normal", "String", "SubMacro", "Replace", "Tool", "Setting", "Help", "Reward"]
+        this.TabNameArr := ["按键宏", "字串宏", "定时宏","宏", "按键替换", "工具", "设置", "帮助", "打赏作者"]
+        this.TabSymbolArr := ["Normal", "String", "Timing", "SubMacro", "Replace", "Tool", "Setting", "Help", "Reward"]
         this.TabCtrl := {}
         this.TableInfo := []
 
@@ -401,5 +402,14 @@ class BGMouseData {
         this.ScrollV := 1 ;水平滚动
         this.ScrollH := 0 ; 垂直滚动
         this.ClickTime := 50 ;点击时间跨度
+    }
+}
+
+class TimingData {
+    __New() {
+        this.SerialStr := ""
+        this.StartTime := ""
+        this.EndTime := ""
+        this.Type := 1  ;1单次 2每小时 3每天 4每周 5每月 6自定义
     }
 }
