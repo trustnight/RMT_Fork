@@ -353,7 +353,7 @@ class SearchProGui {
         }
 
         if (this.SearchTypeCon.Value == 1 && this.Data.SearchImagePath == "") {
-            MsgBox("请选择图片")
+            MsgBox("请设置搜索图片")
             return false
         }
 
