@@ -251,6 +251,10 @@ OnSearchOnce(tableItem, Data, index, isFinally) {
 
         Pos[1] := GetFloatValue(Pos[1], MySoftData.CoordXFloat)
         Pos[2] := GetFloatValue(Pos[2], MySoftData.CoordYFloat)
+        if (Data.MouseActionType == 4) {
+            SetDefaultMouseSpeed(Speed)
+            Click(Format("{} {} {}"), Pos[1], Pos[2], 2)
+        }
         if (Data.MouseActionType == 3) {
             SetDefaultMouseSpeed(Speed)
             Click(Format("{} {} {}"), Pos[1], Pos[2], Data.ClickCount)

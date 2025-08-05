@@ -25,11 +25,14 @@ class SearchProGui {
         this.OCRLabelCon := ""
         this.OCRTypeCon := ""
         this.ScreenshotBtn := ""
+        this.ImageTipCon := ""
         this.ImageTypeTipCon := ""
         this.ImageTypeCon := ""
+        this.ColorTipCon := ""
         this.HexColorCon := ""
         this.HexColorTipCon := ""
         this.TextCon := ""
+        this.TextTipCon := ""
         this.SearchCountCon := ""
         this.SearchIntervalCon := ""
         this.FoundCommandStrCon := ""
@@ -173,28 +176,29 @@ class SearchProGui {
 
         PosY := SplitPosY
         PosX := 330
+        this.ImageTipCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "搜索图片:")
+        PosY += 25
         this.ImageTypeTipCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "识别模型:")
         PosX += 80
         this.ImageTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} Center", PosX, PosY - 3, 80), ["OpenCV",
             "RMT识图"])
-
-        PosY += 30
+        PosY += 25
         PosX := 330
-        btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 80, 30), "选择图片")
+        btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 70, 25), "截图")
+        btnCon.OnEvent("Click", (*) => this.OnScreenShotBtnClick())
+        this.ScreenshotBtn := btnCon
+        PosX += 80
+        btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 80, 25), "选择图片")
         btnCon.OnEvent("Click", (*) => this.OnClickSetPicBtn())
         btnCon.Focus()
         this.ImageBtn := btnCon
-        PosX += 90
-        btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 70, 30), "截图")
-        btnCon.OnEvent("Click", (*) => this.OnScreenShotBtnClick())
-        this.ScreenshotBtn := btnCon
-        PosY := SplitPosY - 20
-        PosX := 510
+        PosY := SplitPosY
+        PosX := 500
         this.ImageCon := MyGui.Add("Picture", Format("x{} y{} w{} h{}", PosX, PosY, 80, 80), "")
 
-        PosY += 110
+        PosY += 90
         PosX := 330
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "搜索颜色:")
+        this.ColorTipCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "搜索颜色:")
         PosX += 80
         this.HexColorCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 80), "FFFFFF")
         PosX += 90
@@ -202,15 +206,15 @@ class SearchProGui {
 
         PosY += 30
         PosX := 330
+        this.TextTipCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "搜索文本:")
+        PosX += 80
+        this.TextCon := MyGui.Add("Edit", Format("x{} y{} w{} h{} Center", PosX, PosY - 3, 80, 20), "检索文本")
+        PosY += 25
+        PosX := 330
         this.OCRLabelCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "识别模型:")
         PosX += 80
         this.OCRTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} Center", PosX, PosY - 3, 80), ["中文",
             "英文"])
-        PosY += 30
-        PosX := 330
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "搜索文本:")
-        PosX += 80
-        this.TextCon := MyGui.Add("Edit", Format("x{} y{} w{} h{} Center", PosX, PosY - 3, 80, 20), "检索文本")
 
         PosY += 30
         TempPosY := PosY
@@ -503,10 +507,12 @@ class SearchProGui {
         this.ImageBtn.Enabled := isImage
         this.ScreenshotBtn.Enabled := isImage
         this.ImageTypeCon.Enabled := isImage
+        this.ImageTipCon.Enabled := isImage
         this.ImageTypeTipCon.Enabled := isImage
         this.ImageCon.Enabled := isImage
 
         this.HexColorCon.Enabled := isColor
+        this.ColorTipCon.Enabled := isColor
         this.HexColorTipCon.Visible := showColorTip
         if (showColorTip) {
             this.HexColorTipCon.Opt(Format("+Background0x{}", this.HexColorCon.Value))
@@ -516,6 +522,7 @@ class SearchProGui {
         this.TextCon.Enabled := isText
         this.OCRLabelCon.Enabled := isText
         this.OCRTypeCon.Enabled := isText
+        this.TextTipCon.Enabled := isText
         this.MousePosCon.Focus()
     }
 

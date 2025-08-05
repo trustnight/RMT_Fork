@@ -11,6 +11,9 @@ class SearchGui {
         this.CheckClipboardAction := () => this.CheckClipboard()
         this.SelectToggleCon := ""
         this.MacroEditGui := ""
+        this.ImageTipCon := ""
+        this.ColorTipCon := ""
+        this.TextTipCon := ""
         this.Data := ""
         this.MousePosCon := ""
         this.MouseColorCon := ""
@@ -134,7 +137,7 @@ class SearchGui {
 
         PosY += 35
         PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "搜索颜色:")
+        this.ColorTipCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "搜索颜色:")
         PosX += 80
         this.HexColorCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 80), "FFFFFF")
         PosX += 90
@@ -142,7 +145,7 @@ class SearchGui {
 
         PosY := SplitPosY
         PosX := 330
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "搜索图片:")
+        this.ImageTipCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "搜索图片:")
         PosY += 20
         PosX := 330
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 80, 30), "选择图片")
@@ -154,12 +157,12 @@ class SearchGui {
         btnCon.OnEvent("Click", (*) => this.OnScreenShotBtnClick())
         this.ScreenshotBtn := btnCon
         PosY -= 55
-        PosX := 430
+        PosX := 415
         this.ImageCon := MyGui.Add("Picture", Format("x{} y{} w{} h{}", PosX, PosY, 80, 80), "")
 
         PosY += 95
         PosX := 330
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "搜索文本:")
+        this.TextTipCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "搜索文本:")
         PosX += 80
         this.TextCon := MyGui.Add("Edit", Format("x{} y{} w{} h{} Center", PosX, PosY - 3, 80, 20), "检索文本")
         PosY += 35
@@ -408,8 +411,10 @@ class SearchGui {
 
         this.ImageBtn.Enabled := isImage
         this.ScreenshotBtn.Enabled := isImage
+        this.ImageTipCon.Enabled := isImage
 
         this.HexColorCon.Enabled := isColor
+        this.ColorTipCon.Enabled := isColor
         this.HexColorTipCon.Visible := showColorTip
         if (showColorTip) {
             this.HexColorTipCon.Opt(Format("+Background0x{}", this.HexColorCon.Value))
@@ -417,6 +422,7 @@ class SearchGui {
         }
 
         this.TextCon.Enabled := isText
+        this.TextTipCon.Enabled := isText
         this.MousePosCon.Focus()
     }
 
