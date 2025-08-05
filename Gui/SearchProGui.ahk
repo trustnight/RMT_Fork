@@ -506,10 +506,12 @@ class SearchProGui {
 
         this.ImageBtn.Enabled := isImage
         this.ScreenshotBtn.Enabled := isImage
-        this.ImageTypeCon.Enabled := isImage
+        this.ImageTypeCon.Enabled := isImage && A_PtrSize == 8
         this.ImageTipCon.Enabled := isImage
         this.ImageTypeTipCon.Enabled := isImage
         this.ImageCon.Enabled := isImage
+        if (A_PtrSize != 8)
+            this.ImageTypeCon.Value := 2
 
         this.HexColorCon.Enabled := isColor
         this.ColorTipCon.Enabled := isColor

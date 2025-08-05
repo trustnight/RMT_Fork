@@ -520,12 +520,6 @@ AddSettingUI(index) {
         "RMT截图"])
     MySoftData.ScreenShotTypeCtrl.Value := MySoftData.ScreenShotType
 
-    MyGui.Add("Text", Format("x{} y{} w110", posX + 315, posY), "软件识图方式：")
-    MySoftData.SearchImageTypeCtrl := MyGui.Add("DropDownList", Format("x{} y{} w100", posX + 410, posY - 5), ["OpenCV",
-        "RMT识图"])
-    MySoftData.SearchImageTypeCtrl.Value := MySoftData.SearchImageType
-    MySoftData.SearchImageTypeCtrl.Enabled := A_PtrSize == 8
-
     posY += 90
     tableItem := MySoftData.TableInfo[index]
     tableItem.UnderPosY := posY

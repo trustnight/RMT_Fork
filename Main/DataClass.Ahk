@@ -139,8 +139,6 @@ class SoftData {
         this.NoVariableTipCtrl := ""
         this.ScreenShotType := 1
         this.ScreenShotTypeCtrl := ""
-        this.SearchImageType := 1
-        this.SearchImageTypeCtrl := ""
         this.MutiThread := false
         this.MutiThreadCtrl := ""
         this.MutiThreadNum := 3

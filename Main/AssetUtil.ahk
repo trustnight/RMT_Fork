@@ -279,20 +279,12 @@ LoadMainSetting() {
     MySoftData.MutiThreadNum := IniRead(IniFile, IniSection, "MutiThreadNum", 3)
     MySoftData.NoVariableTip := IniRead(IniFile, IniSection, "NoVariableTip", true)
     MySoftData.ScreenShotType := IniRead(IniFile, IniSection, "ScreenShotType", 1)
-    MySoftData.SearchImageType := IniRead(IniFile, IniSection, "SearchImageType", GetDefaultSearchImageType())
     MySoftData.AgreeAgreement := IniRead(IniFile, IniSection, "AgreeAgreement", false)
     MySoftData.WinPosX := IniRead(IniFile, IniSection, "WinPosX", 0)
     MySoftData.WinPosY := IniRead(IniFile, IniSection, "WinPosY", 0)
     MySoftData.IsSavedWinPos := IniRead(IniFile, IniSection, "IsSavedWinPos", false)
     MySoftData.TableIndex := IniRead(IniFile, IniSection, "TableIndex", 1)
     MySoftData.TableInfo := CreateTableItemArr()
-}
-
-GetDefaultSearchImageType() {
-    if (A_PtrSize == 8)     ;64位
-        return 1
-    else
-        return 2            ;32位
 }
 
 LoadCurMacroSetting() {

@@ -194,7 +194,7 @@ OnSearchOnce(tableItem, Data, index, isFinally) {
 
     CoordMode("Pixel", "Screen")
     if (Data.SearchType == 1) {
-        if (MySoftData.SearchImageType == 1) {
+        if (Data.SearchImageType == 1) {
             OutputVarX := 0
             OutputVarY := 0
             found := FindImage(Data.SearchImagePath, X1, Y1, X2 - X1, Y2 - Y1, Data.Similar, &OutputVarX, &
