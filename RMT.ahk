@@ -46,7 +46,7 @@ global MySubMacroStopAction := SubMacroStopAction
 global MyTriggerSubMacro := TriggerSubMacro
 global MySetGlobalVariable := SetGlobalVariable
 global MyDelGlobalVariable := DelGlobalVariable
-    
+
 LoadMainSetting()       ;加载配置
 InitFilePath()          ;初始化文件路径
 LoadCurMacroSetting()   ;加载当前配置宏
@@ -55,6 +55,7 @@ InitData()          ;初始化软件数据
 InitUI()            ;初始化UI
 BindSave()          ;绑定保存方法
 BindKey()           ;绑定快捷键
+TryStartTimingCheck() ;轮询检测触发
 ;放后面初始化，因为这初始化时间比较长
 global MyWorkPool := WorkPool()
 global MyChineseOcr := RapidOcr(A_ScriptDir)

@@ -399,6 +399,133 @@ BindKey() {
     OnExit(OnExitSoft)
 }
 
+TryStartTimingCheck() {
+    hasTiming := CheckIfHasTiming(&tableIndex)
+    if (!hasTiming)
+        return
+
+    tableItem := MySoftData.TableInfo[tableIndex]
+    SetTimingNextTime(tableItem)
+    action := TimingChecker.Bind(tableItem, tableIndex)
+    SetTimer(action, 6000) ;一分钟轮询一次
+}
+
+SetTimingNextTime(tableItem) {
+    for index, value in tableItem.ModeArr {
+        if ((Integer)(tableItem.ForbidArr[index]))
+            continue
+
+        if (tableItem.MacroArr.Length < index || tableItem.MacroArr[index] == "")
+            continue
+
+        Data := GetMacroCMDData(TimingFile, tableItem.TimingSerialArr[index])
+        CurTime := FormatTime(A_Now, "yyyyMMddHHmm")
+        if (Data.EndTime != "" && Data.EndTime >= CurTime)
+            continue
+
+        span := DateDiff(CurTime, Data.StartTime, "Minutes")
+        if (Data.Type == 1)
+            Data.NextTriggerTime := span < 0 ? Data.StartTime : ""
+        else if (Data.Type == 2 || Data.Type == 3 || Data.Type == 4 || Data.Type == 6) {
+            interval := GetTimingInterval(Data)
+            if (span < 0)  ;时间还没到
+                Data.NextTriggerTime := Data.StartTime
+            else {
+                count := (Integer)(span / interval)
+                newTime := FormatTime(DateAdd(Data.StartTime, (count + 1) * interval, "Minutes"), "yyyyMMddHHmm")
+                Data.NextTriggerTime := newTime
+            }
+        }
+        else {
+            if (span < 0)  ;时间还没到
+                Data.NextTriggerTime := Data.StartTime
+            else {
+                newTime := SubStr(CurTime, 1, 6) SubStr(Data.StartTime, 7)
+                Data.NextTriggerTime := newTime
+                if (CurTime > newTime) {
+                    newMonth := Format("{:02}", A_Mon + 1)
+                    Data.NextTriggerTime := A_Year newMonth SubStr(Data.StartTime, 7)
+                    if (A_Mon == 12) {
+                        newYear := Format("{:04}", A_Year + 1)
+                        newMonth := Format("{:02}", 1)
+                        Data.NextTriggerTime := newYear newMonth SubStr(Data.StartTime, 7)
+                    }
+                }
+            }
+        }
+    }
+}
+
+UpdateTimingNextTime(Data) {
+    if (Data.Type == 1)
+        Data.NextTriggerTime := ""
+    else if (Data.Type == 2 || Data.Type == 3 || Data.Type == 4 || Data.Type == 6) {
+        interval := GetTimingInterval(Data)
+        newTime := FormatTime(DateAdd(Data.NextTriggerTime, interval, "Minutes"), "yyyyMMddHHmm")
+        Data.NextTriggerTime := newTime
+    }
+    else {
+        year := FormatTime(Data.NextTriggerTime, "yyyy")
+        month := FormatTime(Data.NextTriggerTime, "MM")
+        newMonth := Format("{:02}", month + 1)
+        Data.NextTriggerTime := year newMonth SubStr(Data.StartTime, 7)
+        if (month == 12) {
+            newYear := Format("{:04}", year + 1)
+            newMonth := Format("{:02}", 1)
+            Data.NextTriggerTime := newYear newMonth SubStr(Data.StartTime, 7)
+        }
+    }
+}
+
+GetTimingInterval(Data) {
+    if (Data.Type == 2)
+        return 60
+    else if (Data.Type == 3)
+        return 60 * 24
+    else if (Data.Type == 4)
+        return 60 * 24 * 7
+
+    return Data.CustomInterval
+}
+
+TimingChecker(tableItem, tableIndex) {
+    for index, value in tableItem.ModeArr {
+        if ((Integer)(tableItem.ForbidArr[index]))
+            continue
+
+        if (tableItem.MacroArr.Length < index || tableItem.MacroArr[index] == "")
+            continue
+
+        Data := GetMacroCMDData(TimingFile, tableItem.TimingSerialArr[index])
+        CurTime := FormatTime(A_Now, "yyyyMMddHHmm")
+        if (Data.NextTriggerTime == "" || CurTime < Data.NextTriggerTime)
+            continue
+        UpdateTimingNextTime(Data)
+        TriggerSubMacro(tableIndex, index)
+    }
+}
+
+CheckIfHasTiming(&tableIndex) {
+    tableIndex := 0
+    loop MySoftData.TabNameArr.Length {
+        tableItem := MySoftData.TableInfo[A_Index]
+        isTiming := CheckIsTimingMacroTable(A_Index)
+        if (isTiming) {
+            tableIndex := A_Index
+            for index, value in tableItem.ModeArr {
+                if ((Integer)(tableItem.ForbidArr[index]))
+                    continue
+
+                if (tableItem.MacroArr.Length < index || tableItem.MacroArr[index] == "")
+                    continue
+
+                return true
+            }
+        }
+    }
+    return false
+}
+
 OnChangeSrollValue(*) {
     wParam := InStr(A_ThisHotkey, "Down") ? 1 : 0
     lParam := 0
@@ -495,7 +622,8 @@ TriggerSubMacro(tableIndex, itemIndex) {
         MyWorkPool.PostMessage(WM_TR_MACRO, workPath, tableIndex, itemIndex)
     }
     else {
-        OnTriggerMacroKeyAndInit(tableItem, macro, itemIndex)
+        action := OnTriggerMacroKeyAndInit.Bind(tableItem, macro, itemIndex)
+        SetTimer(action, -1)
     }
 }
 
@@ -776,11 +904,11 @@ SelectArea(action) {
     MyGui.Destroy()
     ; 返回坐标
 
-    startX := Min(startX, endX)
-    startY := Min(startY, endY)
-    endX := Max(startX, endX)
-    endY := Max(startY, endY)
-    action(startX, startY, endX, endY)
+    x1 := Min(startX, endX)
+    y1 := Min(startY, endY)
+    x2 := Max(startX, endX)
+    y2 := Max(startY, endY)
+    action(x1, y1, x2, y2)
 }
 
 OnToolScreenShot(*) {

@@ -767,6 +767,8 @@ CheckIsMacroTable(index) {
         return true
     if (symbol == "SubMacro")
         return true
+    if (symbol == "Timing")
+        return true
     return false
 }
 

@@ -241,8 +241,9 @@ LoadSavedSettingUI(index) {
             325 + subMacroWidth,
             InfoHeight), "")
         newInfoControl.Value := tableItem.MacroArr.Length >= A_Index ? tableItem.MacroArr[A_Index] : ""
-
-        newKeyBtnControl := MyGui.Add("Button", Format("x{} y{} w60 h20", TabPosX + 530, tableItem.underPosY), "触发键")
+        
+        btnStr := isTiming ? "定时" : "触发键"
+        newKeyBtnControl := MyGui.Add("Button", Format("x{} y{} w60 h20", TabPosX + 530, tableItem.underPosY), btnStr)
         newKeyBtnControl.OnEvent("Click", GetTableClosureAction(EditTriggerAction, tableItem, A_Index))
         newKeyBtnControl.Enabled := !isSubMacro
 
@@ -356,7 +357,8 @@ OnAddSetting(*) {
         325 + subMacroWidth, InfoHeight),
     "")
 
-    newKeyBtnControl := MyGui.Add("Button", Format("x{} y{} w60 h20", TabPosX + 530, tableItem.underPosY), "触发键")
+    btnStr := isTiming ? "定时" : "触发键"
+    newKeyBtnControl := MyGui.Add("Button", Format("x{} y{} w60 h20", TabPosX + 530, tableItem.underPosY), btnStr)
     newKeyBtnControl.OnEvent("Click", GetTableClosureAction(EditTriggerAction, tableItem, index))
     newKeyBtnControl.Enabled := !isSubMacro
 

@@ -408,8 +408,10 @@ class BGMouseData {
 class TimingData {
     __New() {
         this.SerialStr := ""
-        this.StartTime := ""
+        this.StartTime := A_Now
         this.EndTime := ""
         this.Type := 1  ;1单次 2每小时 3每天 4每周 5每月 6自定义
+        this.CustomInterval := "10"
+        this.NextTriggerTime := ""
     }
 }
