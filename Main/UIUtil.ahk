@@ -521,6 +521,11 @@ AddSettingUI(index) {
     MySoftData.NoVariableTipCtrl := MyGui.Add("CheckBox", Format("x{} y{}", posX + 25, posY), "无变量提醒")
     MySoftData.NoVariableTipCtrl.Value := MySoftData.NoVariableTip
 
+    MySoftData.CMDTipCtrl := MyGui.Add("CheckBox", Format("x{} y{}", posX + 315, posY), "")
+    MySoftData.CMDTipCtrl.Value := MySoftData.CMDTip
+    con := MyGui.Add("Button", Format("x{} y{}", posX + 315 + 15, posY - 5), "指令提示")
+    con.OnEvent("Click", (*)=> OnEditCMDTipGui())
+
     posY += 40
     MyGui.Add("GroupBox", Format("x{} y{} w870 h100", posX + 10, posY), "下拉框选项")
     posY += 30

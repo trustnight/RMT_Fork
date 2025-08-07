@@ -38,6 +38,7 @@ global MySubMacroStopAction := WorkSubMacroStopAction
 global MyTriggerSubMacro := WorkTriggerSubMacro
 global MySetGlobalVariable := WorkSetGlobalVariable
 global MyDelGlobalVariable := WorkDelGlobalVariable
+global MyCMDReportAciton := WorkCMDReport
 WorkOpenCVLoadDll()
 
 ; 注册消息

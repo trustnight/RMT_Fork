@@ -8,7 +8,6 @@ global WM_TR_MACRO := 0x503 ;触发宏事件
 global WM_STOP_MACRO := 0x504 ;停止宏事件
 global WM_SET_VARI := 0x505    ;设置变量
 global WM_DEL_VARI := 0x506    ;删除变量
-global WM_TEST_VARI := 0x507    ;测试信息
 
 ; 功能函数
 GetFloatTime(oriTime, floatValue) {
@@ -278,12 +277,24 @@ LoadMainSetting() {
     MySoftData.MutiThread := IniRead(IniFile, IniSection, "MutiThread", false)
     MySoftData.MutiThreadNum := IniRead(IniFile, IniSection, "MutiThreadNum", 3)
     MySoftData.NoVariableTip := IniRead(IniFile, IniSection, "NoVariableTip", true)
+    MySoftData.CMDTip := IniRead(IniFile, IniSection, "CMDTip", false)
     MySoftData.ScreenShotType := IniRead(IniFile, IniSection, "ScreenShotType", 1)
     MySoftData.AgreeAgreement := IniRead(IniFile, IniSection, "AgreeAgreement", false)
     MySoftData.WinPosX := IniRead(IniFile, IniSection, "WinPosX", 0)
     MySoftData.WinPosY := IniRead(IniFile, IniSection, "WinPosY", 0)
     MySoftData.IsSavedWinPos := IniRead(IniFile, IniSection, "IsSavedWinPos", false)
     MySoftData.TableIndex := IniRead(IniFile, IniSection, "TableIndex", 1)
+
+    MySoftData.CMDPosX := IniRead(IniFile, IniSection, "CMDPosX", A_ScreenWidth - 225)
+    MySoftData.CMDPosY := IniRead(IniFile, IniSection, "CMDPosY", 0)
+    MySoftData.CMDWidth := IniRead(IniFile, IniSection, "CMDWidth", 225)
+    MySoftData.CMDHeight := IniRead(IniFile, IniSection, "CMDHeight", 100)
+    MySoftData.CMDLineNum := IniRead(IniFile, IniSection, "CMDLineNum", 5)
+    MySoftData.CMDBGColor := IniRead(IniFile, IniSection, "CMDBGColor", "FFFFFF")
+    MySoftData.CMDTransparency := IniRead(IniFile, IniSection, "CMDTransparency", 50)
+    MySoftData.CMDFontColor := IniRead(IniFile, IniSection, "CMDFontColor", "000000")
+    MySoftData.CMDFontSize := IniRead(IniFile, IniSection, "CMDFontSize", 12)
+
     MySoftData.TableInfo := CreateTableItemArr()
 }
 
@@ -750,6 +761,15 @@ GetRecordMacroEditStr(macro) {
         }
     }
     return macroEditStr
+}
+
+GetTimingTableIndex() {
+    loop MySoftData.TabNameArr.Length {
+        symbol := GetTableSymbol(A_Index)
+        if (symbol == "Timing")
+            return A_Index
+    }
+    return ""
 }
 
 CheckIsNormalTable(index) {

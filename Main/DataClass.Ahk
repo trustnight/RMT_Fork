@@ -181,7 +181,7 @@ class SoftData {
         this.EditHotKeyCtrl := ""
         this.EditHotStrCtrl := ""
 
-        this.TabNameArr := ["按键宏", "字串宏", "定时宏","宏", "按键替换", "工具", "设置", "帮助", "打赏作者"]
+        this.TabNameArr := ["按键宏", "字串宏", "定时宏", "宏", "按键替换", "工具", "设置", "帮助", "打赏作者"]
         this.TabSymbolArr := ["Normal", "String", "Timing", "SubMacro", "Replace", "Tool", "Setting", "Help", "Reward"]
         this.TabCtrl := {}
         this.TableInfo := []
@@ -207,6 +207,19 @@ class SoftData {
         this.FixedCons := []
         this.SB := ""
         this.VariableMap := Map()
+
+        ;显示指令提示配置
+        this.CMDTip := false
+        this.CMDTipCtrl := ""
+        this.CMDPosX := A_ScreenWidth - 225
+        this.CMDPosY := 0
+        this.CMDWidth := 225
+        this.CMDHeight := 100
+        this.CMDLineNum := 5
+        this.CMDBGColor := "FFFFFF"
+        this.CMDTransparency := 50
+        this.CMDFontSize := "12"
+        this.CMDFontColor := "000000"
     }
 }
 

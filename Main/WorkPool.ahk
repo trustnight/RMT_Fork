@@ -120,14 +120,19 @@ class WorkPool {
     OnGetCmd(wParam, lParam, msg, hwnd) {
         StringAddress := NumGet(lParam, 2 * A_PtrSize, "Ptr")  ; 检索 CopyDataStruct 的 lpData 成员.
         Cmd := StrGet(StringAddress)  ; 从结构中复制字符串.
-        paramArr := StrSplit(cmd, "_")
+        paramArr := StrSplit(Cmd, "_")
         isSetVari := StrCompare(paramArr[1], "SetVari", false) == 0
         isDelVari := StrCompare(paramArr[1], "DelVari", false) == 0
+        isReport := StrCompare(paramArr[1], "Report", false) == 0
         if (isSetVari) {
             SetGlobalVariable(paramArr[2], paramArr[3], false)
         }
         else if (isDelVari) {
             DelGlobalVariable(paramArr[2])
+        }
+        else if (isReport) {
+            CMDStr := SubStr(Cmd, 8)
+            CMDReport(CMDStr)
         }
     }
 }

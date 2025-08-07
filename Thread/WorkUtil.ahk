@@ -115,3 +115,8 @@ WorkDelGlobalVariable(Name) {
     str := Format("DelVari_{}", Name)
     MsgSendHandler(str)
 }
+
+WorkCMDReport(CMDStr) {
+    str := Format("Report_{}", CMDStr)
+    MsgSendHandler(str)
+}

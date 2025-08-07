@@ -31,7 +31,6 @@ class SettingMgrGui {
     AddGui() {
         MyGui := Gui(, "配置管理编辑器")
         this.Gui := MyGui
-        MyGui.SetFont(, "Arial")
         MyGui.SetFont("S11 W550 Q2", "Consolas")
 
         PosX := 10

@@ -78,7 +78,7 @@ OnTriggerMacroOnce(tableItem, macro, index) {
     loop cmdArr.Length {
         if (tableItem.KilledArr[index])
             break
-
+        MyCMDReportAciton(cmdArr[A_Index])
         paramArr := StrSplit(cmdArr[A_Index], "_")
         IsMouseMove := StrCompare(paramArr[1], "移动", false) == 0
         IsSearch := StrCompare(paramArr[1], "搜索", false) == 0
