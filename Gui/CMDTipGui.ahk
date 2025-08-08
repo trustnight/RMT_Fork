@@ -23,7 +23,7 @@ class CMDTipGui {
             style := WinGetStyle(this.Gui.Hwnd)
             isVisible := (style & 0x10000000)  ; 0x10000000 = WS_VISIBLE
             if (!isVisible)
-                this.Gui.Show(Format("x{} y{} w{} h{}", this.PosX, this.PosY, this.Width, this.Height))
+                this.Gui.Show(Format("NoActivate x{} y{} w{} h{}", this.PosX, this.PosY, this.Width, this.Height))
         }
 
         this.AddCMD(CMDStr)
@@ -54,7 +54,7 @@ class CMDTipGui {
         "")
 
         ; 显示窗口（固定宽高）
-        MyGui.Show(Format("x{} y{} w{} h{}", this.PosX, this.PosY, this.Width, this.Height))
+        MyGui.Show(Format("NoActivate  x{} y{} w{} h{}", this.PosX, this.PosY, this.Width, this.Height))
     }
 
     AddCMD(CMDStr) {

@@ -75,10 +75,11 @@ OnTriggerMacroOnce(tableItem, macro, index) {
     global MySoftData
     cmdArr := SplitMacro(macro)
 
-    loop cmdArr.Length {
+    for value in cmdArr {
         if (tableItem.KilledArr[index])
             break
-        if (MySoftData.CMDTipCtrl.Value)
+
+        if (MySoftData.CMDTip)
             MyCMDReportAciton(cmdArr[A_Index])
         paramArr := StrSplit(cmdArr[A_Index], "_")
         IsMouseMove := StrCompare(paramArr[1], "移动", false) == 0
@@ -131,7 +132,10 @@ OnTriggerMacroOnce(tableItem, macro, index) {
             OnExVariable(tableItem, cmdArr[A_Index], index)
         }
         else if (IsSubMacro) {
-            OnSubMacro(tableItem, cmdArr[A_Index], index)
+            newCmdArr := OnSubMacro(tableItem, cmdArr[A_Index], index)
+            if (newCmdArr != "") {
+                cmdArr.InsertAt(A_Index + 1, newCmdArr*)
+            }
         }
         else if (IsOperation) {
             OnOperation(tableItem, cmdArr[A_Index], index)
@@ -490,6 +494,10 @@ OnSubMacro(tableItem, cmd, index) {
         macroTableIndex := 3
         macroItem := MySoftData.TableInfo[3]
     }
+    else if (Data.Type == 5) {
+        macroTableIndex := 4
+        macroItem := MySoftData.TableInfo[4]
+    }
 
     redirect := macroItem.SerialArr.Length < Data.Index || macroItem.SerialArr[Data.Index] != Data.MacroSerial
     if (Data.Type != 1 && redirect) {
@@ -504,15 +512,17 @@ OnSubMacro(tableItem, cmd, index) {
 
     macro := macroItem.MacroArr[macroIndex]
     if (Data.CallType == 1) {   ;插入
+        resultMacro := macro
         LoopCount := macroItem.LoopCountArr[macroIndex]
         IsLoop := macroItem.LoopCountArr[macroIndex] == -1
-        loop {
-            if (!IsLoop && LoopCount <= 0)
-                break
-
-            OnTriggerMacroOnce(tableItem, macro, index)
-            LoopCount -= 1
+        if (!IsLoop) {
+            loop LoopCount {
+                if (A_Index == 1)
+                    continue
+                resultMacro .= "," macro
+            }
         }
+        return SplitMacro(resultMacro)
     }
     else if (Data.CallType == 2) {  ;触发
         if (Data.Type != 1 && macroItem.MacroTypeArr[macroIndex] == 1) { ;串联
@@ -521,6 +531,19 @@ OnSubMacro(tableItem, cmd, index) {
         }
         action := OnTriggerMacroKeyAndInit.Bind(macroItem, macro, macroIndex)
         SetTimer(action, -1)
+    }
+}
+
+OnSubTest(tableItem, macro, index, IsLoop, LoopCount) {
+    loop {
+        if (!IsLoop && LoopCount <= 0)
+            break
+
+        if (tableItem.KilledArr[index])
+            return
+
+        OnTriggerMacroOnce(tableItem, macro, index)
+        LoopCount -= 1
     }
 }
 

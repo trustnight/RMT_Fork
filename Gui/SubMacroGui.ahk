@@ -52,6 +52,7 @@ class SubMacroGui {
 
         PosX += 70
         this.TypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX, PosY - 5, 100), ["当前宏", "按键宏", "字串宏",
+            "定时宏",
             "宏"])
         this.TypeCon.Value := 1
         this.TypeCon.OnEvent("Change", (*) => this.OnRefresh())
@@ -107,6 +108,9 @@ class SubMacroGui {
             else if (this.TypeCon.Value == 4) {
                 SerialArr := MySoftData.TableInfo[3].SerialArr
             }
+            else if (this.TypeCon.Value == 5) {
+                SerialArr := MySoftData.TableInfo[4].SerialArr
+            }
 
             if (SerialArr.Length < this.Data.Index || SerialArr[this.Data.Index] != this.Data.MacroSerial) {
                 loop SerialArr.Length {
@@ -114,7 +118,6 @@ class SubMacroGui {
                         this.IndexCon.Value := A_Index
                         break
                     }
-                    
                 }
             }
         }
@@ -157,6 +160,9 @@ class SubMacroGui {
         }
         else if (this.TypeCon.Value == 4) {
             SerialArr := MySoftData.TableInfo[3].SerialArr
+        }
+        else if (this.TypeCon.Value == 5) {
+            SerialArr := MySoftData.TableInfo[4].SerialArr
         }
 
         if (SerialArr != "" && SerialArr.Length < this.IndexCon.Value) {
@@ -215,6 +221,9 @@ class SubMacroGui {
         }
         else if (this.TypeCon.Value == 4) {
             SerialArr := MySoftData.TableInfo[3].SerialArr
+        }
+        else if (this.TypeCon.Value == 5) {
+            SerialArr := MySoftData.TableInfo[4].SerialArr
         }
         this.Data.MacroSerial := SerialArr != "" ? SerialArr[this.Data.Index] : ""
 
