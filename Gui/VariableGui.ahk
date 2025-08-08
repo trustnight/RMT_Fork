@@ -34,8 +34,7 @@ class VariableGui {
     AddGui() {
         MyGui := Gui(, "变量创建指令编辑")
         this.Gui := MyGui
-        MyGui.SetFont(, "Arial")
-        MyGui.SetFont("S10 W550 Q2", "Consolas")
+        MyGui.SetFont("S10 W550 Q2", MySoftData.FontType)
 
         PosX := 10
         PosY := 10

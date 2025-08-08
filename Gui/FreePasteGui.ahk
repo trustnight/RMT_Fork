@@ -22,7 +22,7 @@ class FreePasteGui {
             this.curGui.MarginX := !isImage && isText ? 10 : 0
             this.curGui.MarginY := !isImage && isText ? 10 : 0
             this.curGui.BackColor := "FFFFFF"  ; 默认背景色
-            this.curGui.SetFont("S13 W550 Q2", "Consolas")
+            this.curGui.SetFont("S13 W550 Q2", MySoftData.FontType)
 
             ; 存储原始尺寸
             this.originalWidth := 0

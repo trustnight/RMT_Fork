@@ -34,6 +34,7 @@ OnSaveSetting(*) {
     IniWrite(ToolCheckInfo.RecordMouseRelativeCtrl.Value, IniFile, IniSection, "RecordMouseRelativeValue")
     IniWrite(ToolCheckInfo.OCRTypeCtrl.Value, IniFile, IniSection, "OCRType")
     IniWrite(MySoftData.TabCtrl.Value, IniFile, IniSection, "TableIndex")
+    IniWrite(MySoftData.FontTypeCtrl.Text, IniFile, IniSection, "FontType")
     IniWrite(true, IniFile, IniSection, "HasSaved")
 
     MySoftData.CMDPosX := IniWrite(MySoftData.CMDPosX, IniFile, IniSection, "CMDPosX")
@@ -162,6 +163,10 @@ InitFilePath() {
         DirCreate(A_WorkingDir "\Setting\" MySoftData.CurSettingName)
     }
 
+    if (!DirExist(A_WorkingDir "\Setting\" MySoftData.CurSettingName "\Images\ScreenShot")) {
+        DirCreate(A_WorkingDir "\Setting\" MySoftData.CurSettingName "\Images\ScreenShot")
+    }
+
     if (!DirExist(A_WorkingDir "\Images")) {
         DirCreate(A_WorkingDir "\Images")
     }
@@ -257,6 +262,40 @@ CMDReport(CMDStr) {
     MyCMDTipGui.ShowGui(CMDStr)
 }
 
+ExcuteRMTCMDAction(cmdStr) {
+    if (cmdStr == "截图") {
+        OnToolScreenShot()
+    }
+    else if (cmdStr == "截图提取文本") {
+        OnToolTextFilterScreenShot()
+    }
+    else if (cmdStr == "自由贴") {
+        OnToolFreePaste()
+    }
+    else if (cmdStr == "关闭指令显示窗口") {
+        MyCMDTipGui.Gui.Hide()
+    }
+    else if (cmdStr == "切换指令显示开关") {
+        MySoftData.CMDTipCtrl.Value := !MySoftData.CMDTipCtrl.Value
+        MySoftData.CMDTip := MySoftData.CMDTipCtrl.Value
+        if (!MySoftData.CMDTipCtrl.Value) {
+            style := WinGetStyle(MyCMDTipGui.Gui.Hwnd)
+            isVisible := (style & 0x10000000)  ; 0x10000000 = WS_VISIBLE
+            if (isVisible)
+                MyCMDTipGui.Gui.Hide()
+        }
+    }
+    else if (cmdStr == "全局暂停") {
+        OnPauseHotkey()
+    }
+    else if (cmdStr == "终止所有宏") {
+        OnKillAllMacro()
+    }
+    else if (cmdStr == "重载") {
+        MenuReload()
+    }
+}
+
 ScreenShot(X1, Y1, X2, Y2, FileName) {
     width := X2 - X1
     height := Y2 - Y1
@@ -341,8 +380,6 @@ SelectArea(action) {
     y2 := Max(startY, endY)
     action(x1, y1, x2, y2)
 }
-
-
 
 ; 语言播报
 ; spovice:=ComObject("sapi.spvoice")

@@ -169,6 +169,8 @@ class SoftData {
         this.MacroEditGui := ""
         this.MacroEditCon := ""
         this.RecordToggleCon := ""
+        this.FontType := "Consolas"
+        this.FontList := []
 
         this.MyGui := {}
         this.CurSettingName := ""
@@ -428,3 +430,11 @@ class TimingData {
         this.NextTriggerTime := ""
     }
 }
+
+class RMTCMDData {
+    __New() {
+        this.SerialStr := ""
+        this.OperateType := 1 ; 1截图 2截图中提取文本 3自由贴 4关闭指令显示窗口 5切换指令显示开关 6暂停 7终止所有宏 8重载
+    }
+}
+

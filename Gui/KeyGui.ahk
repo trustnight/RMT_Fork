@@ -32,8 +32,7 @@ class KeyGui {
     AddGui() {
         MyGui := Gui(, "按键指令编辑")
         this.Gui := MyGui
-        MyGui.SetFont(, "Arial")
-        MyGui.SetFont("S10 W550 Q2", "Consolas")
+        MyGui.SetFont("S10 W550 Q2", MySoftData.FontType)
 
         PosX := 20
         PosY := 10

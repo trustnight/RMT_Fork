@@ -284,6 +284,7 @@ LoadMainSetting() {
     MySoftData.WinPosY := IniRead(IniFile, IniSection, "WinPosY", 0)
     MySoftData.IsSavedWinPos := IniRead(IniFile, IniSection, "IsSavedWinPos", false)
     MySoftData.TableIndex := IniRead(IniFile, IniSection, "TableIndex", 1)
+    MySoftData.FontType := IniRead(IniFile, IniSection, "FontType", "Consolas")
 
     MySoftData.CMDPosX := IniRead(IniFile, IniSection, "CMDPosX", A_ScreenWidth - 225)
     MySoftData.CMDPosY := IniRead(IniFile, IniSection, "CMDPosY", 0)
@@ -296,6 +297,21 @@ LoadMainSetting() {
     MySoftData.CMDFontSize := IniRead(IniFile, IniSection, "CMDFontSize", 12)
 
     MySoftData.TableInfo := CreateTableItemArr()
+    SetFontList()
+}
+
+SetFontList() {
+    MySoftData.FontList := []
+    callback := CallbackCreate(EnumFontFamilies)
+    DllCall("gdi32\EnumFontFamilies", "uint", DllCall("GetDC", "uint", 0), "uint", 0, "uint", callback, "ptr", 0)
+    CallbackFree(callback)
+
+    ; Font enumeration callback
+    EnumFontFamilies(lpelf, lpntm, FontType, lP) {
+        if (SubStr(StrGet(lpelf + 28), 1, 1) != "@")
+            MySoftData.FontList.push(StrGet(lpelf + 28))
+        return 1
+    }
 }
 
 LoadCurMacroSetting() {
@@ -1203,7 +1219,7 @@ GetOperationResult(BaseValue, SymbolArr, ValueArr) {
         if (Symbol == "/")
             sum /= Number(ValueArr[index])
         if (Symbol == "^")
-            sum ^= Number(ValueArr[index])
+            sum := sum ** Number(ValueArr[index])
         if (Symbol == "..")
             sum .= ValueArr[index]
     }
@@ -1230,7 +1246,7 @@ GetVariableOperationResult(tableItem, tableIndex, Name, SymbolArr, ValueArr) {
         if (Symbol == "/")
             sum /= Value
         if (Symbol == "^")
-            sum ^= Value
+            sum := sum ** Value
         if (Symbol == "..")
             sum .= Value
     }

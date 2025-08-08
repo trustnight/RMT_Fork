@@ -51,7 +51,7 @@ class CMDTipSettingGui {
     AddGui() {
         MyGui := Gui(, "指令显示编辑器")
         this.Gui := MyGui
-        MyGui.SetFont("S11 W550 Q2", "Consolas")
+        MyGui.SetFont("S11 W550 Q2", MySoftData.FontType)
 
         PosX := 10
         PosY := 15
@@ -129,9 +129,14 @@ class CMDTipSettingGui {
         PosX += 90
         this.LineNumCon := MyGui.Add("Edit", Format("x{} y{} w80", PosX, PosY - 3), "")
 
+        PosX += 140
+        PosX += 90
+        con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY - 3), "恢复默认")
+        con.OnEvent("Click", (*) => this.OnClickRestoreBtn())
+
         PosX := 10
         PosY += 35
-        MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "透明度(0~100):0不可见,100完全不透明")
+        MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "透明度(0~100):0完全透明,100完全不透明")
 
         PosX := 180
         PosY += 40
@@ -171,6 +176,18 @@ class CMDTipSettingGui {
         }
 
         return true
+    }
+
+    OnClickRestoreBtn() {
+        this.PosXCon.Value := A_ScreenWidth - 225
+        this.PosYCon.Value := 0
+        this.WidthCon.Value := 225
+        this.HeightCon.Value := 100
+        this.BGColorCon.Value := "FFFFFF"
+        this.TransparencyCon.Value := 50
+        this.FontSizeCon.Value := 12
+        this.FontColorCon.Value := "000000"
+        this.LineNumCon.Value := 5
     }
 
     OnSureBtnClick() {

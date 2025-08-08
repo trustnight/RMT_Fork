@@ -50,8 +50,7 @@ class SearchGui {
     AddGui() {
         MyGui := Gui(, "搜索指令编辑")
         this.Gui := MyGui
-        MyGui.SetFont(, "Arial")
-        MyGui.SetFont("S10 W550 Q2", "Consolas")
+        MyGui.SetFont("S10 W550 Q2", MySoftData.FontType)
 
         PosX := 10
         PosY := 10
@@ -353,8 +352,7 @@ class SearchGui {
         {
             ; 获取当前日期和时间，用于生成唯一的文件名
             CurrentDateTime := FormatTime(, "HHmmss")
-            filePath := A_WorkingDir "\Images\ScreenShot\" CurrentDateTime ".png"
-            ; MyWinClip.SaveBitmap(filePath, "png")
+            filePath := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\Images\ScreenShot\" CurrentDateTime ".png"
             SaveClipToBitmap(filePath)
             this.ImageCon.Value := filePath
             this.Data.SearchImagePath := filePath
@@ -365,7 +363,7 @@ class SearchGui {
 
     OnScreenShotGetArea(x1, y1, x2, y2) {
         CurrentDateTime := FormatTime(, "HHmmss")
-        filePath := A_WorkingDir "\Images\ScreenShot\" CurrentDateTime ".png"
+        filePath := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\Images\ScreenShot\" CurrentDateTime ".png"
 
         ScreenShot(x1, y1, x2, y2, filePath)
         this.ImageCon.Value := filePath

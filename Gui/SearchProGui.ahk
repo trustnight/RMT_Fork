@@ -66,8 +66,7 @@ class SearchProGui {
     AddGui() {
         MyGui := Gui(, "搜索Pro指令编辑")
         this.Gui := MyGui
-        MyGui.SetFont(, "Arial")
-        MyGui.SetFont("S10 W550 Q2", "Consolas")
+        MyGui.SetFont("S10 W550 Q2", MySoftData.FontType)
 
         PosX := 10
         PosY := 10
@@ -119,7 +118,7 @@ class SearchProGui {
         PosX := 150
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "相似度(%):")
         PosX += 75
-        this.SimilarCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
+        this.SimilarCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 55))
 
         PosX := 330
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "搜索类型:")
@@ -133,29 +132,29 @@ class SearchProGui {
         SplitPosY := PosY
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "起始坐标X:")
         PosX += 75
-        this.StartPosXCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
+        this.StartPosXCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 55))
         PosX := 150
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "起始坐标Y:")
         PosX += 75
-        this.StartPosYCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
+        this.StartPosYCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 55))
         PosY += 30
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "终止坐标X:")
         PosX += 75
-        this.EndPosXCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
+        this.EndPosXCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 55))
         PosX := 150
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "终止坐标Y:")
         PosX += 75
-        this.EndPosYCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
+        this.EndPosYCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 55))
         PosY += 30
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "搜索次数:")
         PosX += 75
-        this.SearchCountCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
+        this.SearchCountCon := MyGui.Add("ComboBox", Format("x{} y{} w{} Center", PosX, PosY - 5, 55))
         PosX := 150
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "每次间隔:")
         PosX += 75
-        this.SearchIntervalCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
+        this.SearchIntervalCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 55))
         PosY += 30
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "鼠标动作:")
@@ -167,12 +166,12 @@ class SearchProGui {
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 120), "移动速度(0~100):")
         PosX += 120
-        this.SpeedCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50), "90")
+        this.SpeedCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 55), "90")
         PosY += 30
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 120), "鼠标点击次数:")
         PosX += 120
-        this.ClickCountCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50), "1")
+        this.ClickCountCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 55), "1")
 
         PosY := SplitPosY
         PosX := 330
@@ -289,7 +288,9 @@ class SearchProGui {
         this.StartPosYCon.Value := this.Data.StartPosY
         this.EndPosXCon.Value := this.Data.EndPosX
         this.EndPosYCon.Value := this.Data.EndPosY
-        this.SearchCountCon.Value := this.Data.SearchCount
+        this.SearchCountCon.Delete()
+        this.SearchCountCon.Add(["无限"])
+        this.SearchCountCon.Text := this.Data.SearchCount == -1 ? "无限" : this.Data.SearchCount
         this.SearchIntervalCon.Value := this.Data.SearchInterval
         this.MouseActionTypeCon.Value := this.Data.MouseActionType
         this.SpeedCon.Value := this.Data.Speed
@@ -347,7 +348,10 @@ class SearchProGui {
             return false
         }
 
-        if (!IsNumber(this.SearchCountCon.Value) || Number(this.SearchCountCon.Value) <= 0) {
+        if (this.SearchCountCon.Text == "无限") {
+
+        }
+        else if (!IsNumber(this.SearchCountCon.Text) || Number(this.SearchCountCon.Text) <= 0) {
             MsgBox("搜索次数请输入大于0的数字")
             return false
         }
@@ -448,8 +452,7 @@ class SearchProGui {
         {
             ; 获取当前日期和时间，用于生成唯一的文件名
             CurrentDateTime := FormatTime(, "HHmmss")
-            filePath := A_WorkingDir "\Images\ScreenShot\" CurrentDateTime ".png"
-            ; MyWinClip.SaveBitmap(filePath, "png")
+            filePath := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\Images\ScreenShot\" CurrentDateTime ".png"
             SaveClipToBitmap(filePath)
             this.ImageCon.Value := filePath
             this.Data.SearchImagePath := filePath
@@ -460,8 +463,7 @@ class SearchProGui {
 
     OnScreenShotGetArea(x1, y1, x2, y2) {
         CurrentDateTime := FormatTime(, "HHmmss")
-        filePath := A_WorkingDir "\Images\ScreenShot\" CurrentDateTime ".png"
-
+        filePath := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\Images\ScreenShot\" CurrentDateTime ".png"
         ScreenShot(x1, y1, x2, y2, filePath)
         this.ImageCon.Value := filePath
         this.Data.SearchImagePath := filePath
@@ -590,7 +592,7 @@ class SearchProGui {
         data.StartPosY := this.StartPosYCon.Value
         data.EndPosX := this.EndPosXCon.Value
         data.EndPosY := this.EndPosYCon.Value
-        data.SearchCount := this.SearchCountCon.Value
+        data.SearchCount := this.SearchCountCon.Text == "无限" ? -1 : this.SearchCountCon.Text
         data.SearchInterval := this.SearchIntervalCon.Value
         data.MouseActionType := this.MouseActionTypeCon.Value
         data.ClickCount := this.ClickCountCon.Value

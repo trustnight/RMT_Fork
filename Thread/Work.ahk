@@ -39,6 +39,7 @@ global MyTriggerSubMacro := WorkTriggerSubMacro
 global MySetGlobalVariable := WorkSetGlobalVariable
 global MyDelGlobalVariable := WorkDelGlobalVariable
 global MyCMDReportAciton := WorkCMDReport
+global MyExcuteRMTCMDAction := WorkExcuteRMTCMDAction
 WorkOpenCVLoadDll()
 
 ; 注册消息

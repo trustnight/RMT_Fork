@@ -53,6 +53,7 @@ global MyTriggerSubMacro := TriggerSubMacro
 global MySetGlobalVariable := SetGlobalVariable
 global MyDelGlobalVariable := DelGlobalVariable
 global MyCMDReportAciton := CMDReport
+global MyExcuteRMTCMDAction := ExcuteRMTCMDAction
 
 LoadMainSetting()       ;加载配置
 InitFilePath()          ;初始化文件路径

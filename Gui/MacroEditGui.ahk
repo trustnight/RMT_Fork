@@ -14,6 +14,7 @@
 #Include OperationGui.ahk
 #Include BGMouseGui.ahk
 #Include ExVariableGui.ahk
+#Include RMTCMDGui.ahk
 
 class MacroEditGui {
     __new() {
@@ -115,6 +116,10 @@ class MacroEditGui {
         this.BGMouseGui.MacroEditGui := this
         this.BGMouseGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
         this.SubGuiMap.Set("后台鼠标", this.BGMouseGui)
+
+        this.RMTCMDGui := RMTCMDGui()
+        this.RMTCMDGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
+        this.SubGuiMap.Set("RMT指令", this.RMTCMDGui)
     }
 
     GetSubGuiSymbol(subGui) {
@@ -145,8 +150,7 @@ class MacroEditGui {
     AddGui() {
         MyGui := Gui(, "指令编辑器")
         this.Gui := MyGui
-        MyGui.SetFont(, "Arial")
-        MyGui.SetFont("S10 W550 Q2", "Consolas")
+        MyGui.SetFont("S10 W550 Q2", MySoftData.FontType)
 
         PosX := 10
         PosY := 10
@@ -269,6 +273,12 @@ class MacroEditGui {
         btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.BGMouseGui))
         this.CmdBtnConMap.Set("后台鼠标", btnCon)
+
+        PosX += 100
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 80), "RMT指令")
+        btnCon.SetFont((Format("S{} W{} Q{}", 12, 400, 5)))
+        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.RMTCMDGui))
+        this.CmdBtnConMap.Set("RMT指令", btnCon)
 
         PosX := 20
         PosY += 110

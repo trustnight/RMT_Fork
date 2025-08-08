@@ -78,7 +78,8 @@ OnTriggerMacroOnce(tableItem, macro, index) {
     loop cmdArr.Length {
         if (tableItem.KilledArr[index])
             break
-        MyCMDReportAciton(cmdArr[A_Index])
+        if (MySoftData.CMDTipCtrl.Value)
+            MyCMDReportAciton(cmdArr[A_Index])
         paramArr := StrSplit(cmdArr[A_Index], "_")
         IsMouseMove := StrCompare(paramArr[1], "移动", false) == 0
         IsSearch := StrCompare(paramArr[1], "搜索", false) == 0
@@ -95,6 +96,7 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         IsSubMacro := StrCompare(paramArr[1], "子宏", false) == 0
         IsOperation := StrCompare(paramArr[1], "运算", false) == 0
         IsBGMouse := StrCompare(paramArr[1], "后台鼠标", false) == 0
+        IsRMT := StrCompare(paramArr[1], "RMT指令", false) == 0
         if (IsInterval) {
             OnInterval(tableItem, cmdArr[A_Index], index)
         }
@@ -137,6 +139,9 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         else if (IsBGMouse) {
             OnBGMouse(tableItem, cmdArr[A_Index], index)
         }
+        else if (IsRMT) {
+            OnRMTCMD(tableItem, cmdArr[A_Index], index)
+        }
     }
 }
 
@@ -144,37 +149,9 @@ OnSearch(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
     dataFile := StrCompare(paramArr[1], "搜索", false) == 0 ? SearchFile : SearchProFile
     Data := GetMacroCMDData(dataFile, paramArr[2])
-    searchCount := Integer(Data.SearchCount)
-    searchInterval := Integer(Data.SearchInterval)
-    tableItem.SuccessClearActionArr[index].Set(Data.SerialStr, [])
-    MacroType := tableItem.MacroTypeArr[index]
-
-    LastSumTime := 0
-    loop searchCount {
-        if (!tableItem.SuccessClearActionArr[index].Has(Data.SerialStr)) ;第一次搜索成功就退出
-            break
-
-        if (tableItem.KilledArr[index])
-            break
-
-        FloatInterval := GetFloatTime(searchInterval, MySoftData.PreIntervalFloat)
-        if (MacroType == 1) {
-            OnSearchOnce(tableItem, Data, index, A_Index == searchCount)
-            if (searchCount != A_Index)
-                Sleep(FloatInterval)
-        }
-        else if (MacroType == 2) {
-            if (A_Index == 1) {
-                OnSearchOnce(tableItem, Data, index, A_Index == searchCount)
-            }
-            else {
-                action := OnSearchOnce.Bind(tableItem, Data, index, A_Index == searchCount)
-                tableItem.SuccessClearActionArr[index][Data.SerialStr].Push(action)
-                SetTimer action, -LastSumTime
-            }
-            LastSumTime := LastSumTime + FloatInterval
-        }
-    }
+    if (tableItem.KilledArr[index])
+        return
+    OnSearchOnce(tableItem, Data, index, 1)
 }
 
 ; 定义OpenCV图片搜索函数原型
@@ -184,11 +161,15 @@ FindImage(targetPath, searchX, searchY, searchW, searchH, matchThreshold, x, y) 
         "Int", matchThreshold, "Int*", x, "Int*", y, "Cdecl Int")
 }
 
-OnSearchOnce(tableItem, Data, index, isFinally) {
+OnSearchOnce(tableItem, Data, index, curCount) {
+    if (tableItem.KilledArr[index])
+        return
+
     X1 := Integer(Data.StartPosX)
     Y1 := Integer(Data.StartPosY)
     X2 := Integer(Data.EndPosX)
     Y2 := Integer(Data.EndPosY)
+    isFinally := curCount == Data.searchCount
     VariableMap := tableItem.VariableMapArr[index]
     MacroType := tableItem.MacroTypeArr[index]
 
@@ -217,17 +198,8 @@ OnSearchOnce(tableItem, Data, index, isFinally) {
         found := CheckScreenContainText(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, text, Data.OCRType)
     }
 
-    if (found || isFinally) {
-        ;清除后续的搜索和搜索记录
-        if (tableItem.SuccessClearActionArr[index].Has(Data.SerialStr)) {
-            SuccessClearActionArr := tableItem.SuccessClearActionArr[index].Get(Data.SerialStr)
-            loop SuccessClearActionArr.Length {
-                action := SuccessClearActionArr[A_Index]
-                SetTimer action, 0
-            }
-            tableItem.SuccessClearActionArr[index].Delete(Data.SerialStr)
-        }
-    }
+    if (tableItem.KilledArr[index])
+        return
 
     if (found) {
         ;自动移动鼠标
@@ -274,9 +246,7 @@ OnSearchOnce(tableItem, Data, index, isFinally) {
             SetTimer(action, -1)
         }
     }
-
-    if (isFinally && !found) {
-
+    else if (isFinally) {
         if (Data.ResultToggle) {
             VariableMap[Data.ResultSaveName] := Data.FalseValue
         }
@@ -290,6 +260,18 @@ OnSearchOnce(tableItem, Data, index, isFinally) {
         else if (MacroType == 2) {
             action := OnTriggerMacroOnce.Bind(tableItem, Data.FalseCommandStr, index)
             SetTimer(action, -1)
+        }
+    }
+    else {
+        FloatInterval := GetFloatTime(Data.SearchInterval, MySoftData.PreIntervalFloat)
+        curCount++
+        if (MacroType == 1) {
+            Sleep(FloatInterval)
+            OnSearchOnce(tableItem, Data, index, curCount)
+        }
+        else if (MacroType == 2) {
+            action := OnSearchOnce.Bind(tableItem, Data, index, curCount)
+            SetTimer action, -FloatInterval
         }
     }
 }
@@ -756,6 +738,11 @@ OnMouseMove(tableItem, cmd, index) {
     else {
         MouseMove(PosX, PosY, Speed)
     }
+}
+
+OnRMTCMD(tableItem, cmd, index) {
+    paramArr := StrSplit(cmd, "_")
+    MyExcuteRMTCMDAction(paramArr[2])
 }
 
 OnInterval(tableItem, cmd, index) {

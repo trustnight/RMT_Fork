@@ -42,8 +42,7 @@ class ExVariableGui {
     AddGui() {
         MyGui := Gui(, "变量创建指令编辑")
         this.Gui := MyGui
-        MyGui.SetFont(, "Arial")
-        MyGui.SetFont("S10 W550 Q2", "Consolas")
+        MyGui.SetFont("S10 W550 Q2", MySoftData.FontType)
 
         PosX := 10
         PosY := 10
@@ -261,6 +260,11 @@ class ExVariableGui {
     }
 
     CheckIfValid() {
+        if (!InStr(this.ExtractStrCon.Value, "&x") && !InStr(this.ExtractStrCon.Value, "&c")) {
+            MsgBox("提取文本：不包含&x 或 &c 无法提取内容到变量中")
+            return false
+        }
+
         return true
     }
 
@@ -274,7 +278,53 @@ class ExVariableGui {
         tableItem.SuccessClearActionArr[1] := Map()
         tableItem.VariableMapArr[1] := Map()
 
-        ; OnVariable(tableItem, CommandStr, 1)
+        this.TestExVariable(this.Data)
+    }
+
+    TestExVariable(Data) {
+        X1 := Data.StartPosX
+        Y1 := Data.StartPosY
+        X2 := Data.EndPosX
+        Y2 := Data.EndPosY
+        if (Data.ExtractType == 1) {
+            TextObjs := GetScreenTextObjArr(X1, Y1, X2, Y2, Data.OCRType)
+            TextObjs := TextObjs == "" ? [] : TextObjs
+        }
+        else {
+            if (!IsClipboardText())
+                return
+            TextObjs := []
+            obj := Object()
+            obj.Text := A_Clipboard
+            TextObjs.Push(obj)
+        }
+
+        NameArr := []
+        ValueArr := []
+        for _, value in TextObjs {
+            baseVariableArr := ExtractNumbers(value.Text, Data.ExtractStr)
+            if (baseVariableArr == "")
+                continue
+
+            loop baseVariableArr.Length {
+                if (Data.ToggleArr[A_Index]) {
+                    NameArr.Push(Data.VariableArr[A_Index])
+                    ValueArr.Push(baseVariableArr[A_Index])
+                }
+            }
+            break
+        }
+
+        if (NameArr.Length == 0) {
+            MsgBox("变量提取失败")
+        }
+        else {
+            tipStr := "已提取以下变量`n"
+            loop NameArr.Length {
+                tipStr .= NameArr[A_Index] " = " ValueArr[A_Index] "`n"
+            }
+            MsgBox(tipStr)
+        }
     }
 
     GetCommandStr() {

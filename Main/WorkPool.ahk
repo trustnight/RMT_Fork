@@ -124,6 +124,7 @@ class WorkPool {
         isSetVari := StrCompare(paramArr[1], "SetVari", false) == 0
         isDelVari := StrCompare(paramArr[1], "DelVari", false) == 0
         isReport := StrCompare(paramArr[1], "Report", false) == 0
+        isRMT := StrCompare(paramArr[1], "RMT", false) == 0
         if (isSetVari) {
             SetGlobalVariable(paramArr[2], paramArr[3], false)
         }
@@ -133,6 +134,9 @@ class WorkPool {
         else if (isReport) {
             CMDStr := SubStr(Cmd, 8)
             CMDReport(CMDStr)
+        }
+        else if (isRMT) {
+            MyExcuteRMTCMDAction(paramArr[2])
         }
     }
 }

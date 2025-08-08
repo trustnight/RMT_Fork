@@ -38,8 +38,7 @@ class TimingGui {
     AddGui() {
         MyGui := Gui(, "定时编辑器")
         this.Gui := MyGui
-        MyGui.SetFont(, "Arial")
-        MyGui.SetFont("S11 W550 Q2", "Consolas")
+        MyGui.SetFont("S11 W550 Q2", MySoftData.FontType)
 
         PosX := 10
         PosY := 15

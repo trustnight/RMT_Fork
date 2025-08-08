@@ -3,8 +3,7 @@ InitUI() {
     global MySoftData
     MyGui := Gui()
     MyGui.Title := "RMTv1.0.7"
-    MyGui.SetFont(, "Arial")
-    MyGui.SetFont("S10 W550 Q2", "Consolas")
+    MyGui.SetFont("S10 W550 Q2", MySoftData.FontType)
     MySoftData.MyGui := MyGui
 
     AddUI()
@@ -523,14 +522,20 @@ AddSettingUI(index) {
 
     MySoftData.CMDTipCtrl := MyGui.Add("CheckBox", Format("x{} y{}", posX + 315, posY), "")
     MySoftData.CMDTipCtrl.Value := MySoftData.CMDTip
-    con := MyGui.Add("Button", Format("x{} y{}", posX + 315 + 15, posY - 5), "指令提示")
+    con := MyGui.Add("Button", Format("x{} y{}", posX + 315 + 15, posY - 5), "指令显示")
     con.OnEvent("Click", (*)=> OnEditCMDTipGui())
 
     posY += 40
     MyGui.Add("GroupBox", Format("x{} y{} w870 h100", posX + 10, posY), "下拉框选项")
     posY += 30
-    MyGui.Add("Text", Format("x{} y{}", posX + 25, posY), "软件截图方式：")
-    MySoftData.ScreenShotTypeCtrl := MyGui.Add("DropDownList", Format("x{} y{} w100", posX + 120, posY - 5), ["微软截图",
+    MyGui.Add("Text", Format("x{} y{}", posX + 25, posY), "软件字体：")
+    MySoftData.FontTypeCtrl := MyGui.Add("DropDownList", Format("x{} y{} w180", posX + 100, posY - 5), [])
+    MySoftData.FontTypeCtrl.Delete()
+    MySoftData.FontTypeCtrl.Add(MySoftData.FontList)
+    MySoftData.FontTypeCtrl.Text := MySoftData.FontType
+
+    MyGui.Add("Text", Format("x{} y{}", posX + 315, posY), "软件截图方式：")
+    MySoftData.ScreenShotTypeCtrl := MyGui.Add("DropDownList", Format("x{} y{} w100", posX + 410, posY - 5), ["微软截图",
         "RMT截图"])
     MySoftData.ScreenShotTypeCtrl.Value := MySoftData.ScreenShotType
 

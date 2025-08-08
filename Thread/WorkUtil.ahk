@@ -116,7 +116,12 @@ WorkDelGlobalVariable(Name) {
     MsgSendHandler(str)
 }
 
-WorkCMDReport(CMDStr) {
-    str := Format("Report_{}", CMDStr)
+WorkCMDReport(cmdStr) {
+    str := Format("Report_{}", cmdStr)
+    MsgSendHandler(str)
+}
+
+WorkExcuteRMTCMDAction(cmdStr) {
+    str := Format("RMT_{}", cmdStr)
     MsgSendHandler(str)
 }

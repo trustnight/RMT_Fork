@@ -45,7 +45,7 @@ class CMDTipGui {
         MyGui := Gui("+AlwaysOnTop -Caption +ToolWindow")
         this.Gui := MyGui
         MyGui.BackColor := this.BGColor
-        MyGui.SetFont(Format("S{} W550 Q2 C{}", this.FontSize, this.FontColor), "Consolas")
+        MyGui.SetFont(Format("S{} W550 Q2 C{}", this.FontSize, this.FontColor), MySoftData.FontType)
         MyGui.Opt("+E0x20")  ; 点击穿透
         WinSetTransparent(this.Transparency, MyGui)  ; 设置透明度
 
