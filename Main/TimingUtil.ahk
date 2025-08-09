@@ -23,6 +23,10 @@ CheckIfHasTiming(&tableIndex) {
         if (tableItem.MacroArr.Length < index || tableItem.MacroArr[index] == "")
             continue
 
+        Data := GetMacroCMDData(TimingFile, tableItem.TimingSerialArr[index])
+        if (Data == "" || ObjOwnPropCount(Data) == 0)
+            continue
+
         return true
     }
     return false
@@ -38,6 +42,8 @@ SetTimingNextTime(tableItem) {
 
         Data := GetMacroCMDData(TimingFile, tableItem.TimingSerialArr[index])
         CurTime := FormatTime(A_Now, "yyyyMMddHHmm")
+        if (Data == "" || ObjOwnPropCount(Data) == 0)
+            continue
         if (Data.EndTime != "" && Data.EndTime >= CurTime)
             continue
 
@@ -86,6 +92,8 @@ TimingChecker() {
 
         Data := GetMacroCMDData(TimingFile, tableItem.TimingSerialArr[index])
         CurTime := FormatTime(A_Now, "yyyyMMddHHmm")
+        if (Data == "" || ObjOwnPropCount(Data) == 0)
+            continue
         if (Data.NextTriggerTime == "" || CurTime < Data.NextTriggerTime)
             continue
     
