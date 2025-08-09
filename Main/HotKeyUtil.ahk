@@ -540,10 +540,11 @@ OnSubMacro(tableItem, cmd, index) {
     else if (Data.CallType == 2) {  ;触发
         if (Data.Type != 1 && macroItem.MacroTypeArr[macroIndex] == 1) { ;串联
             MyTriggerSubMacro(macroTableIndex, macroIndex)
-            return
+            return ""
         }
         action := OnTriggerMacroKeyAndInit.Bind(macroItem, macro, macroIndex)
         SetTimer(action, -1)
+        return ""
     }
 }
 
