@@ -346,6 +346,7 @@ class StopData {
         this.SerialStr := ""
         this.StopType := 1
         this.StopIndex := 1
+        this.MacroSerial := "009973"
     }
 }
 

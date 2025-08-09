@@ -461,10 +461,23 @@ OnStop(tableItem, cmd, index) {
     else if (Data.StopType == 3) {      ;终止字串宏
         tableIndex := 2
     }
-    else if (Data.StopType == 4) {      ;终止子宏
+    else if (Data.StopType == 4) {      ;终止定时宏
         tableIndex := 3
     }
+    else if (Data.StopType == 5) {      ;终止宏
+        tableIndex := 4
+    }
     stopTableItem := MySoftData.TableInfo[tableIndex]
+    redirect := stopTableItem.SerialArr.Length < Data.StopIndex || stopTableItem.SerialArr[Data.StopIndex] != Data.MacroSerial
+    if (redirect) {
+        loop stopTableItem.ModeArr.Length {
+            if (Data.MacroSerial == stopTableItem.SerialArr[A_Index]) {
+                tableIndex := A_Index
+                break
+            }
+        }
+    }
+
     isWork := stopTableItem.IsWorkArr[Data.StopIndex]
     if (isWork || MySoftData.isWork) {
         MySubMacroStopAction(tableIndex, Data.StopIndex)

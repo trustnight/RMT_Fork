@@ -51,7 +51,7 @@ class StopGui {
 
         PosX += 70
         this.StopTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX, PosY - 5, 100), ["当前宏", "按键宏", "字串宏",
-            "宏"])
+            "定时宏", "宏"])
         this.StopTypeCon.Value := 1
         this.StopTypeCon.OnEvent("Change", (*) => this.OnRefresh())
 
@@ -78,6 +78,31 @@ class StopGui {
 
         this.StopTypeCon.Value := this.Data.StopType
         this.StopIndexCon.Value := this.Data.StopIndex
+
+        if (this.StopTypeCon.Value != 1) {
+            SerialArr := ""
+            if (this.StopTypeCon.Value == 2) {
+                SerialArr := MySoftData.TableInfo[1].SerialArr
+            }
+            else if (this.StopTypeCon.Value == 3) {
+                SerialArr := MySoftData.TableInfo[2].SerialArr
+            }
+            else if (this.StopTypeCon.Value == 4) {
+                SerialArr := MySoftData.TableInfo[3].SerialArr
+            }
+            else if (this.StopTypeCon.Value == 5) {
+                SerialArr := MySoftData.TableInfo[4].SerialArr
+            }
+
+            if (SerialArr.Length < this.Data.StopIndex || SerialArr[this.Data.StopIndex] != this.Data.MacroSerial) {
+                loop SerialArr.Length {
+                    if (SerialArr[A_Index] == this.Data.MacroSerial) {
+                        this.StopIndexCon.Value := A_Index
+                        break
+                    }
+                }
+            }
+        }
     }
 
     ToggleFunc(state) {
@@ -108,6 +133,25 @@ class StopGui {
     }
 
     CheckIfValid() {
+        SerialArr := ""
+        if (this.StopTypeCon.Value == 2) {
+            SerialArr := MySoftData.TableInfo[1].SerialArr
+        }
+        else if (this.StopTypeCon.Value == 3) {
+            SerialArr := MySoftData.TableInfo[2].SerialArr
+        }
+        else if (this.StopTypeCon.Value == 4) {
+            SerialArr := MySoftData.TableInfo[3].SerialArr
+        }
+        else if (this.StopTypeCon.Value == 5) {
+            SerialArr := MySoftData.TableInfo[4].SerialArr
+        }
+
+        if (SerialArr != "" && SerialArr.Length < this.StopIndexCon.Value) {
+            MsgBox("配置无效，序号不正确")
+            return false
+        }
+
         return true
     }
 
@@ -148,6 +192,21 @@ class StopGui {
     SaveStopData() {
         this.Data.StopType := this.StopTypeCon.Value
         this.Data.StopIndex := this.StopIndexCon.value
+
+        SerialArr := ""
+        if (this.StopTypeCon.Value == 2) {
+            SerialArr := MySoftData.TableInfo[1].SerialArr
+        }
+        else if (this.StopTypeCon.Value == 3) {
+            SerialArr := MySoftData.TableInfo[2].SerialArr
+        }
+        else if (this.StopTypeCon.Value == 4) {
+            SerialArr := MySoftData.TableInfo[3].SerialArr
+        }
+        else if (this.StopTypeCon.Value == 5) {
+            SerialArr := MySoftData.TableInfo[4].SerialArr
+        }
+        this.Data.MacroSerial := SerialArr != "" ? SerialArr[this.Data.StopIndex] : ""
 
         saveStr := JSON.stringify(this.Data, 0)
         IniWrite(saveStr, StopFile, IniSection, this.Data.SerialStr)
