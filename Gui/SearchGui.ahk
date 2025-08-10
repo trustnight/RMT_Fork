@@ -10,7 +10,6 @@ class SearchGui {
         this.SetAreaAction := (x1, y1, x2, y2) => this.OnSetSearchArea(x1, y1, x2, y2)
         this.CheckClipboardAction := () => this.CheckClipboard()
         this.SelectToggleCon := ""
-        this.MacroEditGui := ""
         this.ImageTipCon := ""
         this.ColorTipCon := ""
         this.TextTipCon := ""
@@ -196,8 +195,6 @@ class SearchGui {
         cmdArr := cmd != "" ? StrSplit(cmd, "_") : []
         this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : GetSerialStr("Search")
         this.RemarkCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : ""
-        macro := this.MacroEditGui.GetFinallyMacroStr()
-        VariableArr := GetSelectVariableObjArr(macro)
 
         this.Data := this.GetCompareData(this.SerialStr)
         this.SearchTypeCon.Value := this.Data.SearchType
@@ -488,5 +485,8 @@ class SearchGui {
         data.FalseCommandStr := this.UnFoundCommandStrCon.Value
         saveStr := JSON.stringify(data, 0)
         IniWrite(saveStr, SearchFile, IniSection, data.SerialStr)
+        if (MySoftData.DataCacheMap.Has(this.Data.SerialStr)) {
+            MySoftData.DataCacheMap.Delete(this.Data.SerialStr)
+        }
     }
 }

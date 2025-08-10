@@ -28,6 +28,7 @@
 #Include Main\CompareUtil.ahk
 #Include Main\TimingUtil.ahk
 #Include Main\BindUtil.ahk
+#Include Main\VariableUtil.ahk
 SetWorkingDir A_ScriptDir
 DetectHiddenWindows true
 Persistent
@@ -61,9 +62,10 @@ LoadCurMacroSetting()   ;加载当前配置宏
 EditListen()        ;右键编辑数据监听
 InitData()          ;初始化软件数据
 InitUI()            ;初始化UI
+SetGlobalVar()      ;缓存全局变量
 BindSave()          ;绑定保存方法
 BindKey()           ;绑定快捷键
-TimingCheck() ;轮询检测触发
+TimingCheck()       ;轮询检测触发
 ;放后面初始化，因为这初始化时间比较长
 global MyWorkPool := WorkPool()
 global MyChineseOcr := RapidOcr(A_ScriptDir)

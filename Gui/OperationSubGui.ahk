@@ -4,7 +4,7 @@ class OperationSubGui {
     __new() {
         this.Gui := ""
         this.SureBtnAction := ""
-        this.MacroEditGui := ""
+        this.VariableObjArr := []
         this.FocusCon := ""
         this.Index := 0
         this.Name := ""
@@ -24,15 +24,14 @@ class OperationSubGui {
         else {
             this.AddGui()
         }
-        macro := this.MacroEditGui.GetFinallyMacroStr()
-        VariableArr := GetSelectVariableObjArr(macro)
+
         this.Index := index
         this.Name := Name
         this.SymbolArr := SymbolArr
         this.ValueArr := ValurArr
 
         this.OperaVariableCon.Delete()
-        this.OperaVariableCon.Add(VariableArr)
+        this.OperaVariableCon.Add(this.VariableObjArr)
         this.OperaVariableCon.Text := "10"
         if (IsNumber(this.Name)) {
             this.BaseValueCon.Value := this.Name

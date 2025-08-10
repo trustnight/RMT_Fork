@@ -208,6 +208,7 @@ class SoftData {
         this.GroupFixedCons := []
         this.FixedCons := []
         this.SB := ""
+        this.GlobalVariMap := Map() ;UI下拉显示变量
         this.VariableMap := Map()
 
         ;显示指令提示配置

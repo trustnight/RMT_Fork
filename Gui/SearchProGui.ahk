@@ -5,12 +5,12 @@ class SearchProGui {
     __new() {
         this.Gui := ""
         this.SureBtnAction := ""
+        this.VariableObjArr := []
         this.RemarkCon := ""
         this.PosAction := () => this.RefreshMouseInfo()
         this.SetAreaAction := (x1, y1, x2, y2) => this.OnSetSearchArea(x1, y1, x2, y2)
         this.CheckClipboardAction := () => this.CheckClipboard()
         this.SelectToggleCon := ""
-        this.MacroEditGui := ""
         this.Data := ""
         this.MousePosCon := ""
         this.MouseColorCon := ""
@@ -271,8 +271,6 @@ class SearchProGui {
         cmdArr := cmd != "" ? StrSplit(cmd, "_") : []
         this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : GetSerialStr("Search")
         this.RemarkCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : ""
-        macro := this.MacroEditGui.GetFinallyMacroStr()
-        VariableArr := GetSelectVariableObjArr(macro)
 
         this.Data := this.GetCompareData(this.SerialStr)
         this.SearchTypeCon.Value := this.Data.SearchType
@@ -299,16 +297,16 @@ class SearchProGui {
         this.UnFoundCommandStrCon.Value := this.Data.FalseCommandStr
         this.ResultToggleCon.Value := this.Data.ResultToggle
         this.ResultSaveNameCon.Delete()
-        this.ResultSaveNameCon.Add(VariableArr)
+        this.ResultSaveNameCon.Add(this.VariableObjArr)
         this.ResultSaveNameCon.Text := this.Data.ResultSaveName
         this.TrueValueCon.Value := this.Data.TrueValue
         this.FalseValueCon.Value := this.Data.FalseValue
         this.CoordToogleCon.Value := this.Data.CoordToogle
         this.CoordXNameCon.Delete()
-        this.CoordXNameCon.Add(VariableArr)
+        this.CoordXNameCon.Add(this.VariableObjArr)
         this.CoordXNameCon.Text := this.Data.CoordXName
         this.CoordYNameCon.Delete()
-        this.CoordYNameCon.Add(VariableArr)
+        this.CoordYNameCon.Add(this.VariableObjArr)
         this.CoordYNameCon.Text := this.Data.CoordYName
         this.OnChangeSearchType()
     }
@@ -608,5 +606,8 @@ class SearchProGui {
         data.CoordYName := this.CoordYNameCon.Text
         saveStr := JSON.stringify(data, 0)
         IniWrite(saveStr, SearchProFile, IniSection, data.SerialStr)
+        if (MySoftData.DataCacheMap.Has(this.Data.SerialStr)) {
+            MySoftData.DataCacheMap.Delete(this.Data.SerialStr)
+        }
     }
 }

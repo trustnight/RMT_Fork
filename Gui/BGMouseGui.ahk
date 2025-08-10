@@ -4,7 +4,7 @@ class BGMouseGui {
     __new() {
         this.Gui := ""
         this.SureBtnAction := ""
-        this.MacroEditGui := ""
+        this.VariableObjArr := []
         this.RemarkCon := ""
         this.RefreshInfoAction := () => this.RefreshInfo()
 
@@ -132,18 +132,16 @@ class BGMouseGui {
         this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : GetSerialStr("BGMouse")
         this.RemarkCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : ""
         this.Data := this.GetBGMouseData(this.SerialStr)
-        macro := this.MacroEditGui.GetFinallyMacroStr()
-        VariableObjArr := GetSelectVariableObjArr(macro)
 
         this.TargetTitleCon.Value := this.Data.TargetTitle
         this.OperateTypeCon.Value := this.Data.OperateType
         this.MouseTypeCon.Value := this.Data.MouseType
         this.ClickTimeCon.Value := this.Data.ClickTime
         this.PosVarXCon.Delete()
-        this.PosVarXCon.Add(VariableObjArr)
+        this.PosVarXCon.Add(this.VariableObjArr)
         this.PosVarXCon.Text := this.Data.PosVarX
         this.PosVarYCon.Delete()
-        this.PosVarYCon.Add(VariableObjArr)
+        this.PosVarYCon.Add(this.VariableObjArr)
         this.PosVarYCon.Text := this.Data.PosVarY
         this.ScrollVCon.Value := this.Data.ScrollV
         this.ScrollHCon.Value := this.Data.ScrollH

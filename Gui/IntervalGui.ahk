@@ -3,8 +3,8 @@
 class IntervalGui {
     __new() {
         this.Gui := ""
-        this.MacroEditGui := ""
         this.SureBtnAction := ""
+        this.VariableObjArr := []
         this.TimeVarCon := ""
     }
 
@@ -20,11 +20,8 @@ class IntervalGui {
 
     Init(cmd) {
         cmdArr := cmd != "" ? StrSplit(cmd, "_") : []
-        macro := this.MacroEditGui.GetFinallyMacroStr()
-        VariableObjArr := GetSelectVariableObjArr(macro)
-
         this.TimeVarCon.Delete()
-        this.TimeVarCon.Add(VariableObjArr)
+        this.TimeVarCon.Add(this.VariableObjArr)
         this.TimeVarCon.Text := "空"
         if (cmdArr.Length == 2) {
             this.TimeVarCon.Text := cmdArr[2]

@@ -21,23 +21,22 @@ class MacroEditGui {
         this.Gui := ""
         this.ShowSaveBtn := false
         this.SureFocusCon := ""
-        this.checkAction := () => this.CheckIfChangeLineNum()
+        this.VariableObjArr := []
         this.isContextEdit := false
         this.RecordToggleCon := ""
 
         this.SureBtnAction := ""
         this.SaveBtnAction := ""
         this.SaveBtnCtrl := {}
-        this.MacroEditStrCon := {}
         this.CmdBtnConMap := map()
         this.SubGuiMap := map()
         this.NeedCommandInterval := false
-        this.EditModeType := 1
-        this.EditModeCon := ""
+        this.MacroTreeViewCon := ""
+        this.EditModeType := 1  ;1添加指令 2修改当前指令 3向上插入指令 4 向下插入指令
+        this.CutItemID := ""  ;当前操作itemID
+        this.LastItemID := "" ;最后的itemID
         this.RecordMacroCon := ""
         this.DefaultFocusCon := ""
-        this.CurEditLineNum := 0
-        this.EditLineNum := 0
         this.SubMacroLastIndex := 0
 
         this.RecordKeyboardArr := []
@@ -49,7 +48,6 @@ class MacroEditGui {
     InitSubGui() {
         this.IntervalGui := IntervalGui()
         this.IntervalGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
-        this.IntervalGui.MacroEditGui := this
         this.SubGuiMap.Set("间隔", this.IntervalGui)
 
         this.KeyGui := KeyGui()
@@ -61,7 +59,6 @@ class MacroEditGui {
         this.SubGuiMap.Set("移动", this.MoveMoveGui)
 
         this.SearchGui := SearchGui()
-        this.SearchGui.MacroEditGui := this
         this.SearchGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
         this.SubGuiMap.Set("搜索", this.SearchGui)
 
@@ -80,12 +77,10 @@ class MacroEditGui {
         this.SubGuiMap.Set("如果", this.CompareGui)
 
         this.MMProGui := MMProGui()
-        this.MMProGui.MacroEditGui := this
         this.MMProGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
         this.SubGuiMap.Set("移动Pro", this.MMProGui)
 
         this.OutputGui := OutputGui()
-        this.OutputGui.MacroEditGui := this
         this.OutputGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
         this.SubGuiMap.Set("输出", this.OutputGui)
 
@@ -94,12 +89,10 @@ class MacroEditGui {
         this.SubGuiMap.Set("终止", this.StopGui)
 
         this.VariableGui := VariableGui()
-        this.VariableGui.MacroEditGui := this
         this.VariableGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
         this.SubGuiMap.Set("变量", this.VariableGui)
 
         this.ExVariableGui := ExVariableGui()
-        this.ExVariableGui.MacroEditGui := this
         this.ExVariableGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
         this.SubGuiMap.Set("变量提取", this.ExVariableGui)
 
@@ -108,26 +101,16 @@ class MacroEditGui {
         this.SubGuiMap.Set("子宏", this.SubMacroGui)
 
         this.OperationGui := OperationGui()
-        this.OperationGui.MacroEditGui := this
         this.OperationGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
         this.SubGuiMap.Set("运算", this.OperationGui)
 
         this.BGMouseGui := BGMouseGui()
-        this.BGMouseGui.MacroEditGui := this
         this.BGMouseGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
         this.SubGuiMap.Set("后台鼠标", this.BGMouseGui)
 
         this.RMTCMDGui := RMTCMDGui()
         this.RMTCMDGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
         this.SubGuiMap.Set("RMT指令", this.RMTCMDGui)
-    }
-
-    GetSubGuiSymbol(subGui) {
-        for key, value in this.SubGuiMap {
-            if (value == subGui)
-                return key
-        }
-        return ""
     }
 
     ShowGui(CommandStr, ShowSaveBtn) {
@@ -139,12 +122,8 @@ class MacroEditGui {
             this.AddGui()
         }
 
-        MySoftData.MacroEditGui := this
-        MySoftData.MacroEditCon := this.MacroEditStrCon
         MySoftData.RecordToggleCon := this.RecordMacroCon
         this.Init(CommandStr, ShowSaveBtn)
-        this.RefreshCommandBtn()
-        this.ToggleFunc(true)
     }
 
     AddGui() {
@@ -156,17 +135,10 @@ class MacroEditGui {
         PosY := 10
         MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", PosX, PosY, 800, 170), "当前宏指令")
         PosY += 15
-        this.MacroEditStrCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX + 5, PosY, 790, 150), "")
+        this.MacroTreeViewCon := MyGui.Add("TreeView", Format("x{} y{} w{} h{}", PosX + 5, PosY, 790, 150), "")
 
         PosX := 20
         PosY += 160
-        this.DefaultFocusCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "编辑模式：")
-        PosX += 80
-        this.EditModeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} h{}", PosX, PosY - 3, 150, 100), ["末尾追加指令",
-            "调整光标行指令", "光标行首插入指令"])
-        this.EditModeCon.OnEvent("Change", (*) => this.OnChangeEditMode())
-
-        PosX += 180
         this.RecordMacroCon := MyGui.Add("Checkbox", Format("x{} y{} w{} h{}", PosX, PosY - 3, 110, 20), "指令并联录制")
         this.RecordMacroCon.Value := false
         this.RecordMacroCon.OnEvent("Click", (*) => this.OnChangeRecordMode())
@@ -297,7 +269,6 @@ class MacroEditGui {
         this.SaveBtnCtrl := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "应用并保存")
         this.SaveBtnCtrl.OnEvent("Click", (*) => this.OnSaveBtnClick())
 
-        MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
         MyGui.Show(Format("w{} h{}", 820, 420))
     }
 
@@ -305,168 +276,19 @@ class MacroEditGui {
         this.ShowSaveBtn := ShowSaveBtn
         this.SubMacroLastIndex := 0
         this.SaveBtnCtrl.Visible := this.ShowSaveBtn
-        this.EditModeCon.Value := this.EditModeType
-        this.MacroEditStrCon.Value := this.GetMacroEditStr(CommandStr)
-    }
-
-    RefreshCommandBtn() {
-        if (this.EditModeType == 1) {
-            for key, value in this.CmdBtnConMap {
-                value.Enabled := true
-            }
-        }
-        else if (this.EditModeType == 2) {
-            for key, value in this.CmdBtnConMap {
-                cmd := this.GetLineCmd(this.CurEditLineNum, key)
-                value.Enabled := cmd != ""
-            }
-        }
-        else if (this.EditModeType == 3) {
-            for key, value in this.CmdBtnConMap {
-                value.Enabled := true
-            }
-        }
-    }
-
-    ToggleFunc(state) {
-        if (state) {
-            SetTimer this.checkAction, 100
-        }
-        else {
-            SetTimer this.checkAction, 0
-        }
-    }
-
-    CheckIfChangeLineNum() {
-        lineNum := EditGetCurrentLine(this.MacroEditStrCon)
-        if (lineNum != this.CurEditLineNum) {
-            this.CurEditLineNum := lineNum
-            if (this.EditModeType != 1)
-                this.RefreshCommandBtn()
-        }
-    }
-
-    GetMacroEditStr(macro) {
-        CommandArr := SplitMacro(macro)
-        macroEditStr := ""
-        processedIndex := 0
-        for index, value in CommandArr {
-            if (processedIndex >= index)
-                continue
-            processedIndex := index
-            isInterval := StrCompare(SubStr(value, 1, 2), "间隔", false) == 0
-            isNormalInterval := StrSplit(value, "_").Length == 2 && isInterval
-            if (isNormalInterval) {
-                SubCommandArr := StrSplit(value, "_")
-                intervalValue := Integer(SubCommandArr[2])
-                loop {
-                    curIndex := index + A_Index
-                    if (curIndex > CommandArr.Length)
-                        break
-
-                    SubCommandArr := StrSplit(CommandArr[curIndex], "_")
-                    isIntervalAgain := StrCompare(SubStr(SubCommandArr[1], 1, 2), "间隔", false) == 0
-                    isNormalIntervalAgain := SubCommandArr.Length == 2 && isIntervalAgain
-                    if (!isNormalIntervalAgain)
-                        break
-                    intervalValue += Integer(SubCommandArr[2])
-                    processedIndex := curIndex
-                }
-                macroEditStr := index == 1 ? macroEditStr : macroEditStr ","
-                macroEditStr .= "间隔_" intervalValue "`n"
-                continue
-            }
-
-            isPressKey := StrCompare(SubStr(value, 1, 2), "按键", false) == 0
-            if (isPressKey) {
-                macroEditStr .= value
-                loop {
-                    curIndex := index + A_Index
-                    if (curIndex > CommandArr.Length)
-                        break
-
-                    SubCommandArr := StrSplit(CommandArr[curIndex], "_")
-                    isPressKeyAgain := StrCompare(SubStr(SubCommandArr[1], 1, 2), "按键", false) == 0
-                    if (!isPressKeyAgain)
-                        break
-                    macroEditStr .= "," CommandArr[curIndex]
-                    processedIndex := curIndex
-                }
-            }
-
-            if (!isPressKey && !isNormalInterval) {
-                macroEditStr .= value
-            }
-
-            nextIndex := processedIndex + 1
-            isNextInterval := nextIndex <= CommandArr.Length && StrCompare(SubStr(CommandArr[nextIndex], 1, 2), "间隔",
-            false) == 0
-            isNextNormalInterval := isNextInterval && StrSplit(CommandArr[nextIndex], "_").Length == 2
-            if (!isNextNormalInterval) {
-                macroEditStr .= "`n"
-            }
-        }
-        return macroEditStr
-    }
-
-    GetMacroStr(LineArr) {
-        macroStr := ""
-        for index, value in LineArr {
-            macroStr .= value
-            if (index != LineArr.Length) {
-                macroStr .= ","
-            }
-        }
-        macroStr := Trim(macroStr, ",")
-        macroStr := RegExReplace(macroStr, ",+", ",")
-        return macroStr
-    }
-
-    GetFinallyMacroStr() {
-        MacroLineArr := StrSplit(this.MacroEditStrCon.Value, "`n")
-        macro := this.GetMacroStr(MacroLineArr)
-        return macro
-    }
-
-    GetMacroStrLineArr() {
-        MacroLineArr := StrSplit(this.MacroEditStrCon.Value, "`n")
-        if (MacroLineArr.Length == 0) {
-            MacroLineArr.Push("")
-        }
-        return MacroLineArr
-    }
-
-    GetLineCmd(lineNum, symbol) {
-        cmd := ""
-        lineArr := this.GetMacroStrLineArr()
-
-        cmdArr := StrSplit(lineArr[lineNum], ",")
-        for index, value in cmdArr {
-            paramArr := StrSplit(value, "_")
-            curSymbol := paramArr[1]
-            if (curSymbol == symbol) {
-                cmd := value
-                break
-            }
-        }
-
-        return cmd
+        this.InitTreeView(CommandStr)
     }
 
     Backspace() {
-        macro := this.GetFinallyMacroStr()
-        CommandArr := SplitMacro(macro)
-        CommandArr.Pop()
-        macro := this.GetMacroStr(CommandArr)
-        this.MacroEditStrCon.Value := this.GetMacroEditStr(macro)
+
     }
 
     ClearStr() {
-        this.MacroEditStrCon.Value := ""
+
     }
 
     OnSaveBtnClick() {
-        macroStr := this.GetFinallyMacroStr()
+        macroStr := this.GetMacroStr()
         action := this.SureBtnAction
         action(macroStr)
 
@@ -476,105 +298,16 @@ class MacroEditGui {
         action := this.SaveBtnAction
         action()
         this.SureFocusCon.Focus()
-        this.ToggleFunc(false)
     }
 
     OnSureBtnClick() {
-        macroStr := this.GetFinallyMacroStr()
+        macroStr := this.GetMacroStr()
         action := this.SureBtnAction
         action(macroStr)
 
         this.SureBtnAction := ""
         this.Gui.Hide()
         this.SureFocusCon.Focus()
-        this.ToggleFunc(false)
-    }
-
-    OnOpenSubGui(subGui) {
-        symbol := this.GetSubGuiSymbol(subGui)
-        lineNum := EditGetCurrentLine(this.MacroEditStrCon)
-        this.EditLineNum := lineNum
-        cmd := this.GetLineCmd(lineNum, symbol)
-
-        if (this.isContextEdit) {
-            subGui.ShowGui(cmd)
-        }
-        else if (this.EditModeType == 1) {
-            subGui.ShowGui("")
-        }
-        else if (this.EditModeType == 2) {
-            subGui.ShowGui(cmd)
-        }
-        else if (this.EditModeType == 3) {
-            subGui.ShowGui("")
-        }
-    }
-
-    OnSubGuiSureBtnClick(CommandStr) {
-        global MySoftData
-        LineArr := this.GetMacroStrLineArr()
-        if (this.isContextEdit) {
-            this.isContextEdit := false
-            LineArr := this.OnModifyCmd(LineArr, CommandStr)
-        }
-        else if (this.EditModeType == 1) {
-            LineArr := this.OnAddCmd(LineArr, CommandStr)
-        }
-        else if (this.EditModeType == 2) {
-            LineArr := this.OnModifyCmd(LineArr, CommandStr)
-        }
-        else if (this.EditModeType == 3) {
-            LineArr := this.OnInsertCmd(LineArr, CommandStr)
-        }
-        macro := this.GetMacroStr(LineArr)
-        this.MacroEditStrCon.Value := this.GetMacroEditStr(macro)
-        MySoftData.MacroEditGui := this
-        MySoftData.MacroEditCon := this.MacroEditStrCon
-        MySoftData.RecordToggleCon := this.RecordMacroCon
-        this.DefaultFocusCon.Focus()
-    }
-
-    OnAddCmd(LineArr, CommandStr) {
-        value := LineArr[LineArr.Length]
-        if (value == "") {
-            LineArr[LineArr.Length] := CommandStr
-        }
-        else {
-            LineArr[LineArr.Length] .= "," CommandStr
-        }
-        return LineArr
-    }
-
-    OnModifyCmd(LineArr, CommandStr) {
-        value := LineArr[this.EditLineNum]
-        cmdArr := StrSplit(value, ",")
-        curCmdSymbol := StrSplit(CommandStr, "_")[1]
-        loop cmdArr.Length {
-            paramArr := StrSplit(cmdArr[A_Index], "_")
-            if (paramArr[1] == curCmdSymbol) {
-                cmdArr[A_Index] := CommandStr
-                break
-            }
-        }
-        newValue := ""
-        for index, value in cmdArr {
-            newValue .= "," value
-        }
-        newValue := Trim(newValue, ",")
-        LineArr[this.EditLineNum] := newValue
-        return LineArr
-    }
-
-    OnInsertCmd(LineArr, CommandStr) {
-        LineArr.InsertAt(this.EditLineNum, CommandStr)
-        return LineArr
-    }
-
-    OnChangeEditMode() {
-        this.EditModeType := this.EditModeCon.Value
-        this.CurEditLineNum := 1
-        this.RefreshCommandBtn()
-        this.DefaultFocusCon.Focus()
     }
 
     OnChangeRecordMode() {
@@ -582,34 +315,92 @@ class MacroEditGui {
         OnToolRecordMacro()
     }
 
-    OnFinishRecordMacro() {
-        macroStr := this.GetFinallyMacroStr()
-
-        macroArr := StrSplit(ToolCheckInfo.ToolTextCtrl.Value, "`n")
-        macro := macroStr "," this.GetMacroStr(macroArr)
-        macro := Trim(macro, ",")
-        this.MacroEditStrCon.Value := this.GetMacroEditStr(macro)
-        this.DefaultFocusCon.Focus()
+    InitTreeView(CommandStr) {
+        cmdArr := SplitMacro(CommandStr)
+        this.MacroTreeViewCon.Delete()
+        for cmdStr in cmdArr {
+            root := this.MacroTreeViewCon.Add(cmdStr)
+            ; this.TreeAddBranch(root, cmdStr)
+        }
     }
 
-    CreateMenu() {
-        CMenu := Menu()
-        for key, value in this.CmdBtnConMap {
-            cmd := this.GetLineCmd(this.CurEditLineNum, key)
-            if (cmd != "") {
-                action := this.MenuHandler.Bind(this)
-                CMenu.Add("编辑" key, action)
-            }
+    TreeAddBranch(root, cmdStr) {
+        paramArr := StrSplit(cmdStr, "_")
+        IsSearch := StrCompare(paramArr[1], "搜索", false) == 0
+        IsSearchPro := StrCompare(paramArr[1], "搜索Pro", false) == 0
+        IsIf := StrCompare(paramArr[1], "如果", false) == 0
+        if (!IsSearch && !IsSearchPro && !IsIf)
+            return
+
+        if (IsSearch || IsSearchPro) {
+
         }
-        return CMenu
     }
 
-    MenuHandler(ItemName, ItemPos, MyMenu) {
-        symbol := StrReplace(ItemName, "编辑", "")
-        if (this.SubGuiMap.Has(symbol)) {
-            gui := this.SubGuiMap[symbol]
-            this.isContextEdit := true
-            this.OnOpenSubGui(gui)
+    ;打开子指令编辑器
+    OnOpenSubGui(subGui, modeType := 1) {
+        this.EditModeType := modeType
+        if (modeType == 2) {
+            CommandStr := this.MacroTreeViewCon.GetText(this.CutItemID)
+            subGui.ShowGui(CommandStr)
+            return
         }
+
+        if ObjHasOwnProp(subGui, "VariableObjArr") {
+            macroStr := this.GetMacroStr()
+            VariableObjArr := GetGuiVariableObjArr(macroStr, this.VariableObjArr)
+            subGui.VariableObjArr := VariableObjArr
+        }
+
+        subGui.ShowGui("")
+    }
+
+    ;确定子指令编辑器
+    OnSubGuiSureBtnClick(CommandStr) {
+        if (this.EditModeType == 1) {
+            this.OnAddCmd(CommandStr)
+        }
+        else if (this.EditModeType == 2) {
+            this.OnModifyCmd(CommandStr)
+        }
+        else if (this.EditModeType == 3) {
+            this.OnPreInsertCmd(CommandStr)
+        }
+        else if (this.EditModeType == 4) {
+            this.OnNextInsertCmd(CommandStr)
+        }
+    }
+
+    ;添加指令
+    OnAddCmd(CommandStr) {
+        root := this.MacroTreeViewCon.Add(CommandStr)
+        ; this.TreeAddBranch(root, CommandStr)
+    }
+
+    ;插入指令
+    OnPreInsertCmd(CommandStr) {
+
+    }
+
+    ;插入指令
+    OnNextInsertCmd(CommandStr) {
+
+    }
+
+    ;修改指令
+    OnModifyCmd(CommandStr) {
+
+    }
+
+    GetMacroStr() {
+        macroStr := ""
+        rootItemID := this.MacroTreeViewCon.GetChild(0)
+        while (rootItemID) {
+            cmdStr := this.MacroTreeViewCon.GetText(rootItemID)
+            macroStr .= cmdStr ","
+            rootItemID := this.MacroTreeViewCon.GetNext(rootItemID)
+        }
+        macroStr := Trim(macroStr, ",")
+        return macroStr
     }
 }

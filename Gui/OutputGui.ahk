@@ -4,8 +4,8 @@ class OutputGui {
     __new() {
         this.Gui := ""
         this.SureBtnAction := ""
+        this.VariableObjArr := []
         this.RemarkCon := ""
-        this.MacroEditGui := ""
         this.OutputTypeCon := ""
         this.TextCon := ""
         this.IsCoverCon := ""
@@ -86,13 +86,12 @@ class OutputGui {
         this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : GetSerialStr("Output")
         this.RemarkCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : ""
         this.Data := this.GetOutputData(this.SerialStr)
-        macro := this.MacroEditGui.GetFinallyMacroStr()
-        VariableArr := GetSelectVariableObjArr(macro)
+    
         this.TextCon.Value := this.Data.Text
         this.OutputTypeCon.Value := this.Data.OutputType
         this.IsCoverCon.Value := this.Data.IsCover
         this.NameCon.Delete()
-        this.NameCon.Add(VariableArr)
+        this.NameCon.Add(this.VariableObjArr)
         this.NameCon.Text := this.Data.Name
     }
 

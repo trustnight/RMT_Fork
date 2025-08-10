@@ -4,7 +4,7 @@ class VariableGui {
     __new() {
         this.Gui := ""
         this.SureBtnAction := ""
-        this.MacroEditGui := ""
+        this.VariableObjArr := []
         this.RemarkCon := ""
 
         this.IsGlobalCon := ""
@@ -210,27 +210,26 @@ class VariableGui {
         this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : GetSerialStr("Variable")
         this.RemarkCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : ""
         this.Data := this.GetVariableData(this.SerialStr)
-        macro := this.MacroEditGui.GetFinallyMacroStr()
-        VariableObjArr := GetSelectVariableObjArr(macro)
-        VariableObjArr.Push("当前鼠标坐标X")
-        VariableObjArr.Push("当前鼠标坐标Y")
+
+        this.VariableObjArr.Push("当前鼠标坐标X")
+        this.VariableObjArr.Push("当前鼠标坐标Y")
 
         this.IsGlobalCon.Value := this.Data.IsGlobal
         this.IsIgnoreExistCon.Value := this.Data.IsIgnoreExist
         loop 4 {
             this.ToggleConArr[A_Index].Value := this.Data.ToggleArr[A_Index]
             this.VariableConArr[A_Index].Delete()
-            this.VariableConArr[A_Index].Add(VariableObjArr)
+            this.VariableConArr[A_Index].Add(this.VariableObjArr)
             this.VariableConArr[A_Index].Text := this.Data.VariableArr[A_Index]
             this.OperaTypeConArr[A_Index].Value := this.Data.OperaTypeArr[A_Index]
             this.CopyVariableConArr[A_Index].Delete()
-            this.CopyVariableConArr[A_Index].Add(VariableObjArr)
+            this.CopyVariableConArr[A_Index].Add(this.VariableObjArr)
             this.CopyVariableConArr[A_Index].Text := this.Data.CopyVariableArr[A_Index]
             this.MinVariableConArr[A_Index].Delete()
-            this.MinVariableConArr[A_Index].Add(VariableObjArr)
+            this.MinVariableConArr[A_Index].Add(this.VariableObjArr)
             this.MinVariableConArr[A_Index].Text := this.Data.MinVariableArr[A_Index]
             this.MaxVariableConArr[A_Index].Delete()
-            this.MaxVariableConArr[A_Index].Add(VariableObjArr)
+            this.MaxVariableConArr[A_Index].Add(this.VariableObjArr)
             this.MaxVariableConArr[A_Index].Text := this.Data.MaxVariableArr[A_Index]
         }
     }

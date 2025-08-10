@@ -1,11 +1,10 @@
 #Requires AutoHotkey v2.0
-#Include MacroEditGui.ahk
 
 class MMProGui {
     __new() {
         this.Gui := ""
         this.SureBtnAction := ""
-        this.MacroEditGui := ""
+        this.VariableObjArr := []
         this.FocusCon := ""
         this.RemarkCon := ""
         this.Data := ""
@@ -113,14 +112,12 @@ class MMProGui {
         this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : GetSerialStr("MMPro")
         this.Data := this.GetMMProData(this.SerialStr)
         this.RemarkCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : ""
-        macro := this.MacroEditGui.GetFinallyMacroStr()
-        VariableObjArr := GetSelectVariableObjArr(macro)
 
         this.PosVarXCon.Delete()
-        this.PosVarXCon.Add(VariableObjArr)
+        this.PosVarXCon.Add(this.VariableObjArr)
         this.PosVarXCon.Text := this.Data.PosVarX
         this.PosVarYCon.Delete()
-        this.PosVarYCon.Add(VariableObjArr)
+        this.PosVarYCon.Add(this.VariableObjArr)
         this.PosVarYCon.Text := this.Data.PosVarY
         this.IsRelativeCon.Value := this.Data.IsRelative
         this.isGameViewCon.Value := this.Data.IsGameView

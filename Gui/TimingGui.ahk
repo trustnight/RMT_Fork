@@ -117,6 +117,9 @@ class TimingGui {
         Data.CustomInterval := this.CustomIntervalCon.Value
         saveStr := JSON.stringify(Data, 0)
         IniWrite(saveStr, TimingFile, IniSection, Data.SerialStr)
+        if (MySoftData.DataCacheMap.Has(this.Data.SerialStr)) {
+            MySoftData.DataCacheMap.Delete(this.Data.SerialStr)
+        }
     }
 
     GetTimingData(SerialStr) {

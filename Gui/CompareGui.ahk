@@ -5,7 +5,7 @@ class CompareGui {
     __new() {
         this.Gui := ""
         this.SureBtnAction := ""
-        this.MacroEditGui := ""
+        this.VariableObjArr := []
         this.RemarkCon := ""
         this.FocusCon := ""
         this.MacroGui := ""
@@ -146,7 +146,7 @@ class CompareGui {
         con.Value := 1
         con.OnEvent("Change", (*) => this.OnRefresh())
         this.CompareTypeConArr.Push(con)
-    
+
         con := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 245, PosY - 3, 120), [])
         this.VariableConArr.Push(con)
 
@@ -204,14 +204,12 @@ class CompareGui {
         this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : GetSerialStr("Compare")
         this.RemarkCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : ""
         this.Data := this.GetCompareData(this.SerialStr)
-        macro := this.MacroEditGui.GetFinallyMacroStr()
-        VariableObjArr := GetSelectVariableObjArr(macro)
 
         this.TrueMacroCon.Value := this.Data.TrueMacro
         this.FalseMacroCon.Value := this.Data.FalseMacro
         this.SaveToggleCon.Value := this.Data.SaveToggle
         this.SaveNameCon.Delete()
-        this.SaveNameCon.Add(VariableObjArr)
+        this.SaveNameCon.Add(this.VariableObjArr)
         this.SaveNameCon.Text := this.Data.SaveName
         this.TrueValueCon.Value := this.Data.TrueValue
         this.FalseValueCon.Value := this.Data.FalseValue
@@ -221,11 +219,11 @@ class CompareGui {
         loop 4 {
             this.ToggleConArr[A_Index].Value := this.Data.ToggleArr[A_Index]
             this.NameConArr[A_Index].Delete()
-            this.NameConArr[A_Index].Add(VariableObjArr)
+            this.NameConArr[A_Index].Add(this.VariableObjArr)
             this.NameConArr[A_Index].Text := this.Data.NameArr[A_Index]
             this.CompareTypeConArr[A_Index].Value := this.Data.CompareTypeArr[A_Index]
             this.VariableConArr[A_Index].Delete()
-            this.VariableConArr[A_Index].Add(VariableObjArr)
+            this.VariableConArr[A_Index].Add(this.VariableObjArr)
             this.VariableConArr[A_Index].Text := this.Data.VariableArr[A_Index]
         }
     }

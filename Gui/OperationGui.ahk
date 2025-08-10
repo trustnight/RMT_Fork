@@ -1,14 +1,13 @@
 #Requires AutoHotkey v2.0
-#Include MacroEditGui.ahk
 #Include OperationSubGui.ahk
 
 class OperationGui {
     __new() {
         this.Gui := ""
         this.SureBtnAction := ""
+        this.VariableObjArr := []
         this.RemarkCon := ""
         this.Data := ""
-        this.MacroEditGui := ""
         this.OperationSubGui := ""
 
         this.IsGlobalCon := ""
@@ -141,19 +140,17 @@ class OperationGui {
         this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : GetSerialStr("Operation")
         this.RemarkCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : ""
         this.Data := this.GetOperationData(this.SerialStr)
-        macro := this.MacroEditGui.GetFinallyMacroStr()
-        VariableObjArr := GetSelectVariableObjArr(macro)
 
         this.IsGlobalCon.Value := this.Data.IsGlobal
         this.IsIgnoreExistCon.Value := this.Data.IsIgnoreExist
         loop 4 {
             this.ToggleConArr[A_Index].Value := this.Data.ToggleArr[A_Index]
             this.NameConArr[A_Index].Delete()
-            this.NameConArr[A_Index].Add(VariableObjArr)
+            this.NameConArr[A_Index].Add(this.VariableObjArr)
             this.NameConArr[A_Index].Text := this.Data.NameArr[A_Index]
             this.OperationConArr[A_Index].Value := this.Data.OperationArr[A_Index]
             this.UpdateNameConArr[A_Index].Delete()
-            this.UpdateNameConArr[A_Index].Add(VariableObjArr)
+            this.UpdateNameConArr[A_Index].Add(this.VariableObjArr)
             this.UpdateNameConArr[A_Index].Text := this.Data.UpdateNameArr[A_Index]
         }
     }
@@ -177,7 +174,6 @@ class OperationGui {
     OnEditVariableBtnClick(index) {
         if (this.OperationSubGui == "") {
             this.OperationSubGui := OperationSubGui()
-            this.OperationSubGui.MacroEditGui := this.MacroEditGui
         }
         Name := this.NameConArr[index].Text
         if (Name == "" || Name == "空") {

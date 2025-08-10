@@ -6,7 +6,7 @@ class ExVariableGui {
     __new() {
         this.Gui := ""
         this.SureBtnAction := ""
-        this.MacroEditGui := ""
+        this.VariableObjArr := []
         this.RemarkCon := ""
         this.SetAreaAction := (x1, y1, x2, y2) => this.OnSetSearchArea(x1, y1, x2, y2)
 
@@ -192,13 +192,11 @@ class ExVariableGui {
         this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : GetSerialStr("ExVariable")
         this.RemarkCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : ""
         this.Data := this.GetExVariableData(this.SerialStr)
-        macro := this.MacroEditGui.GetFinallyMacroStr()
-        VariableObjArr := GetSelectVariableObjArr(macro)
 
         loop 4 {
             this.ToggleConArr[A_Index].Value := this.Data.ToggleArr[A_Index]
             this.VariableConArr[A_Index].Delete()
-            this.VariableConArr[A_Index].Add(VariableObjArr)
+            this.VariableConArr[A_Index].Add(this.VariableObjArr)
             this.VariableConArr[A_Index].Text := this.Data.VariableArr[A_Index]
         }
         this.IsGlobalCon.Value := this.Data.IsGlobal
