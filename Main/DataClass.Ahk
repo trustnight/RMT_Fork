@@ -279,8 +279,8 @@ class SearchData {
         this.MouseActionType := 1   ;   1无动作 2移动到目标 3移动到目标点击
         this.ClickCount := 1
         this.Speed := 90
-        this.TrueCommandStr := ""
-        this.FalseCommandStr := ""
+        this.TrueMacro := ""
+        this.FalseMacro := ""
         this.ResultToggle := 0
         this.ResultSaveName := "搜索结果"
         this.TrueValue := 1

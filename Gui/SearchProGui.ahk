@@ -293,8 +293,8 @@ class SearchProGui {
         this.MouseActionTypeCon.Value := this.Data.MouseActionType
         this.SpeedCon.Value := this.Data.Speed
         this.ClickCountCon.Value := this.Data.ClickCount
-        this.FoundCommandStrCon.Value := this.Data.TrueCommandStr
-        this.UnFoundCommandStrCon.Value := this.Data.FalseCommandStr
+        this.FoundCommandStrCon.Value := this.Data.TrueMacro
+        this.UnFoundCommandStrCon.Value := this.Data.FalseMacro
         this.ResultToggleCon.Value := this.Data.ResultToggle
         this.ResultSaveNameCon.Delete()
         this.ResultSaveNameCon.Add(this.VariableObjArr)
@@ -480,6 +480,7 @@ class SearchProGui {
     OnEditFoundMacroBtnClick() {
         if (this.MacroGui == "") {
             this.MacroGui := MacroEditGui()
+            this.MacroGui.VariableObjArr := this.VariableObjArr
             this.MacroGui.SureFocusCon := this.MousePosCon
         }
 
@@ -490,6 +491,7 @@ class SearchProGui {
     OnEditUnFoundMacroBtnClick() {
         if (this.MacroGui == "") {
             this.MacroGui := MacroEditGui()
+            this.MacroGui.VariableObjArr := this.VariableObjArr
             this.MacroGui.SureFocusCon := this.MousePosCon
         }
         this.MacroGui.SureBtnAction := (command) => this.OnSureUnFoundMacroBtnClick(command)
@@ -595,8 +597,8 @@ class SearchProGui {
         data.MouseActionType := this.MouseActionTypeCon.Value
         data.ClickCount := this.ClickCountCon.Value
         data.Speed := this.SpeedCon.Value
-        data.TrueCommandStr := this.FoundCommandStrCon.Value
-        data.FalseCommandStr := this.UnFoundCommandStrCon.Value
+        data.TrueMacro := this.FoundCommandStrCon.Value
+        data.FalseMacro := this.UnFoundCommandStrCon.Value
         data.ResultToggle := this.ResultToggleCon.Value
         data.ResultSaveName := this.ResultSaveNameCon.Text
         data.TrueValue := this.TrueValueCon.Value

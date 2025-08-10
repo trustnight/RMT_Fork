@@ -282,6 +282,7 @@ class CompareGui {
     OnEditFoundMacroBtnClick() {
         if (this.MacroGui == "") {
             this.MacroGui := MacroEditGui()
+            this.MacroGui.VariableObjArr := this.VariableObjArr
             this.MacroGui.SureFocusCon := this.FocusCon
         }
 
@@ -292,6 +293,7 @@ class CompareGui {
     OnEditUnFoundMacroBtnClick() {
         if (this.MacroGui == "") {
             this.MacroGui := MacroEditGui()
+            this.MacroGui.VariableObjArr := this.VariableObjArr
             this.MacroGui.SureFocusCon := this.FocusCon
         }
         this.MacroGui.SureBtnAction := (command) => this.OnFalseMacroBtnClick(command)

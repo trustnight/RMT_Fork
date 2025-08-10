@@ -239,14 +239,14 @@ OnSearchOnce(tableItem, Data, index, curCount) {
             MouseMove(Pos[1], Pos[2], Speed)
         }
 
-        if (Data.TrueCommandStr == "")
+        if (Data.TrueMacro == "")
             return
 
         if (MacroType == 1) {
-            OnTriggerMacroOnce(tableItem, Data.TrueCommandStr, index)
+            OnTriggerMacroOnce(tableItem, Data.TrueMacro, index)
         }
         else if (MacroType == 2) {
-            action := OnTriggerMacroOnce.Bind(tableItem, Data.TrueCommandStr, index)
+            action := OnTriggerMacroOnce.Bind(tableItem, Data.TrueMacro, index)
             SetTimer(action, -1)
         }
     }
@@ -255,14 +255,14 @@ OnSearchOnce(tableItem, Data, index, curCount) {
             VariableMap[Data.ResultSaveName] := Data.FalseValue
         }
 
-        if (Data.FalseCommandStr == "")
+        if (Data.FalseMacro == "")
             return
 
         if (MacroType == 1) {
-            OnTriggerMacroOnce(tableItem, Data.FalseCommandStr, index)
+            OnTriggerMacroOnce(tableItem, Data.FalseMacro, index)
         }
         else if (MacroType == 2) {
-            action := OnTriggerMacroOnce.Bind(tableItem, Data.FalseCommandStr, index)
+            action := OnTriggerMacroOnce.Bind(tableItem, Data.FalseMacro, index)
             SetTimer(action, -1)
         }
     }

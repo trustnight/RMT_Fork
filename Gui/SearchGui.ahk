@@ -5,6 +5,7 @@ class SearchGui {
     __new() {
         this.Gui := ""
         this.SureBtnAction := ""
+        this.VariableObjArr := []
         this.RemarkCon := ""
         this.PosAction := () => this.RefreshMouseInfo()
         this.SetAreaAction := (x1, y1, x2, y2) => this.OnSetSearchArea(x1, y1, x2, y2)
@@ -208,8 +209,8 @@ class SearchGui {
         this.EndPosXCon.Value := this.Data.EndPosX
         this.EndPosYCon.Value := this.Data.EndPosY
         this.MouseActionTypeCon.Value := this.Data.MouseActionType
-        this.FoundCommandStrCon.Value := this.Data.TrueCommandStr
-        this.UnFoundCommandStrCon.Value := this.Data.FalseCommandStr
+        this.FoundCommandStrCon.Value := this.Data.TrueMacro
+        this.UnFoundCommandStrCon.Value := this.Data.FalseMacro
         this.OnChangeSearchType()
     }
 
@@ -380,6 +381,7 @@ class SearchGui {
     OnEditFoundMacroBtnClick() {
         if (this.MacroGui == "") {
             this.MacroGui := MacroEditGui()
+            this.MacroGui.VariableObjArr := this.VariableObjArr
             this.MacroGui.SureFocusCon := this.MousePosCon
         }
 
@@ -390,6 +392,7 @@ class SearchGui {
     OnEditUnFoundMacroBtnClick() {
         if (this.MacroGui == "") {
             this.MacroGui := MacroEditGui()
+            this.MacroGui.VariableObjArr := this.VariableObjArr
             this.MacroGui.SureFocusCon := this.MousePosCon
         }
         this.MacroGui.SureBtnAction := (command) => this.OnSureUnFoundMacroBtnClick(command)
@@ -481,8 +484,8 @@ class SearchGui {
         data.EndPosX := this.EndPosXCon.Value
         data.EndPosY := this.EndPosYCon.Value
         data.MouseActionType := this.MouseActionTypeCon.Value
-        data.TrueCommandStr := this.FoundCommandStrCon.Value
-        data.FalseCommandStr := this.UnFoundCommandStrCon.Value
+        data.TrueMacro := this.FoundCommandStrCon.Value
+        data.FalseMacro := this.UnFoundCommandStrCon.Value
         saveStr := JSON.stringify(data, 0)
         IniWrite(saveStr, SearchFile, IniSection, data.SerialStr)
         if (MySoftData.DataCacheMap.Has(this.Data.SerialStr)) {

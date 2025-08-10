@@ -73,15 +73,15 @@ GetMacroStrGlobalVar(macroStr, VariableMap, visitMap) {
             saveStr := IniRead(SearchFile, IniSection, paramArr[2], "")
             Data := JSON.parse(saveStr, , false)
 
-            TrueMacro := Data.TrueCommandStr
-            FalseMacro := Data.FalseCommandStr
+            TrueMacro := Data.TrueMacro
+            FalseMacro := Data.FalseMacro
         }
         else if (IsSearchPro) {
-            saveStr := IniRead(SearchFile, IniSection, paramArr[2], "")
+            saveStr := IniRead(SearchProFile, IniSection, paramArr[2], "")
             Data := JSON.parse(saveStr, , false)
 
-            TrueMacro := Data.TrueCommandStr
-            FalseMacro := Data.FalseCommandStr
+            TrueMacro := Data.TrueMacro
+            FalseMacro := Data.FalseMacro
         }
 
         if (TrueMacro != "" || FalseMacro != "") {
@@ -150,15 +150,15 @@ GetMacroStrVar(macroStr, VariableMap, visitMap) {
             saveStr := IniRead(SearchFile, IniSection, paramArr[2], "")
             Data := JSON.parse(saveStr, , false)
 
-            TrueMacro := Data.TrueCommandStr
-            FalseMacro := Data.FalseCommandStr
+            TrueMacro := Data.TrueMacro
+            FalseMacro := Data.FalseMacro
         }
         else if (IsSearchPro) {
-            saveStr := IniRead(SearchFile, IniSection, paramArr[2], "")
+            saveStr := IniRead(SearchProFile, IniSection, paramArr[2], "")
             Data := JSON.parse(saveStr, , false)
 
-            TrueMacro := Data.TrueCommandStr
-            FalseMacro := Data.FalseCommandStr
+            TrueMacro := Data.TrueMacro
+            FalseMacro := Data.FalseMacro
         }
 
         if (TrueMacro != "" || FalseMacro != "") {
@@ -171,14 +171,14 @@ GetMacroStrVar(macroStr, VariableMap, visitMap) {
 
 GetGuiVariableObjArr(curMacroStr, VariableObjArr) {
     ResultArr := []
-    ResultMap := MySoftData.GlobalVariMap.Clone()
-    localVarMap := GetLocalVar(curMacroStr)
+    ResultMap := GetLocalVar(curMacroStr)
     for index, Value in VariableObjArr {
-        localVarMap[Value] := true
+        ResultMap[Value] := true
     }
-    for Key, Value in localVarMap {
+    for Key, Value in MySoftData.GlobalVariMap {
         ResultMap[Key] := Value
     }
+
     for Key, Value in ResultMap {
         ResultArr.Push(Key)
     }
