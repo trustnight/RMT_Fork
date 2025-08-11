@@ -100,7 +100,7 @@ class ToolCheck {
 
         this.MacroGui := ""
         
-        this.NewRecordLastMousePos := []
+        this.RecordLastMousePos := []
         this.RecordLastTime := ""
         this.RecordMacroStr := ""
     
@@ -108,7 +108,7 @@ class ToolCheck {
         this.RecordKeyboardArr := []
         this.RecordHoldKeyMap := Map()
         this.RecordSpecialKeyMap := Map(33, 0, 34, 0, 35, 0, 36, 0, 37, 0, 38, 0, 39, 0, 40, 0, 45, 0, 46, 0)
-        this.RecordLastMousePos := []
+        this.OldRecordLastMousePos := []
         this.RecordKeyboardCtrl := ""
         this.RecordKeyboardValue := ""
         this.RecordMouseCtrl := ""

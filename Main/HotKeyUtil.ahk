@@ -747,12 +747,11 @@ OnPressKey(tableItem, cmd, index) {
     action := isJoyKey ? SendJoyBtnClick : action
     action := isJoyAxis ? SendJoyAxisClick : action
 
-    holdTime := Integer(paramArr[3])
-    keyType := paramArr.Length >= 4 ? Integer(paramArr[4]) : 1
+    keyType := Integer(paramArr[3])
+    holdTime := paramArr.Length >= 4 ? Integer(paramArr[4]) : 100
     count := paramArr.Length >= 5 ? Integer(paramArr[5]) : 1
     IntervalTime := paramArr.Length >= 6 ? Integer(paramArr[6]) : 1000
 
-    LastSumTime := 0
     loop count {
         if (tableItem.KilledArr[index])
             break
@@ -859,15 +858,22 @@ OnBootStartChanged(*) {
 }
 
 ;按键模拟
-SendGameModeKeyClick(key, holdTime, tableItem, index, keyType) {
-    if (keyType == 1) {
-        SendGameModeKey(Key, 1, tableItem, index)
-        Sleep(holdTime)
-        SendGameModeKey(Key, 0, tableItem, index)
+SendGameModeKeyClick(ComboKey, holdTime, tableItem, index, keyType) {
+    KeyArr := GetComboKeyArr(ComboKey)
+    if (keyType == 1 || keyType == 3) {
+        for key in KeyArr {
+            SendGameModeKey(key, 1, tableItem, index)
+        }
     }
-    else {
-        state := keyType == 2 ? 1 : 0
-        SendGameModeKey(key, state, tableItem, index)
+
+    if (keyType == 3) {
+        Sleep(holdTime)
+    }
+
+    if (keyType == 2 || keyType == 3) {
+        for key in KeyArr {
+            SendGameModeKey(key, 0, tableItem, index)
+        }
     }
 }
 
@@ -955,19 +961,22 @@ SendGameMouseKey(key, state, tableItem, index) {
     }
 }
 
-SendNormalKeyClick(Key, holdTime, tableItem, index, keyType) {
-    if (MySoftData.isWork && keyType == 1) {
-        SendNormalKey(Key, 1, tableItem, index)
+SendNormalKeyClick(ComboKey, holdTime, tableItem, index, keyType) {
+    KeyArr := GetComboKeyArr(ComboKey)
+    if (keyType == 1 || keyType == 3) {
+        for ComboKey in KeyArr {
+            SendNormalKey(ComboKey, 1, tableItem, index)
+        }
+    }
+
+    if (keyType == 3) {
         Sleep(holdTime)
-        SendNormalKey(Key, 0, tableItem, index)
     }
-    else if (keyType == 1) {
-        SendNormalKey(Key, 1, tableItem, index)
-        SetTimer(() => SendNormalKey(Key, 0, tableItem, index), -holdTime)
-    }
-    else {
-        state := keyType == 2 ? 1 : 0
-        SendNormalKey(Key, state, tableItem, index)
+
+    if (keyType == 2 || keyType == 3) {
+        for ComboKey in KeyArr {
+            SendNormalKey(ComboKey, 0, tableItem, index)
+        }
     }
 }
 

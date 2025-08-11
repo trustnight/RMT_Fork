@@ -7,7 +7,7 @@ BindKey() {
     BindShortcut(ToolCheckInfo.ToolTextFilterHotKey, OnToolTextFilterScreenShot)
     BindShortcut(ToolCheckInfo.ScreenShotHotKey, OnToolScreenShot)
     BindShortcut(ToolCheckInfo.FreePasteHotKey, OnToolFreePaste)
-    BindShortcut(ToolCheckInfo.ToolRecordMacroHotKey, OnToolRecordMacro)
+    BindShortcut(ToolCheckInfo.ToolRecordMacroHotKey, OnHotToolRecordMacro)
     BindScrollHotkey("~WheelUp", OnChangeSrollValue)
     BindScrollHotkey("~WheelDown", OnChangeSrollValue)
     BindScrollHotkey("~+WheelUp", OnChangeSrollValue)
@@ -101,15 +101,36 @@ OnToolFreePaste(*) {
     MyFreePasteGui.ShowGui()
 }
 
-OnToolRecordMacro(*) {
+OnHotToolRecordMacro(isHotkey, *) {
+    action := OnToolRecordMacro.Bind(isHotkey)
+    SetTimer(action, -1)
+}
+
+OnToolRecordMacro(isHotkey, *) {
     global ToolCheckInfo, MySoftData
     spacialKeyArr := ["NumpadEnter"]
-    ToolCheckInfo.IsToolRecord := !ToolCheckInfo.IsToolRecord
-    ToolCheckInfo.ToolCheckRecordMacroCtrl.Value := ToolCheckInfo.IsToolRecord
+    if (isHotkey) {
+        LastState := ToolCheckInfo.ToolCheckRecordMacroCtrl.Value
+        ToolCheckInfo.ToolCheckRecordMacroCtrl.Value := !LastState
+    }
+
     if (MySoftData.MacroEditGui != "") {
         MySoftData.RecordToggleCon.Value := ToolCheckInfo.IsToolRecord
     }
-    state := ToolCheckInfo.IsToolRecord
+    state := ToolCheckInfo.ToolCheckRecordMacroCtrl.Value
+    if (state) {
+        CoordMode("Mouse", "Screen")
+        MouseGetPos &mouseX, &mouseY
+        ToolCheckInfo.RecordMacroStr := ""
+        ToolCheckInfo.RecordLastTime := GetCurMSec()
+        ToolCheckInfo.RecordLastMousePos := [mouseX, mouseY]
+
+        if (ToolCheckInfo.RecordJoyValue)
+            SetTimer(RecordJoy, -1)
+
+        SetTimer(RecordMouseTrail, -1)
+    }
+
     StateSymbol := state ? "On" : "Off"
     loop 255 {
         key := Format("$*~vk{:X}", A_Index)
@@ -133,64 +154,51 @@ OnToolRecordMacro(*) {
         Hotkey(key " Up", OnRecordMacroKeyUp, StateSymbol)
     }
 
-    if (state) {
-        ;新录制
-        CoordMode("Mouse", "Screen")
-        MouseGetPos &mouseX, &mouseY
-        ToolCheckInfo.RecordMacroStr := ""
-        ToolCheckInfo.RecordLastTime := GetCurMSec()
-        ToolCheckInfo.NewRecordLastMousePos := [mouseX, mouseY]
-
-        ToolCheckInfo.RecordNodeArr := []
-        ToolCheckInfo.RecordKeyboardArr := []
-        ToolCheckInfo.RecordHoldKeyMap := Map()
-
-        node := RecordNodeData()
-        node.StartTime := GetCurMSec()
-        ToolCheckInfo.RecordNodeArr.Push(node)
-        ToolCheckInfo.RecordLastMousePos := [mouseX, mouseY]
-        
-        if (ToolCheckInfo.RecordJoyValue)
-            SetTimer RecordJoy, -1
-    }
-    else {
-        if (ToolCheckInfo.RecordNodeArr.Length > 0) {
-            node := ToolCheckInfo.RecordNodeArr[ToolCheckInfo.RecordNodeArr.Length]
-            node.EndTime := GetCurMSec()
-        }
+    if (!state) {
         OnFinishRecordMacro()
     }
 }
 
+RecordMouseTrail() {
+    loop {
+        if (!ToolCheckInfo.ToolCheckRecordMacroCtrl.Value)
+            return
+        IsTrail := true
+        span := GetCurMSec() - ToolCheckInfo.RecordLastTime
+        if (ToolCheckInfo.RecordMouseValue && IsTrail) {
+            CoordMode("Mouse", "Screen")
+            MouseGetPos &mouseX, &mouseY
+            if (ToolCheckInfo.RecordLastMousePos[1] != mouseX || ToolCheckInfo.RecordLastMousePos[2] != mouseY) {   ;鼠标位置发生改变
+                len := Abs(ToolCheckInfo.RecordLastMousePos[1] - mouseX)
+                len += Abs(ToolCheckInfo.RecordLastMousePos[2] - mouseY)
+                if (len <= 10) {
+                    Sleep(200)
+                    continue
+                }
+
+                speed := 93
+                IsRelative := ToolCheckInfo.RecordMouseRelativeValue
+                symbol := IsRelative ? "_" speed "_1" : "_" speed
+                targetX := mouseX
+                targetY := mouseY
+                if (IsRelative) {   ;相对位移，坐标变化
+                    targetX := mouseX - ToolCheckInfo.RecordLastMousePos[1]
+                    targetY := mouseY - ToolCheckInfo.RecordLastMousePos[2]
+                }
+                ToolCheckInfo.RecordMacroStr .= "移动_" targetX "_" targetY symbol ","
+                ToolCheckInfo.RecordLastMousePos := [mouseX, mouseY]
+            }
+        }
+        Sleep(200)
+    }
+
+}
 OnRecordMacroKeyDown(*) {
+
     key := StrReplace(A_ThisHotkey, "$", "")
     key := StrReplace(key, "*~", "")
     keyName := GetKeyName(key)
-    if (ToolCheckInfo.RecordHoldKeyMap.Has(keyName))
-        return
-    ToolCheckInfo.RecordHoldKeyMap.Set(keyName, true)
-
-    node := ToolCheckInfo.RecordNodeArr[ToolCheckInfo.RecordNodeArr.Length]
-    node.EndTime := GetCurMSec()
-
-    CoordMode("Mouse", "Screen")
-    MouseGetPos &mouseX, &mouseY
-    data := KeyboardData()
-    data.StartTime := GetCurMSec()
-    data.NodeSerial := ToolCheckInfo.RecordNodeArr.Length
-    data.keyName := keyName
-    data.StartPos := [mouseX, mouseY]
-    ToolCheckInfo.RecordKeyboardArr.Push(data)
-
-    node := RecordNodeData()
-    node.StartTime := GetCurMSec()
-    ToolCheckInfo.RecordNodeArr.Push(node)
-
-    if (keyName == "WheelUp" || keyName == "WheelDown") {
-        ToolCheckInfo.RecordHoldKeyMap.Delete(keyName)
-        data.EndTime := data.StartTime + 50
-        data.EndPos := [mouseX, mouseY]
-    }
+    OnRecordAddMacroStr(keyName, true)
 }
 
 OnRecordMacroKeyUp(*) {
@@ -198,70 +206,43 @@ OnRecordMacroKeyUp(*) {
     key := StrReplace(key, "*~", "")
     key := StrReplace(key, " Up", "")
     keyName := GetKeyName(key)
-    if (ToolCheckInfo.RecordHoldKeyMap.Has(keyName))
-        ToolCheckInfo.RecordHoldKeyMap.Delete(keyName)
+    OnRecordAddMacroStr(keyName, false)
+}
 
-    for index, value in ToolCheckInfo.RecordKeyboardArr {
-        if (value.keyName == keyName && value.EndTime == 0) {
-            CoordMode("Mouse", "Screen")
-            MouseGetPos &mouseX, &mouseY
-            value.EndTime := GetCurMSec()
-            value.EndPos := [mouseX, mouseY]
-            break
+OnRecordAddMacroStr(keyName, isDown) {
+    span := GetCurMSec() - ToolCheckInfo.RecordLastTime
+    keySymbol := isDown ? 1 : 2
+    ToolCheckInfo.RecordLastTime := GetCurMSec()
+    IsMouse := keyName == "LButton" || keyName == "RButton" || keyName == "MButton"
+
+    if (IsMouse && ToolCheckInfo.RecordMouseValue) {
+        CoordMode("Mouse", "Screen")
+        MouseGetPos &mouseX, &mouseY
+        if (ToolCheckInfo.RecordLastMousePos[1] != mouseX || ToolCheckInfo.RecordLastMousePos[2] != mouseY) {   ;鼠标位置发生改变
+            speed := Max(100 - Integer(span * 0.02), 90)
+            IsRelative := ToolCheckInfo.RecordMouseRelativeValue
+            symbol := IsRelative ? "_" speed "_1" : "_" speed
+            targetX := mouseX
+            targetY := mouseY
+            if (IsRelative) {   ;相对位移，坐标变化
+                targetX := mouseX - ToolCheckInfo.RecordLastMousePos[1]
+                targetY := mouseY - ToolCheckInfo.RecordLastMousePos[2]
+            }
+            ToolCheckInfo.RecordMacroStr .= "移动_" targetX "_" targetY symbol ","
+            ToolCheckInfo.RecordLastMousePos := [mouseX, mouseY]
         }
     }
+
+    ToolCheckInfo.RecordMacroStr .= "间隔_" span ","
+    ToolCheckInfo.RecordMacroStr .= "按键_" keyName "_" keySymbol ","
 }
 
 OnFinishRecordMacro() {
-    macro := ""
-    for index, value in ToolCheckInfo.RecordNodeArr {
-        macro .= "间隔_" value.Span() ","
-
-        for key, value in ToolCheckInfo.RecordKeyboardArr {
-            if (value.NodeSerial != index || value.EndTime == 0)
-                continue
-            keyName := value.keyName
-            IsMouse := keyName == "LButton" || keyName == "RButton" || keyName == "MButton"
-            IsJoy := InStr(keyName, "Joy")
-            IsKeyboard := !IsMouse && !IsJoy
-
-            if (IsMouse && ToolCheckInfo.RecordMouseValue) {
-                isRelative := ToolCheckInfo.RecordMouseRelativeValue
-                posX := isRelative ? value.StartPos[1] - ToolCheckInfo.RecordLastMousePos[1] : value.StartPos[1]
-                posY := isRelative ? value.StartPos[2] - ToolCheckInfo.RecordLastMousePos[2] : value.StartPos[2]
-                symbol := isRelative ? "_100_1" : ""
-                macro .= "移动_" posX "_" posY symbol ","
-                macro .= "按键_" value.keyName "_" value.Span() ","
-
-                if (value.StartPos[1] != value.EndPos[1] || value.StartPos[2] != value.EndPos[2]) {
-                    posX := isRelative ? value.EndPos[1] - value.StartPos[1] : value.EndPos[1]
-                    posY := isRelative ? value.EndPos[2] - value.StartPos[2] : value.EndPos[2]
-                    speed := Max(100 - Integer(value.Span() * 0.02), 90)
-                    symbol := isRelative ? "_" speed "_1" : "_" speed
-                    macro .= "移动_" posX "_" posY symbol ","
-                }
-
-                ToolCheckInfo.RecordLastMousePos[1] := value.EndPos[1]
-                ToolCheckInfo.RecordLastMousePos[2] := value.EndPos[2]
-            }
-
-            if (IsJoy && ToolCheckInfo.RecordJoyValue) {
-                macro .= "按键_" value.keyName "_" value.Span() ","
-            }
-
-            if (IsKeyboard && ToolCheckInfo.RecordKeyboardValue) {
-                macro .= "按键_" value.keyName "_" value.Span() ","
-            }
-        }
-    }
-    macro := Trim(macro, ",")
-    macro := GetRecordMacroEditStr(macro)
-    macro := Trim(macro, ",")
-    macro := Trim(macro, "`n")
-    ToolCheckInfo.ToolTextCtrl.Value := macro
+    macro := Trim(ToolCheckInfo.RecordMacroStr, ",")
     if (MySoftData.MacroEditGui != "") {
         MySoftData.MacroEditCon.Value .= macro
     }
+    ToolCheckInfo.ToolTextCtrl.Value := macro
     A_Clipboard := macro
 }
 

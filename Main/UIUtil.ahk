@@ -774,7 +774,7 @@ AddToolUI(index) {
 
     ToolCheckInfo.ToolCheckRecordMacroCtrl := MyGui.Add("CheckBox", Format("x{} y{}", posX + 260, posY, 60), "开关")
     ToolCheckInfo.ToolCheckRecordMacroCtrl.Value := ToolCheckInfo.IsToolRecord
-    ToolCheckInfo.ToolCheckRecordMacroCtrl.OnEvent("Click", OnToolRecordMacro)
+    ToolCheckInfo.ToolCheckRecordMacroCtrl.OnEvent("Click", OnHotToolRecordMacro.Bind(false))
 
     posY += 25
     MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "相关选项：")

@@ -151,13 +151,40 @@ SplitKeyCommand(macro) {
 
     result := StrSplit(newMacro, "_")
     loop result.Length {
-        if (result[A_Index] == "flagSymbol") {
-            result[A_Index] := realKey
+        if (InStr(result[A_Index], "flagSymbol")) {
+            result[A_Index] := StrReplace(result[A_Index], "flagSymbol", realKey)
             break
         }
     }
 
     return result
+}
+
+GetComboKeyArr(ComboKey) {
+    KeyArr := []
+    ModifyKeyMap := Map("LAlt", "<!", "RAlt", ">!", "Alt", "!", "LWin", "<#", "RWin", ">#", "Win", "#",
+        "LCtrl", "<^", "RCtrl", ">^", "Ctrl", "^", "LShift", "<+", "RShift", ">+", "Shift", "+")
+
+    loop {
+        hasModifyKey := false
+        for key, value in ModifyKeyMap {
+            length := StrLen(value)
+            subComboKey := SubStr(ComboKey, 1, length)
+            if (subComboKey == value) {
+                KeyArr.Push(key)
+                ComboKey := SubStr(ComboKey, length + 1)
+                hasModifyKey := true
+                break
+            }
+        }
+
+        if (!hasModifyKey)
+            break
+    }
+
+    if (ComboKey != "")
+        KeyArr.Push(ComboKey)
+    return KeyArr
 }
 
 EditListen() {

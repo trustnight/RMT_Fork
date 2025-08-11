@@ -39,7 +39,7 @@ RecordJoy() {
     }
 
     loop {
-        if (!ToolCheckInfo.IsToolRecord)
+        if (!ToolCheckInfo.ToolCheckRecordMacroCtrl.Value)
             return
 
         XInputStateCache := XInputState(0)
@@ -188,43 +188,17 @@ GetXboxAxisValue(joyAxisSymbol) {
 }
 
 OnRecordJoyDown(key) {
-    ToolCheckInfo.RecordHoldKeyMap.Set(key, true)
-    node := ToolCheckInfo.RecordNodeArr[ToolCheckInfo.RecordNodeArr.Length]
-    node.EndTime := GetCurMSec()
-
     if (RecordKeyMap.Has(key))
         key := RecordKeyMap.Get(key)
 
-    CoordMode("Mouse", "Screen")
-    MouseGetPos &mouseX, &mouseY
-    data := KeyboardData()
-    data.StartTime := GetCurMSec()
-    data.NodeSerial := ToolCheckInfo.RecordNodeArr.Length
-    data.keyName := key
-    data.StartPos := [mouseX, mouseY]
-    ToolCheckInfo.RecordKeyboardArr.Push(data)
-
-    node := RecordNodeData()
-    node.StartTime := GetCurMSec()
-    ToolCheckInfo.RecordNodeArr.Push(node)
+    OnRecordAddMacroStr(key, true)
 }
 
 OnRecordJoyUp(key) {
-    if (ToolCheckInfo.RecordHoldKeyMap.Has(key))
-        ToolCheckInfo.RecordHoldKeyMap.Delete(key)
-
     if (RecordKeyMap.Has(key))
         key := RecordKeyMap.Get(key)
 
-    for index, value in ToolCheckInfo.RecordKeyboardArr {
-        if (value.keyName == key && value.EndTime == 0) {
-            CoordMode("Mouse", "Screen")
-            MouseGetPos &mouseX, &mouseY
-            value.EndTime := GetCurMSec()
-            value.EndPos := [mouseX, mouseY]
-            break
-        }
-    }
+    OnRecordAddMacroStr(key, false)
 }
 
 XInputState(UserIndex) {

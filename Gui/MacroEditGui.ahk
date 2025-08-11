@@ -246,7 +246,7 @@ class MacroEditGui {
         PosY := 10
         this.RecordMacroCon := MyGui.Add("Checkbox", Format("x{} y{} w{} h{}", PosX, PosY - 3, 110, 20), "指令并联录制")
         this.RecordMacroCon.Value := false
-        this.RecordMacroCon.OnEvent("Click", (*) => this.OnChangeRecordMode())
+        this.RecordMacroCon.OnEvent("Click", OnHotToolRecordMacro)
         PosX += 120
         isHotKey := CheckIsHotKey(ToolCheckInfo.ToolRecordMacroHotKey)
         CtrlType := isHotKey ? "Hotkey" : "Text"
@@ -322,11 +322,6 @@ class MacroEditGui {
         this.SureBtnAction := ""
         this.Gui.Hide()
         this.SureFocusCon.Focus()
-    }
-
-    OnChangeRecordMode() {
-        state := this.RecordMacroCon.Value
-        OnToolRecordMacro()
     }
 
     ShowContextMenu(ctrl, item, isRightClick, x, y) {
