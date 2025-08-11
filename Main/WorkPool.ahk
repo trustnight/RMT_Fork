@@ -1,7 +1,7 @@
 #Requires AutoHotkey v2.0
 class WorkPool {
     __New() {
-        this.maxSize := MySoftData.MutiThread ? MySoftData.MutiThreadNum : 0
+        this.maxSize := MySoftData.MutiThreadNum
         this.pool := []              ; 对象池数组
         this.hwndMap := Map()
         this.pidMap := Map()

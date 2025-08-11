@@ -32,7 +32,7 @@ class MMProGui {
     }
 
     AddGui() {
-        MyGui := Gui(, "搜索指令编辑")
+        MyGui := Gui(, "移动Pro指令编辑")
         this.Gui := MyGui
         MyGui.SetFont("S10 W550 Q2", MySoftData.FontType)
 

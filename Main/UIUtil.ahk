@@ -81,7 +81,7 @@ AddOperBtnUI() {
     con := MyGui.Add("GroupBox", Format("x{} y{} w{} h{} center", 10, posY, 110, 95), "当前配置")
     MySoftData.FixedCons.Push(con)
     MySoftData.GroupFixedCons.Push(con)
-    
+
     ; 当前配置
     posY += 25
     con := MyGui.Add("Text", Format("x{} y{} w{} h{} Center", 15, posY, 100, 40), MySoftData.CurSettingName)
@@ -181,10 +181,7 @@ AddMacroHotkeyUI(index) {
 
     MyGui.Add("Text", Format("x{} y{} w80", MySoftData.TabPosX + 120 + offsetPosx, tableItem.underPosY), "循环次数")
     MyGui.Add("Text", Format("x{} y{} w550", MySoftData.TabPosX + 205 + offsetPosx, tableItem.underPosY), "宏指令")
-    MyGui.Add("Text", Format("x{} y{} w30", MySoftData.TabPosX + 540, tableItem.underPosY), "编辑")
-    MyGui.Add("Text", Format("x{} y{} w30", MySoftData.TabPosX + 600, tableItem.underPosY), "游戏")
-    MyGui.Add("Text", Format("x{} y{} w30", MySoftData.TabPosX + 640, tableItem.underPosY), "禁止")
-    MyGui.Add("Text", Format("x{} y{} w100", MySoftData.TabPosX + 710, tableItem.underPosY), "指定进程名")
+    MyGui.Add("Text", Format("x{} y{}", MySoftData.TabPosX + 690, tableItem.underPosY), "前台进程触发（填写进程名）")
 
     UpdateUnderPosY(index, 20)
     LoadSavedSettingUI(index)
@@ -206,8 +203,8 @@ LoadSavedSettingUI(index) {
     EditTriggerAction := isTiming ? OnTableEditTiming : EditTriggerAction
     EditMacroAction := isMacro ? OnTableEditMacro : OnTableEditReplaceKey
     loop tableItem.ModeArr.Length {
-        heightValue := 60
-        InfoHeight := 45
+        heightValue := 70
+        InfoHeight := 60
 
         newIndexCon := MyGui.Add("Text", Format("x{} y{} w{}", TabPosX + 10, tableItem.underPosY + 5, 30), A_Index ".")
         newTriggerTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", TabPosX + 40, tableItem.underPosY, 70),
@@ -216,12 +213,12 @@ LoadSavedSettingUI(index) {
         newTriggerTypeCon.Enabled := isNormal
         newTriggerTypeCon.Visible := isNoTriggerKey ? false : true
 
-        newTkControl := MyGui.Add("Edit", Format("x{} y{} w{} h{} Center", TabPosX + 10, tableItem.underPosY + 25, 100,
-            20), "")
+        newTkControl := MyGui.Add("Edit", Format("x{} y{} w{} Center", TabPosX + 10, tableItem.underPosY + 33, 100,),
+        "")
         newTkControl.Visible := isNoTriggerKey ? false : true
         newTkControl.Value := tableItem.TKArr.Length >= A_Index ? tableItem.TKArr[A_Index] : ""
 
-        newLoopCountControl := MyGui.Add("ComboBox", Format("x{} y{} w80 R5 center", TabPosX + 115 - subMacroWidth,
+        newLoopCountControl := MyGui.Add("ComboBox", Format("x{} y{} w60 R5 center", TabPosX + 115 - subMacroWidth,
             tableItem.underPosY),
         ["无限"])
         conValue := tableItem.LoopCountArr.Length >= A_Index ? tableItem.LoopCountArr[A_Index] : "1"
@@ -229,47 +226,48 @@ LoadSavedSettingUI(index) {
         newLoopCountControl.Text := conValue
         newLoopCountControl.Enabled := isMacro
 
-        newMacroTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", TabPosX + 115 - subMacroWidth, tableItem.underPosY +
-            25, 80),
-        [
-            "指令串联", "指令并联"])
-        newMacroTypeCon.Enabled := isMacro
-        newMacroTypeCon.Value := tableItem.MacroTypeArr.Length >= A_Index ? tableItem.MacroTypeArr[A_Index] : 1
-
-        newInfoControl := MyGui.Add("Edit", Format("x{} y{} w{} h{}", TabPosX + 200 - subMacroWidth, tableItem.underPosY,
-            325 + subMacroWidth,
-            InfoHeight), "")
-        newInfoControl.Value := tableItem.MacroArr.Length >= A_Index ? tableItem.MacroArr[A_Index] : ""
-        
         btnStr := isTiming ? "定时" : "触发键"
-        newKeyBtnControl := MyGui.Add("Button", Format("x{} y{} w60 h20", TabPosX + 530, tableItem.underPosY), btnStr)
+        newKeyBtnControl := MyGui.Add("Button", Format("x{} y{} w60", TabPosX + 115 - subMacroWidth, tableItem.underPosY +
+            30), btnStr)
         newKeyBtnControl.OnEvent("Click", GetTableClosureAction(EditTriggerAction, tableItem, A_Index))
         newKeyBtnControl.Enabled := !isSubMacro
 
-        newModeControl := MyGui.Add("Checkbox", Format("x{} y{} w30", TabPosX + 610, tableItem.underPosY + 5), "")
+        newInfoControl := MyGui.Add("Edit", Format("x{} y{} w{} h{}", TabPosX + 180 - subMacroWidth, tableItem.underPosY,
+            335 + subMacroWidth,
+            InfoHeight), "")
+        newInfoControl.Value := tableItem.MacroArr.Length >= A_Index ? tableItem.MacroArr[A_Index] : ""
+
+        newModeControl := MyGui.Add("Checkbox", Format("x{} y{}", TabPosX + 528, tableItem.underPosY), "游戏")
         newModeControl.value := tableItem.ModeArr[A_Index]
-        newForbidControl := MyGui.Add("Checkbox", Format("x{} y{} w30", TabPosX + 645, tableItem.underPosY + 5), "")
+        newForbidControl := MyGui.Add("Checkbox", Format("x{} y{}", TabPosX + 590, tableItem.underPosY), "禁用")
         newForbidControl.value := tableItem.ForbidArr[A_Index]
 
-        newProcessNameControl := MyGui.Add("Edit", Format("x{} y{} w180", TabPosX + 710, tableItem.underPosY), "")
+        MyGui.Add("Text", Format("x{} y{} w60", TabPosX + 650, tableItem.underPosY), "进程:")
+        newProcessNameControl := MyGui.Add("Edit", Format("x{} y{} w180", TabPosX + 690, tableItem.underPosY), "")
         newProcessNameControl.value := tableItem.ProcessNameArr.Length >= A_Index ? tableItem.ProcessNameArr[A_Index] :
             ""
 
-        newMacroBtnControl := MyGui.Add("Button", Format("x{} y{} w60 h20", TabPosX + 530, tableItem.underPosY + 25),
+        newMacroBtnControl := MyGui.Add("Button", Format("x{} y{} w60", TabPosX + 520, tableItem.underPosY + 30),
         "宏指令")
-        newDeleteBtnControl := MyGui.Add("Button", Format("x{} y{} w50 h20", TabPosX + 610, tableItem.underPosY + 25),
+
+        newDeleteBtnControl := MyGui.Add("Button", Format("x{} y{} w60", TabPosX + 585, tableItem.underPosY + 30),
         "删除")
         newMacroBtnControl.OnEvent("Click", GetTableClosureAction(EditMacroAction, tableItem, A_Index))
         newDeleteBtnControl.OnEvent("Click", GetTableClosureAction(OnTableDelete, tableItem, A_Index))
-        newRemarkTextControl := MyGui.Add("Text", Format("x{} y{} w60", TabPosX + 670, tableItem.underPosY + 30), "备注:"
+        newRemarkTipControl := MyGui.Add("Text", Format("x{} y{} w60", TabPosX + 650, tableItem.underPosY + 35), "备注:"
         )
-        newRemarkControl := MyGui.Add("Edit", Format("x{} y{} w180", TabPosX + 710, tableItem.underPosY + 25), ""
+        newRemarkControl := MyGui.Add("Edit", Format("x{} y{} w180", TabPosX + 690, tableItem.underPosY + 30), ""
         )
         newRemarkControl.value := tableItem.RemarkArr.Length >= A_Index ? tableItem.RemarkArr[A_Index] : ""
 
+        con := MyGui.Add("Button", Format("x{} y{} w20 h28", TabPosX + 875, tableItem.underPosY), "↑")
+        con.OnEvent("Click", OnTableMoveUp.Bind(tableItem, A_Index))
+        con := MyGui.Add("Button", Format("x{} y{} w20 h28", TabPosX + 875, tableItem.underPosY + 30), "↓")
+        con.OnEvent("Click", OnTableMoveDown.Bind(tableItem, A_Index))
+
         tableItem.MacroBtnConArr.Push(newMacroBtnControl)
         tableItem.RemarkConArr.Push(newRemarkControl)
-        tableItem.RemarkTextConArr.Push(newRemarkTextControl)
+        tableItem.RemarkTipConArr.Push(newRemarkTipControl)
         tableItem.LoopCountConArr.Push(newLoopCountControl)
         tableItem.TKConArr.Push(newTkControl)
         tableItem.InfoConArr.Push(newInfoControl)
@@ -280,7 +278,6 @@ LoadSavedSettingUI(index) {
         tableItem.ProcessNameConArr.Push(newProcessNameControl)
         tableItem.IndexConArr.Push(newIndexCon)
         tableItem.TriggerTypeConArr.Push(newTriggerTypeCon)
-        tableItem.MacroTypeConArr.Push(newMacroTypeCon)
         UpdateUnderPosY(index, heightValue)
     }
 }
@@ -319,9 +316,9 @@ OnAddSetting(*) {
     tableItem.TimingSerialArr.Push(GetSerialStr("Timing"))
     tableItem.IsWorkArr.Push(0)
 
-    heightValue := 60
+    heightValue := 70
     TKPosY := tableItem.underPosY + 10
-    InfoHeight := 45
+    InfoHeight := 60
     index := tableItem.ModeArr.Length
 
     MySoftData.TabCtrl.UseTab(TableIndex)
@@ -334,55 +331,54 @@ OnAddSetting(*) {
     newTriggerTypeCon.Enabled := isNormal
     newTriggerTypeCon.Visible := isNoTriggerKey ? false : true
 
-    newTkControl := MyGui.Add("Edit", Format("x{} y{} w{} h{} Center", TabPosX + 10, tableItem.underPosY + 25, 100, 20),
+    newTkControl := MyGui.Add("Edit", Format("x{} y{} w{} Center", TabPosX + 10, tableItem.underPosY + 33, 100),
     "")
     newTkControl.Visible := isNoTriggerKey ? false : true
 
-    newLoopCountControl := MyGui.Add("ComboBox", Format("x{} y{} w80 R5 center", TabPosX + 115 - subMacroWidth,
+    newLoopCountControl := MyGui.Add("ComboBox", Format("x{} y{} w60 R5 center", TabPosX + 115 - subMacroWidth,
         tableItem.underPosY
     ), [
         "无限"])
     newLoopCountControl.Text := "1"
     newLoopCountControl.Enabled := isMacro
 
-    newMacroTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", TabPosX + 115 - subMacroWidth, tableItem.underPosY +
-        25, 80),
-    [
-        "指令串联", "指令并联"])
-    newMacroTypeCon.Enabled := isMacro
-    newMacroTypeCon.Value := 2
-
-    newInfoControl := MyGui.Add("Edit", Format("x{} y{} w{} h{}", TabPosX + 200 - subMacroWidth, tableItem.underPosY,
-        325 + subMacroWidth, InfoHeight),
-    "")
-
     btnStr := isTiming ? "定时" : "触发键"
-    newKeyBtnControl := MyGui.Add("Button", Format("x{} y{} w60 h20", TabPosX + 530, tableItem.underPosY), btnStr)
+    newKeyBtnControl := MyGui.Add("Button", Format("x{} y{} w60", TabPosX + 115 - subMacroWidth, tableItem.underPosY +
+        30), btnStr)
     newKeyBtnControl.OnEvent("Click", GetTableClosureAction(EditTriggerAction, tableItem, index))
     newKeyBtnControl.Enabled := !isSubMacro
 
-    newModeControl := MyGui.Add("Checkbox", Format("x{} y{} w30", TabPosX + 610, tableItem.underPosY + 5), "")
+    newInfoControl := MyGui.Add("Edit", Format("x{} y{} w{} h{}", TabPosX + 180 - subMacroWidth, tableItem.underPosY,
+        335 + subMacroWidth, InfoHeight), "")
+
+    newModeControl := MyGui.Add("Checkbox", Format("x{} y{}", TabPosX + 528, tableItem.underPosY), "游戏")
     newModeControl.value := 0
-    newForbidControl := MyGui.Add("Checkbox", Format("x{} y{} w30", TabPosX + 645, tableItem.underPosY + 5), "")
+    newForbidControl := MyGui.Add("Checkbox", Format("x{} y{}", TabPosX + 590, tableItem.underPosY), "禁用")
     newForbidControl.value := 0
-    newProcessNameControl := MyGui.Add("Edit", Format("x{} y{} w180", TabPosX + 710, tableItem.underPosY), "")
+
+    MyGui.Add("Text", Format("x{} y{} w60", TabPosX + 650, tableItem.underPosY), "进程:")
+    newProcessNameControl := MyGui.Add("Edit", Format("x{} y{} w180", TabPosX + 690, tableItem.underPosY), "")
     newProcessNameControl.value := ""
 
-    newMacroBtnControl := MyGui.Add("Button", Format("x{} y{} w60 h20", TabPosX + 530, tableItem.underPosY + 25),
+    newMacroBtnControl := MyGui.Add("Button", Format("x{} y{} w60", TabPosX + 520, tableItem.underPosY + 30),
     "宏指令")
-    newDeleteBtnControl := MyGui.Add("Button", Format("x{} y{} w50 h20", TabPosX + 610, tableItem.underPosY + 25),
+    newDeleteBtnControl := MyGui.Add("Button", Format("x{} y{} w60", TabPosX + 585, tableItem.underPosY + 30),
     "删除")
     newMacroBtnControl.OnEvent("Click", GetTableClosureAction(EditMacroAction, tableItem, index))
     newDeleteBtnControl.OnEvent("Click", GetTableClosureAction(OnTableDelete, tableItem, index))
 
-    newRemarkTextControl := MyGui.Add("Text", Format("x{} y{} w60", TabPosX + 670, tableItem.underPosY + 30), "备注:"
+    newRemarkTipCon := MyGui.Add("Text", Format("x{} y{} w60", TabPosX + 650, tableItem.underPosY + 35), "备注:"
     )
-    newRemarkControl := MyGui.Add("Edit", Format("x{} y{} w180", TabPosX + 710, tableItem.underPosY + 25), "")
+    newRemarkControl := MyGui.Add("Edit", Format("x{} y{} w180", TabPosX + 690, tableItem.underPosY + 30), "")
+    con := MyGui.Add("Button", Format("x{} y{} w20 h28", TabPosX + 875, tableItem.underPosY), "↑")
+    con.OnEvent("Click", OnTableMoveUp.Bind(tableItem, index))
+    MyGui.Add("Button", Format("x{} y{} w20 h28", TabPosX + 875, tableItem.underPosY + 30), "↓")
+    con.OnEvent("Click", OnTableMoveDown.Bind(tableItem, index))
 
     tableItem.LoopCountConArr.Push(newLoopCountControl)
     tableItem.MacroBtnConArr.Push(newMacroBtnControl)
     tableItem.RemarkConArr.Push(newRemarkControl)
-    tableItem.RemarkTextConArr.Push(newRemarkTextControl)
+    tableItem.RemarkTipConArr.Push(newRemarkTipCon)
     tableItem.KeyBtnConArr.Push(newKeyBtnControl)
     tableItem.DeleteBtnConArr.Push(newDeleteBtnControl)
     tableItem.TKConArr.Push(newTkControl)
@@ -392,7 +388,6 @@ OnAddSetting(*) {
     tableItem.ProcessNameConArr.Push(newProcessNameControl)
     tableItem.IndexConArr.Push(newIndexCon)
     tableItem.TriggerTypeConArr.Push(newTriggerTypeCon)
-    tableItem.MacroTypeConArr.Push(newMacroTypeCon)
 
     UpdateUnderPosY(TableIndex, heightValue)
 
@@ -513,17 +508,14 @@ AddSettingUI(index) {
     MySoftData.BootStartCtrl.Value := MySoftData.IsBootStart
     MySoftData.BootStartCtrl.OnEvent("Click", OnBootStartChanged)
 
-    MySoftData.MutiThreadCtrl := MyGui.Add("CheckBox", Format("x{} y{}", posX + 635, posY), "指令串联多线程")
-    MySoftData.MutiThreadCtrl.Value := MySoftData.MutiThread
+    MySoftData.CMDTipCtrl := MyGui.Add("CheckBox", Format("x{} y{} -Wrap w15", posX + 635, posY), "")
+    MySoftData.CMDTipCtrl.Value := MySoftData.CMDTip
+    con := MyGui.Add("Button", Format("x{} y{}", posX + 635 + 15, posY - 5), "指令显示")
+    con.OnEvent("Click", (*) => OnEditCMDTipGui())
 
     posY += 40
     MySoftData.NoVariableTipCtrl := MyGui.Add("CheckBox", Format("x{} y{}", posX + 25, posY), "无变量提醒")
     MySoftData.NoVariableTipCtrl.Value := MySoftData.NoVariableTip
-
-    MySoftData.CMDTipCtrl := MyGui.Add("CheckBox", Format("x{} y{}", posX + 315, posY), "")
-    MySoftData.CMDTipCtrl.Value := MySoftData.CMDTip
-    con := MyGui.Add("Button", Format("x{} y{}", posX + 315 + 15, posY - 5), "指令显示")
-    con.OnEvent("Click", (*)=> OnEditCMDTipGui())
 
     posY += 40
     MyGui.Add("GroupBox", Format("x{} y{} w870 h100", posX + 10, posY), "下拉框选项")

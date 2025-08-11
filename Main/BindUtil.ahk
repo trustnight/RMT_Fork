@@ -134,6 +134,13 @@ OnToolRecordMacro(*) {
     }
 
     if (state) {
+        ;新录制
+        CoordMode("Mouse", "Screen")
+        MouseGetPos &mouseX, &mouseY
+        ToolCheckInfo.RecordMacroStr := ""
+        ToolCheckInfo.RecordLastTime := GetCurMSec()
+        ToolCheckInfo.NewRecordLastMousePos := [mouseX, mouseY]
+
         ToolCheckInfo.RecordNodeArr := []
         ToolCheckInfo.RecordKeyboardArr := []
         ToolCheckInfo.RecordHoldKeyMap := Map()
@@ -141,10 +148,8 @@ OnToolRecordMacro(*) {
         node := RecordNodeData()
         node.StartTime := GetCurMSec()
         ToolCheckInfo.RecordNodeArr.Push(node)
-
-        CoordMode("Mouse", "Screen")
-        MouseGetPos &mouseX, &mouseY
         ToolCheckInfo.RecordLastMousePos := [mouseX, mouseY]
+        
         if (ToolCheckInfo.RecordJoyValue)
             SetTimer RecordJoy, -1
     }
@@ -338,17 +343,12 @@ GetMacroAction(tableIndex, index) {
         actionDown := GetClosureAction(tableItem, macro, index, OnReplaceDownKey)
         actionUp := GetClosureAction(tableItem, macro, index, OnReplaceUpKey)
     }
-
     return [actionDown, actionUp]
 }
 
 OnTriggerKeyDown(tableIndex, itemIndex) {
     tableItem := MySoftData.TableInfo[tableIndex]
     macro := tableItem.MacroArr[itemIndex]
-    if (tableItem.IsWorkArr[itemIndex] && tableItem.TriggerTypeArr[itemIndex] != 4) ;不是开关
-    {
-        return
-    }
 
     if (tableItem.TriggerTypeArr[itemIndex] == 1) { ;按下触发
         if (SubStr(tableItem.TKArr[itemIndex], 1, 1) != "~")
@@ -359,6 +359,10 @@ OnTriggerKeyDown(tableIndex, itemIndex) {
         TriggerMacroHandler(tableIndex, itemIndex)
     }
     else if (tableItem.TriggerTypeArr[itemIndex] == 4) {  ;开关
+        if (tableItem.IsWorkArr[itemIndex]) {       ;关闭开关
+            MySubMacroStopAction(tableIndex, itemIndex)
+            return
+        }
         OnToggleTriggerMacro(tableIndex, itemIndex)
     }
     else if (tableItem.TriggerTypeArr[itemIndex] == 5) {    ;长按
@@ -391,17 +395,9 @@ OnTriggerKeyUp(tableIndex, itemIndex) {
 OnToggleTriggerMacro(tableIndex, itemIndex) {
     tableItem := MySoftData.TableInfo[tableIndex]
     macro := tableItem.MacroArr[itemIndex]
-    isSeries := tableItem.MacroTypeArr[itemIndex] == 1  ;触发串联指令
     hasWork := MyWorkPool.CheckHasWork()
 
-    if (tableItem.IsWorkArr[itemIndex]) {
-        workPath := MyWorkPool.GetWorkPath(tableItem.IsWorkArr[itemIndex])
-        tableItem.IsWorkArr[itemIndex] := false
-        MyWorkPool.PostMessage(WM_STOP_MACRO, workPath, 0, 0)
-        return
-    }
-
-    if (isSeries && hasWork) {
+    if (hasWork) {
         workPath := MyWorkPool.Get()
         workIndex := MyWorkPool.GetWorkIndex(workPath)
         tableItem.IsWorkArr[itemIndex] := workIndex
@@ -411,32 +407,30 @@ OnToggleTriggerMacro(tableIndex, itemIndex) {
 
     isTrigger := tableItem.ToggleStateArr[itemIndex]
     if (!isTrigger) {
-        action := OnTriggerMacroKeyAndInit.Bind(tableItem, macro, itemIndex)
-        SetTimer(action, -1)
-        tableItem.ToggleActionArr[itemIndex] := action
         tableItem.ToggleStateArr[itemIndex] := true
+        action := OnTriggerMacroKeyAndInit.Bind(tableItem, macro, itemIndex)
+        tableItem.ToggleActionArr[itemIndex] := action
+        SetTimer(action, -1)
     }
     else {
         action := tableItem.ToggleActionArr[itemIndex]
         if (action == "")
             return
 
-        SetTimer(action, 0)
         KillTableItemMacro(tableItem, itemIndex)
-        tableItem.ToggleStateArr[itemIndex] := false
+        SetTimer(action, 0)
     }
 }
 
 TriggerMacroHandler(tableIndex, itemIndex) {
     tableItem := MySoftData.TableInfo[tableIndex]
     macro := tableItem.MacroArr[itemIndex]
-    isSeries := tableItem.MacroTypeArr[itemIndex] == 1  ;触发串联指令
     isWork := tableItem.IsWorkArr[itemIndex]
     hasWork := MyWorkPool.CheckHasWork()
     if (isWork)
         return
 
-    if (isSeries && hasWork) {
+    if (hasWork) {
         workPath := MyWorkPool.Get()
         workIndex := MyWorkPool.GetWorkIndex(workPath)
         tableItem.IsWorkArr[itemIndex] := workIndex
@@ -444,42 +438,5 @@ TriggerMacroHandler(tableIndex, itemIndex) {
     }
     else {
         OnTriggerMacroKeyAndInit(tableItem, macro, itemIndex)
-    }
-}
-
-OnFinishMacro(tableItem, macro, index) {
-
-    key := "$*" tableItem.TKArr[index]
-    actionArr := GetMacroAction(tableItem.Index, index)
-    isJoyKey := RegExMatch(tableItem.TKArr[index], "Joy")
-    isHotstring := SubStr(tableItem.TKArr[index], 1, 1) == ":"
-    curProcessName := tableItem.ProcessNameArr.Length >= index ? tableItem.ProcessNameArr[index] : ""
-
-    if (curProcessName != "") {
-        processInfo := Format("ahk_exe {}", curProcessName)
-        HotIfWinActive(processInfo)
-    }
-
-    if (isJoyKey) {
-        MyJoyMacro.AddMacro(tableItem.TKArr[index], actionArr[1], curProcessName)
-    }
-    else if (isHotstring) {
-        Hotstring(tableItem.TKArr[index], actionArr[1])
-    }
-    else {
-        if (actionArr[1] != "") {
-            Hotkey(key, actionArr[1], "OFF")
-            Hotkey(key, actionArr[1], "ON")
-        }
-
-        if (actionArr[2] != "") {
-            Hotkey(key " up", actionArr[2], "OFF")
-            Hotkey(key " up", actionArr[2], "ON")
-        }
-
-    }
-
-    if (curProcessName != "") {
-        HotIfWinActive
     }
 }

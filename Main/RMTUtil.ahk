@@ -19,7 +19,6 @@ OnSaveSetting(*) {
     IniWrite(MySoftData.ShowWinCtrl.Value, IniFile, IniSection, "IsExecuteShow")
     IniWrite(MySoftData.BootStartCtrl.Value, IniFile, IniSection, "IsBootStart")
     IniWrite(MySoftData.MutiThreadNumCtrl.Value, IniFile, IniSection, "MutiThreadNum")
-    IniWrite(MySoftData.MutiThreadCtrl.Value, IniFile, IniSection, "MutiThread")
     IniWrite(MySoftData.NoVariableTipCtrl.Value, IniFile, IniSection, "NoVariableTip")
     IniWrite(MySoftData.CMDTipCtrl.Value, IniFile, IniSection, "CMDTip")
     IniWrite(MySoftData.ScreenShotTypeCtrl.Value, IniFile, IniSection, "ScreenShotType")
@@ -79,8 +78,6 @@ OnTableDelete(tableItem, index) {
         tableItem.SerialArr.RemoveAt(index)
     if (tableItem.TimingSerialArr.Length >= index)
         tableItem.TimingSerialArr.RemoveAt(index)
-    if (tableItem.MacroTypeArr.Length >= index)
-        tableItem.MacroTypeArr.RemoveAt(index)
     tableItem.IndexConArr.RemoveAt(index)
     tableItem.TriggerTypeConArr.RemoveAt(index)
     tableItem.ModeConArr.RemoveAt(index)
@@ -90,7 +87,6 @@ OnTableDelete(tableItem, index) {
     tableItem.ProcessNameConArr.RemoveAt(index)
     tableItem.LoopCountConArr.RemoveAt(index)
     tableItem.RemarkConArr.RemoveAt(index)
-    tableItem.MacroTypeConArr.RemoveAt(index)
 
     OnSaveSetting()
 }
@@ -130,6 +126,53 @@ OnTableEditTriggerStr(tableItem, index) {
 
 OnEditCMDTipGui() {
     MyCMDTipSettingGui.ShowGui()
+}
+
+OnTableMoveUp(tableItem, index, *) {
+    if (index == 1) {
+        MsgBox("上面有元素吗，你就上移动！！！")
+        return
+    }
+    SwapTableContent(tableItem, index, index - 1)
+}
+
+OnTableMoveDown(tableItem, index, *) {
+    lastIndex := tableItem.ModeArr.length
+    if (lastIndex == index) {
+        MsgBox("下面有元素吗，你就下移！！！")
+        return
+    }
+    SwapTableContent(tableItem, index, index + 1)
+}
+
+SwapTableContent(tableItem, indexA, indexB) {
+    SwapArrValue(tableItem.ModeConArr, indexA, indexB, 2)
+    SwapArrValue(tableItem.ForbidConArr, indexA, indexB, 2)
+    SwapArrValue(tableItem.HoldTimeArr, indexA, indexB)
+    SwapArrValue(tableItem.TKConArr, indexA, indexB, 2)
+    SwapArrValue(tableItem.InfoConArr, indexA, indexB, 2)
+    SwapArrValue(tableItem.TriggerTypeConArr, indexA, indexB, 2)
+    SwapArrValue(tableItem.SerialArr, indexA, indexB)
+    SwapArrValue(tableItem.LoopCountConArr, indexA, indexB, 3)
+    SwapArrValue(tableItem.RemarkConArr, indexA, indexB, 2)
+}
+
+SwapArrValue(Arr, indexA, indexB, valueType := 1) {
+    if (valueType == 3) {
+        temp := Arr[indexA].Text
+        Arr[indexA].Text := Arr[indexB].Text
+        Arr[indexB].Text := temp
+    }
+    else if (valueType == 2) {
+        temp := Arr[indexA].Value
+        Arr[indexA].Value := Arr[indexB].Value
+        Arr[indexB].Value := temp
+    }
+    else {
+        temp := Arr[indexA]
+        Arr[indexA] := Arr[indexB]
+        Arr[indexB] := temp
+    }
 }
 
 ResetWinPosAndRefreshGui(*) {
@@ -214,10 +257,9 @@ SubMacroStopAction(tableIndex, itemIndex) {
 TriggerSubMacro(tableIndex, itemIndex) {
     tableItem := MySoftData.TableInfo[tableIndex]
     macro := tableItem.MacroArr[itemIndex]
-    isSeries := tableItem.MacroTypeArr[itemIndex] == 1  ;触发串联指令
     hasWork := MyWorkPool.CheckHasWork()
 
-    if (isSeries && hasWork) {
+    if (hasWork) {
         workPath := MyWorkPool.Get()
         workIndex := MyWorkPool.GetWorkIndex(workPath)
         tableItem.IsWorkArr[itemIndex] := workIndex

@@ -9,7 +9,6 @@ class TableItem {
         this.LoopCountArr := []
         this.RemarkArr := []
         this.TriggerTypeArr := []
-        this.MacroTypeArr := []
         this.TKConArr := []
         this.InfoConArr := []
         this.KeyBtnConArr := []
@@ -19,11 +18,10 @@ class TableItem {
         this.ForbidConArr := []
         this.ProcessNameConArr := []
         this.LoopCountConArr := []
-        this.RemarkTextConArr := []
+        this.RemarkTipConArr := []
         this.RemarkConArr := []
         this.IndexConArr := []
         this.TriggerTypeConArr := []
-        this.MacroTypeConArr := []
         this.TimingSerialArr := []
 
         this.SerialArr := []
@@ -101,6 +99,11 @@ class ToolCheck {
         this.MouseInfoTimer := ""
 
         this.MacroGui := ""
+        
+        this.NewRecordLastMousePos := []
+        this.RecordLastTime := ""
+        this.RecordMacroStr := ""
+    
         this.RecordNodeArr := []
         this.RecordKeyboardArr := []
         this.RecordHoldKeyMap := Map()
@@ -140,8 +143,6 @@ class SoftData {
         this.NoVariableTipCtrl := ""
         this.ScreenShotType := 1
         this.ScreenShotTypeCtrl := ""
-        this.MutiThread := false
-        this.MutiThreadCtrl := ""
         this.MutiThreadNum := 3
         this.MutiThreadNumCtrl := ""
         this.IsPause := false
@@ -169,7 +170,7 @@ class SoftData {
         this.MacroEditGui := ""
         this.MacroEditCon := ""
         this.RecordToggleCon := ""
-        this.FontType := "Consolas"
+        this.FontType := "微软雅黑"
         this.FontList := []
 
         this.MyGui := {}
@@ -439,4 +440,3 @@ class RMTCMDData {
         this.OperateType := 1 ; 1截图 2截图中提取文本 3自由贴 4关闭指令显示窗口 5切换指令显示开关 6暂停 7终止所有宏 8重载
     }
 }
-

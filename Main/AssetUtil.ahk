@@ -274,7 +274,6 @@ LoadMainSetting() {
     ToolCheckInfo.OCRTypeValue := IniRead(IniFile, IniSection, "OCRType", 1)
     MySoftData.IsExecuteShow := IniRead(IniFile, IniSection, "IsExecuteShow", true)
     MySoftData.IsBootStart := IniRead(IniFile, IniSection, "IsBootStart", false)
-    MySoftData.MutiThread := IniRead(IniFile, IniSection, "MutiThread", false)
     MySoftData.MutiThreadNum := IniRead(IniFile, IniSection, "MutiThreadNum", 3)
     MySoftData.NoVariableTip := IniRead(IniFile, IniSection, "NoVariableTip", true)
     MySoftData.CMDTip := IniRead(IniFile, IniSection, "CMDTip", false)
@@ -284,7 +283,7 @@ LoadMainSetting() {
     MySoftData.WinPosY := IniRead(IniFile, IniSection, "WinPosY", 0)
     MySoftData.IsSavedWinPos := IniRead(IniFile, IniSection, "IsSavedWinPos", false)
     MySoftData.TableIndex := IniRead(IniFile, IniSection, "TableIndex", 1)
-    MySoftData.FontType := IniRead(IniFile, IniSection, "FontType", "Consolas")
+    MySoftData.FontType := IniRead(IniFile, IniSection, "FontType", "微软雅黑")
 
     MySoftData.CMDPosX := IniRead(IniFile, IniSection, "CMDPosX", A_ScreenWidth - 225)
     MySoftData.CMDPosY := IniRead(IniFile, IniSection, "CMDPosY", 0)
@@ -332,7 +331,6 @@ ReadTableItemInfo(index) {
     savedLoopCountStr := IniRead(MacroFile, IniSection, symbol "LoopCountArr", "")
     savedHoldTimeArrStr := IniRead(MacroFile, IniSection, symbol "HoldTimeArr", "")
     savedTriggerTypeArrStr := IniRead(MacroFile, IniSection, symbol "TriggerTypeArr", "")
-    savedMacroTypeStr := IniRead(MacroFile, IniSection, symbol "MacroTypeArr", "")
     savedSerialStr := IniRead(MacroFile, IniSection, symbol "SerialArr", "")
     savedTimingSerialStr := IniRead(MacroFile, IniSection, symbol "TimingSerialArr", "")
 
@@ -353,10 +351,8 @@ ReadTableItemInfo(index) {
             savedLoopCountStr := defaultInfo[7]
         if (savedTriggerTypeArrStr == "")
             savedTriggerTypeArrStr := defaultInfo[8]
-        if (savedMacroTypeStr == "")
-            savedMacroTypeStr := defaultInfo[9]
         if (savedSerialStr == "")
-            savedSerialStr := defaultInfo[10]
+            savedSerialStr := defaultInfo[9]
     }
 
     tableItem := MySoftData.TableInfo[index]
@@ -368,7 +364,6 @@ ReadTableItemInfo(index) {
     SetIntArr(savedLoopCountStr, "π", tableItem.LoopCountArr)
     SetArr(savedHoldTimeArrStr, "π", tableItem.HoldTimeArr)
     SetArr(savedTriggerTypeArrStr, "π", tableItem.TriggerTypeArr)
-    SetArr(savedMacroTypeStr, "π", tableItem.MacroTypeArr)
     SetArr(savedSerialStr, "π", tableItem.SerialArr)
     SetArr(savedTimingSerialStr, "π", tableItem.TimingSerialArr)
 
@@ -428,7 +423,6 @@ GetTableItemDefaultInfo(index) {
     savedLoopCountStr := ""
     savedHoldTimeArrStr := ""
     savedTriggerTypeStr := ""
-    savedMacroTypeArrStr := ""
     savedSerialeArrStr := ""
     symbol := GetTableSymbol(index)
 
@@ -441,7 +435,6 @@ GetTableItemDefaultInfo(index) {
         savedRemarkArrStr := "取消禁止配置才能生效"
         savedLoopCountStr := "1"
         savedTriggerTypeStr := "1"
-        savedMacroTypeArrStr := "1"
         savedSerialeArrStr := "000001"
     }
     else if (symbol == "String") {
@@ -453,7 +446,6 @@ GetTableItemDefaultInfo(index) {
         savedRemarkArrStr := "按两次a触发"
         savedLoopCountStr := "1"
         savedTriggerTypeStr := "1"
-        savedMacroTypeArrStr := "1"
         savedSerialeArrStr := "000002"
     }
     else if (symbol == "SubMacro") {
@@ -465,7 +457,6 @@ GetTableItemDefaultInfo(index) {
         savedRemarkArrStr := "插入时循环无效"
         savedLoopCountStr := "1"
         savedTriggerTypeStr := "1"
-        savedMacroTypeArrStr := "1"
         savedSerialeArrStr := "000003"
     }
     else if (symbol == "Replace") {
@@ -475,12 +466,11 @@ GetTableItemDefaultInfo(index) {
         savedForbidArrStr := "1"
         savedProcessNameStr := ""
         savedTriggerTypeStr := "1"
-        savedMacroTypeArrStr := "1"
         savedSerialeArrStr := "000004"
     }
     return [savedTKArrStr, savedHoldTimeArrStr, savedModeArrStr, savedForbidArrStr,
         savedProcessNameStr, savedRemarkArrStr,
-        savedLoopCountStr, savedTriggerTypeStr, savedMacroTypeArrStr, savedSerialeArrStr]
+        savedLoopCountStr, savedTriggerTypeStr, savedSerialeArrStr]
 }
 
 SaveTableItemInfo(index) {
@@ -494,9 +484,8 @@ SaveTableItemInfo(index) {
     IniWrite(SavedInfo[6], MacroFile, IniSection, symbol "RemarkArr")
     IniWrite(SavedInfo[7], MacroFile, IniSection, symbol "LoopCountArr")
     IniWrite(SavedInfo[8], MacroFile, IniSection, symbol "TriggerTypeArr")
-    IniWrite(SavedInfo[9], MacroFile, IniSection, symbol "MacroTypeArr")
-    IniWrite(SavedInfo[10], MacroFile, IniSection, symbol "SerialArr")
-    IniWrite(SavedInfo[11], MacroFile, IniSection, symbol "TimingSerialArr")
+    IniWrite(SavedInfo[9], MacroFile, IniSection, symbol "SerialArr")
+    IniWrite(SavedInfo[10], MacroFile, IniSection, symbol "TimingSerialArr")
     SaveTableItemMacro(index)
 }
 
@@ -523,7 +512,6 @@ GetSavedTableItemInfo(index) {
     RemarkArrStr := ""
     LoopCountArrStr := ""
     TriggerTypeArrStr := ""
-    MacroTypeArrStr := ""
     SerialArrStr := ""
     TimingSerialArrStr := ""
 
@@ -540,7 +528,6 @@ GetSavedTableItemInfo(index) {
         TriggerTypeArrStr .= tableItem.TriggerTypeConArr.Length >= A_Index ? tableItem.TriggerTypeConArr[A_Index].Value :
             ""
         LoopCountArrStr .= GetItemSaveCountValue(tableItem.Index, A_Index)
-        MacroTypeArrStr .= tableItem.MacroTypeConArr.Length >= A_Index ? tableItem.MacroTypeConArr[A_Index].Value : 1
         SerialArrStr .= tableItem.SerialArr.Length >= A_Index ? tableItem.SerialArr[A_Index] : "000000"
         TimingSerialArrStr .= tableItem.TimingSerialArr.Length >= A_Index ? tableItem.TimingSerialArr[A_Index] :
             "Timing000000"
@@ -553,14 +540,13 @@ GetSavedTableItemInfo(index) {
             RemarkArrStr .= "π"
             LoopCountArrStr .= "π"
             TriggerTypeArrStr .= "π"
-            MacroTypeArrStr .= "π"
             SerialArrStr .= "π"
             TimingSerialArrStr .= "π"
         }
     }
 
     return [TKArrStr, ModeArrStr, HoldTimeArrStr, ForbidArrStr, ProcessNameArrStr, RemarkArrStr,
-        LoopCountArrStr, TriggerTypeArrStr, MacroTypeArrStr, SerialArrStr, TimingSerialArrStr]
+        LoopCountArrStr, TriggerTypeArrStr, SerialArrStr, TimingSerialArrStr]
 }
 
 SaveWinPos() {
@@ -600,7 +586,6 @@ InitTableItemState() {
 
     tableItem := MySoftData.SpecialTableItem
     tableItem.ModeArr := [0]
-    tableItem.MacroTypeArr := [1]
     InitSingleTableState(tableItem)
 }
 

@@ -68,7 +68,13 @@ OnTriggerMacroKeyAndInit(tableItem, macro, index) {
         tableItem.ActionCount[index]++
         tableItem.VariableMapArr[index]["当前循环次数"] += 1
     }
-    ; OnFinishMacro(tableItem, macro, index)
+    OnFinishMacro(tableItem, macro, index)
+}
+
+OnFinishMacro(tableItem, macro, index) {
+    if (tableItem.TriggerTypeArr[index] == 4) { ;开关状态下
+        tableItem.ToggleStateArr[index] := false
+    }
 }
 
 OnTriggerMacroOnce(tableItem, macro, index) {
@@ -175,7 +181,6 @@ OnSearchOnce(tableItem, Data, index, curCount) {
     Y2 := Integer(Data.EndPosY)
     isFinally := curCount == Data.searchCount
     VariableMap := tableItem.VariableMapArr[index]
-    MacroType := tableItem.MacroTypeArr[index]
 
     CoordMode("Pixel", "Screen")
     if (Data.SearchType == 1) {
@@ -242,13 +247,7 @@ OnSearchOnce(tableItem, Data, index, curCount) {
         if (Data.TrueMacro == "")
             return
 
-        if (MacroType == 1) {
-            OnTriggerMacroOnce(tableItem, Data.TrueMacro, index)
-        }
-        else if (MacroType == 2) {
-            action := OnTriggerMacroOnce.Bind(tableItem, Data.TrueMacro, index)
-            SetTimer(action, -1)
-        }
+        OnTriggerMacroOnce(tableItem, Data.TrueMacro, index)
     }
     else if (isFinally) {
         if (Data.ResultToggle) {
@@ -258,25 +257,13 @@ OnSearchOnce(tableItem, Data, index, curCount) {
         if (Data.FalseMacro == "")
             return
 
-        if (MacroType == 1) {
-            OnTriggerMacroOnce(tableItem, Data.FalseMacro, index)
-        }
-        else if (MacroType == 2) {
-            action := OnTriggerMacroOnce.Bind(tableItem, Data.FalseMacro, index)
-            SetTimer(action, -1)
-        }
+        OnTriggerMacroOnce(tableItem, Data.FalseMacro, index)
     }
     else {
         FloatInterval := GetFloatTime(Data.SearchInterval, MySoftData.PreIntervalFloat)
         curCount++
-        if (MacroType == 1) {
-            Sleep(FloatInterval)
-            OnSearchOnce(tableItem, Data, index, curCount)
-        }
-        else if (MacroType == 2) {
-            action := OnSearchOnce.Bind(tableItem, Data, index, curCount)
-            SetTimer action, -FloatInterval
-        }
+        Sleep(FloatInterval)
+        OnSearchOnce(tableItem, Data, index, curCount)
     }
 }
 
@@ -352,26 +339,18 @@ OnCompare(tableItem, cmd, index) {
         }
     }
 
-    MacroType := tableItem.MacroTypeArr[index]
     macro := ""
     macro := result && Data.TrueMacro != "" ? Data.TrueMacro : macro
     macro := !result && Data.FalseMacro != "" ? Data.FalseMacro : macro
     if (macro == "")
         return
 
-    if (MacroType == 1) {
-        OnTriggerMacroOnce(tableItem, macro, index)
-    }
-    else if (MacroType == 2) {
-        action := OnTriggerMacroOnce.Bind(tableItem, macro, index)
-        SetTimer(action, -1)
-    }
+    OnTriggerMacroOnce(tableItem, macro, index)
 }
 
 OnMMPro(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
     Data := GetMacroCMDData(MMProFile, paramArr[2])
-    MacroType := tableItem.MacroTypeArr[index]
 
     LastSumTime := 0
     loop Data.Count {
@@ -379,22 +358,9 @@ OnMMPro(tableItem, cmd, index) {
             return
 
         FloatInterval := GetFloatTime(Data.Interval, MySoftData.PreIntervalFloat)
-        if (MacroType == 1) {
-            OnMMProOnce(tableItem, index, Data)
-            if (A_Index != Data.Count)
-                Sleep(FloatInterval)
-        }
-        else if (MacroType == 2) {
-            if (A_Index == 1) {
-                OnMMProOnce(tableItem, index, Data)
-            }
-            else {
-                tempAction := OnMMProOnce.Bind(tableItem, index, Data)
-                tableItem.CmdActionArr[index].Push(tempAction)
-                SetTimer tempAction, -LastSumTime
-            }
-            LastSumTime := LastSumTime + FloatInterval
-        }
+        OnMMProOnce(tableItem, index, Data)
+        if (A_Index != Data.Count)
+            Sleep(FloatInterval)
     }
 }
 
@@ -538,26 +504,7 @@ OnSubMacro(tableItem, cmd, index) {
         return SplitMacro(resultMacro)
     }
     else if (Data.CallType == 2) {  ;触发
-        if (Data.Type != 1 && macroItem.MacroTypeArr[macroIndex] == 1) { ;串联
-            MyTriggerSubMacro(macroTableIndex, macroIndex)
-            return ""
-        }
-        action := OnTriggerMacroKeyAndInit.Bind(macroItem, macro, macroIndex)
-        SetTimer(action, -1)
-        return ""
-    }
-}
-
-OnSubTest(tableItem, macro, index, IsLoop, LoopCount) {
-    loop {
-        if (!IsLoop && LoopCount <= 0)
-            break
-
-        if (tableItem.KilledArr[index])
-            return
-
-        OnTriggerMacroOnce(tableItem, macro, index)
-        LoopCount -= 1
+        MyTriggerSubMacro(macroTableIndex, macroIndex)
     }
 }
 
@@ -613,26 +560,18 @@ OnExVariable(tableItem, cmd, index) {
     interval := Data.SearchInterval
     tableItem.SuccessClearActionArr[index].Set(Data.ExtractStr, [])
 
-    OnExVariableOnce(tableItem, index, Data, count == 1)
-    loop count {
-        if (A_Index == 1)
-            continue
-
-        if (!tableItem.SuccessClearActionArr[index].Has(Data.ExtractStr)) ;第一次比较成功就退出
-            break
-
-        tempAction := OnExVariableOnce.Bind(tableItem, index, Data, A_Index == count)
-        leftTime := GetFloatTime((Integer(interval) * (A_Index - 1)), MySoftData.PreIntervalFloat)
-        tableItem.SuccessClearActionArr[index][Data.ExtractStr].Push(tempAction)
-        SetTimer tempAction, -leftTime
-    }
+    OnExVariableOnce(tableItem, index, Data, 1)
 }
 
-OnExVariableOnce(tableItem, index, Data, isFinally) {
+OnExVariableOnce(tableItem, index, Data, curCount) {
+    if (tableItem.KilledArr[index])
+        return
+
     X1 := Data.StartPosX
     Y1 := Data.StartPosY
     X2 := Data.EndPosX
     Y2 := Data.EndPosY
+    isFinally := Data.SearchCount == curCount
     if (Data.ExtractType == 1) {
         TextObjs := GetScreenTextObjArr(X1, Y1, X2, Y2, Data.OCRType)
         TextObjs := TextObjs == "" ? [] : TextObjs
@@ -672,16 +611,12 @@ OnExVariableOnce(tableItem, index, Data, isFinally) {
     }
 
     if (isOk || isFinally) {
-        ;清除后续的搜索和搜索记录
-        if (tableItem.SuccessClearActionArr[index].Has(Data.ExtractStr)) {
-            SuccessClearActionArr := tableItem.SuccessClearActionArr[index].Get(Data.ExtractStr)
-            loop SuccessClearActionArr.Length {
-                action := SuccessClearActionArr[A_Index]
-                SetTimer action, 0
-            }
-            tableItem.SuccessClearActionArr[index].Delete(Data.ExtractStr)
-        }
+        return
     }
+    FloatTime := GetFloatTime(Data.SearchInterval, MySoftData.PreIntervalFloat)
+    curCount++
+    Sleep(FloatTime)
+    OnExVariableOnce(tableItem, index, Data, curCount)
 }
 
 OnOperation(tableItem, cmd, index) {
@@ -816,7 +751,6 @@ OnPressKey(tableItem, cmd, index) {
     keyType := paramArr.Length >= 4 ? Integer(paramArr[4]) : 1
     count := paramArr.Length >= 5 ? Integer(paramArr[5]) : 1
     IntervalTime := paramArr.Length >= 6 ? Integer(paramArr[6]) : 1000
-    MacroType := tableItem.MacroTypeArr[index]
 
     LastSumTime := 0
     loop count {
@@ -825,29 +759,9 @@ OnPressKey(tableItem, cmd, index) {
 
         FloatHold := GetFloatTime(holdTime, MySoftData.HoldFloat)
         FloatInterval := GetFloatTime(IntervalTime, MySoftData.PreIntervalFloat)
-        if (MySoftData.isWork && MacroType == 1) {
-            action(paramArr[2], FloatHold, tableItem, index, keyType)
-            if (A_Index != count)
-                Sleep(FloatInterval)
-        }
-        else if (MacroType == 1) {
-            action(paramArr[2], FloatHold, tableItem, index, keyType)
-            if (keyType == 1)
-                Sleep(FloatHold)
-            if (A_Index != count)
-                Sleep(FloatInterval)
-        }
-        else if (MacroType == 2) {
-            if (A_Index == 1) {
-                action(paramArr[2], FloatHold, tableItem, index, keyType)
-            }
-            else {
-                tempAction := action.Bind(paramArr[2], FloatHold, tableItem, index, keyType)
-                tableItem.CmdActionArr[index].Push(tempAction)
-                SetTimer tempAction, -LastSumTime
-            }
-            LastSumTime := LastSumTime + FloatInterval + FloatHold
-        }
+        action(paramArr[2], FloatHold, tableItem, index, keyType)
+        if (keyType == 1 && A_Index != count)
+            Sleep(FloatInterval)
     }
 }
 
@@ -946,14 +860,10 @@ OnBootStartChanged(*) {
 
 ;按键模拟
 SendGameModeKeyClick(key, holdTime, tableItem, index, keyType) {
-    if (MySoftData.isWork && keyType == 1) {
+    if (keyType == 1) {
         SendGameModeKey(Key, 1, tableItem, index)
         Sleep(holdTime)
         SendGameModeKey(Key, 0, tableItem, index)
-    }
-    else if (keyType == 1) {
-        SendGameModeKey(key, 1, tableItem, index)
-        SetTimer(() => SendGameModeKey(key, 0, tableItem, index), -holdTime)
     }
     else {
         state := keyType == 2 ? 1 : 0
