@@ -414,6 +414,6 @@ class TimingData {
 class RMTCMDData {
     __New() {
         this.SerialStr := ""
-        this.OperateType := 1 ; 1截图 2截图中提取文本 3自由贴 4关闭指令显示窗口 5切换指令显示开关 6暂停 7终止所有宏 8重载
+        this.OperateType := 1 ; 1截图 2截图中提取文本 3自由贴 4开启指令显示 5关闭指令显示 6启用键鼠 7禁用键鼠 8休眠 9终止所有宏 10重载
     }
 }

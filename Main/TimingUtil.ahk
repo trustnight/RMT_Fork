@@ -8,11 +8,11 @@ TimingCheck() {
     tableItem := MySoftData.TableInfo[tableIndex]
     SetTimingNextTime(tableItem)
 
-    leftTime := 60 - A_Sec
-    if (leftTime == 0)
+    if (A_Sec == 0)
         InitTimingChecker()
     else {
-        SetTimer(InitTimingChecker, leftTime * -1)
+        StartLeftTime := (-(60 - A_Sec)) * 1000
+        SetTimer(InitTimingChecker, StartLeftTime)
     }
 }
 

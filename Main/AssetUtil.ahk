@@ -827,6 +827,12 @@ CheckIsHotKey(key) {
     if (SubStr(key, 1, 3) == "Joy")
         return false
 
+    if (SubStr(key, 1, 7) == "XButton")
+        return false
+
+    if (SubStr(key, 1, 5) == "Wheel")
+        return false
+
     if (MySoftData.SpecialKeyMap.Has(key))
         return false
 

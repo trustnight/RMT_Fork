@@ -301,6 +301,17 @@ DelGlobalVariable(Name) {
     }
 }
 
+SetCMDTipValue(value) {
+    hasWork := MyWorkPool.CheckHasWork()
+    if (hasWork) {
+        loop MyWorkPool.maxSize {
+            workPath := A_ScriptDir "\Thread\Work" A_Index ".exe"
+            str := Format("CMDTip_{}", value)
+            MyWorkPool.PostMessage(WM_COPYDATA, workPath, str)
+        }
+    }
+}
+
 CMDReport(CMDStr) {
     MyCMDTipGui.ShowGui(CMDStr)
 }
@@ -315,20 +326,28 @@ ExcuteRMTCMDAction(cmdStr) {
     else if (cmdStr == "自由贴") {
         OnToolFreePaste()
     }
-    else if (cmdStr == "关闭指令显示窗口") {
+    else if (cmdStr == "开启指令显示") {
+        MySoftData.CMDTipCtrl.Value := true
+        MySoftData.CMDTip := true
+        SetCMDTipValue(true)
         MyCMDTipGui.Gui.Hide()
     }
-    else if (cmdStr == "切换指令显示开关") {
-        MySoftData.CMDTipCtrl.Value := !MySoftData.CMDTipCtrl.Value
-        MySoftData.CMDTip := MySoftData.CMDTipCtrl.Value
-        if (!MySoftData.CMDTipCtrl.Value) {
-            style := WinGetStyle(MyCMDTipGui.Gui.Hwnd)
-            isVisible := (style & 0x10000000)  ; 0x10000000 = WS_VISIBLE
-            if (isVisible)
-                MyCMDTipGui.Gui.Hide()
-        }
+    else if (cmdStr == "关闭指令显示") {
+        MySoftData.CMDTipCtrl.Value := false
+        MySoftData.CMDTip := false
+        SetCMDTipValue(false)
+        style := WinGetStyle(MyCMDTipGui.Gui.Hwnd)
+        isVisible := (style & 0x10000000)  ; 0x10000000 = WS_VISIBLE
+        if (isVisible)
+            MyCMDTipGui.Gui.Hide()
     }
-    else if (cmdStr == "全局暂停") {
+    else if (cmdStr == "启用键鼠") {
+        DllCall("user32\BlockInput", "int", 0)  ; 恢复键鼠
+    }
+    else if (cmdStr == "禁用键鼠") {
+        DllCall("user32\BlockInput", "int", 2)  ; 禁用键鼠
+    }
+    else if (cmdStr == "休眠") {
         OnPauseHotkey()
     }
     else if (cmdStr == "终止所有宏") {

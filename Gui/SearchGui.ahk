@@ -472,6 +472,7 @@ class SearchGui {
         this.HexColorTipCon.Visible := true
         this.HexColorTipCon.Opt(Format("+Background0x{}", this.HexColorCon.Value))
         this.HexColorTipCon.Redraw()
+        this.OnSetSearchArea(mouseX, mouseY, mouseX, mouseY)
     }
 
     SaveSearchData() {

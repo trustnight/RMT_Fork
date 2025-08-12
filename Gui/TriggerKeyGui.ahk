@@ -162,12 +162,15 @@ class TriggerKeyGui {
         }
 
         this.showSaveBtn := !this.Args.IsToolEdit
-
         this.HoldTimeCon.Visible := !this.Args.IsToolEdit
         this.HoldTimeLabelCon.Visible := !this.Args.IsToolEdit
         this.HoldTimeTipCon.Visible := !this.Args.IsToolEdit
         if (!this.Args.IsToolEdit) {
             this.HoldTimeCon.Value := this.Args.tableItem.HoldTimeArr[this.Args.tableIndex]
+        }
+        else {
+            this.EnableTriggerKeyCon.Value := true
+            this.EnableTriggerKeyCon.Enabled := false
         }
     }
 
@@ -1291,7 +1294,7 @@ class TriggerKeyGui {
             }
         }
 
-        if (hasJoy) {
+        if (hasJoy || this.Args.IsToolEdit) {
             this.EnableTriggerKeyCon.Value := 1
             this.EnableTriggerKeyCon.Enabled := false
         }

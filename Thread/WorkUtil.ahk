@@ -33,11 +33,15 @@ OnWorkGetCmdStr(wParam, lParam, msg, hwnd) {
     paramArr := StrSplit(cmd, "_")
     isSetVari := StrCompare(paramArr[1], "SetVari", false) == 0
     isDelVari := StrCompare(paramArr[1], "DelVari", false) == 0
+    isCMDTip := StrCompare(paramArr[1], "CMDTip", false) == 0
     if (isSetVari) {
         OnWorkSetGlobalVariable(paramArr[2], paramArr[3])
     }
     else if (isDelVari) {
         OnWorkDelGlobalVariable(paramArr[2])
+    }
+    else if (isCMDTip) {
+        MySoftData.CMDTip := paramArr[2]
     }
 }
 

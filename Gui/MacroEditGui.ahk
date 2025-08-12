@@ -41,7 +41,7 @@ class MacroEditGui {
         this.DefaultFocusCon := ""
         this.SubMacroLastIndex := 0
 
-        this.CMDStrArr := ["间隔", "按键", "搜索", "搜索Pro", "移动", "移动Pro", "输出", "文件", "变量", "变量提取", "运算", "如果", "宏操作",
+        this.CMDStrArr := ["间隔", "按键", "搜索", "搜索Pro", "移动", "移动Pro", "输出", "文件", "变量", "变量提取", "运算", "如果", "宏操作", "RMT指令",
             "后台鼠标"]
 
         this.InitSubGui()

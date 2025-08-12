@@ -93,13 +93,14 @@ AddOperBtnUI() {
     MySoftData.GroupFixedCons.Push(con)
 
     posY += 25
-    ; 暂停模块
-    MySoftData.PauseToggleCtrl := MyGui.Add("CheckBox", Format("x{} y{} w{} h{}", 15, posY, 100, 20), "暂停")
+    ; 休眠
+    MySoftData.PauseToggleCtrl := MyGui.Add("CheckBox", Format("x{} y{} w{} h{}", 15, posY, 100, 20), "休眠")
     MySoftData.PauseToggleCtrl.Value := MySoftData.IsPause
     MySoftData.PauseToggleCtrl.OnEvent("Click", OnPauseHotkey)
     MySoftData.FixedCons.Push(MySoftData.PauseToggleCtrl)
     posY += 20
-    con := MyGui.Add("Hotkey", Format("x{} y{} w{} h{}", 15, posY, 100, 20), MySoftData.PauseHotkey)
+    CtrlType := GetHotKeyCtrlType(MySoftData.PauseHotkey)
+    con := MyGui.Add(CtrlType, Format("x{} y{} w{}", 15, posY, 100), MySoftData.PauseHotkey)
     con.Enabled := false
     MySoftData.FixedCons.Push(con)
     posY += 40
@@ -109,9 +110,8 @@ AddOperBtnUI() {
     con.OnEvent("Click", OnKillAllMacro)
     MySoftData.FixedCons.Push(con)
     posY += 31
-    isHotKey := CheckIsHotKey(MySoftData.KillMacroHotkey)
-    CtrlType := isHotKey ? "Hotkey" : "Text"
-    con := MyGui.Add(CtrlType, Format("x{} y{} w{} h{}", 15, posY, 100, 20), MySoftData.KillMacroHotkey)
+    CtrlType := GetHotKeyCtrlType(MySoftData.KillMacroHotkey)
+    con := MyGui.Add(CtrlType, Format("x{} y{} w{}", 15, posY, 100), MySoftData.KillMacroHotkey)
     con.Enabled := false
     MySoftData.FixedCons.Push(con)
     posY += 40
@@ -406,63 +406,81 @@ AddSettingUI(index) {
     posX := MySoftData.TabPosX
     MyGui.Add("GroupBox", Format("x{} y{} w870 h140", posX + 10, posY), "快捷键修改")
     posY += 30
-    con := MyGui.Add("Text", Format("x{} y{}", posX + 25, posY), "脚本暂停:")
+    con := MyGui.Add("Text", Format("x{} y{}", posX + 25, posY), "软件休眠:")
     CtrlType := GetHotKeyCtrlType(MySoftData.PauseHotkey)
-    MySoftData.PauseHotkeyCtrl := MyGui.Add(CtrlType, Format("x{} y{} w130 center", posX + 100, posY - 4),
-    MySoftData.PauseHotkey)
-    MySoftData.PauseHotkeyCtrl.Enabled := false
+    showCon := MyGui.Add(CtrlType, Format("x{} y{} w130", posX + 100, posY - 4), MySoftData.PauseHotkey)
+    showCon.Enabled := false
+    MySoftData.PauseHotkeyCtrl := MyGui.Add("Text", Format("x{} y{} w130", posX + 100, posY), MySoftData.PauseHotkey
+    )
+    MySoftData.PauseHotkeyCtrl.Visible := false
     con := MyGui.Add("Button", Format("x{} y{} w50", posX + 235, posY - 5), "编辑")
-    con.OnEvent("Click", (*) => MyEditHotkeyGui.ShowGui(MySoftData.PauseHotkeyCtrl, true))
+    con.OnEvent("Click", OnOpenEditHotkeyGui.Bind(showCon, MySoftData.PauseHotkeyCtrl, true))
 
     con := MyGui.Add("Text", Format("x{} y{}", posX + 315, posY), "终止宏:")
     CtrlType := GetHotKeyCtrlType(MySoftData.KillMacroHotkey)
-    MySoftData.KillMacroHotkeyCtrl := MyGui.Add(CtrlType, Format("x{} y{} w130 center", posX + 385, posY - 4),
-    MySoftData.KillMacroHotkey)
-    MySoftData.KillMacroHotkeyCtrl.Enabled := false
+    showCon := MyGui.Add(CtrlType, Format("x{} y{} w130", posX + 385, posY - 4), MySoftData.KillMacroHotkey)
+    showCon.Enabled := false
+    MySoftData.KillMacroHotkeyCtrl := MyGui.Add("Text", Format("x{} y{} w130", posX + 385, posY), MySoftData.KillMacroHotkey
+    )
+    MySoftData.KillMacroHotkeyCtrl.Visible := false
     con := MyGui.Add("Button", Format("x{} y{} center w50", posX + 520, posY - 5), "编辑")
-    con.OnEvent("Click", (*) => MyEditHotkeyGui.ShowGui(MySoftData.KillMacroHotkeyCtrl, false))
+    con.OnEvent("Click", OnOpenEditHotkeyGui.Bind(showCon, MySoftData.KillMacroHotkeyCtrl, false))
 
     MyGui.Add("Text", Format("x{} y{}", posX + 605, posY), "鼠标信息:")
     CtrlType := GetHotKeyCtrlType(ToolCheckInfo.ToolCheckHotkey)
-    ToolCheckInfo.ToolCheckHotKeyCtrl := MyGui.Add(CtrlType, Format("x{} y{} w130 center", posX + 680, posY - 4),
-    ToolCheckInfo.ToolCheckHotkey)
-    ToolCheckInfo.ToolCheckHotKeyCtrl.Enabled := false
+    showCon := MyGui.Add(CtrlType, Format("x{} y{} w130", posX + 680, posY - 4), ToolCheckInfo.ToolCheckHotkey)
+    showCon.Enabled := false
+    ToolCheckInfo.ToolCheckHotKeyCtrl := MyGui.Add("Text", Format("x{} y{} w130", posX + 680, posY), ToolCheckInfo.ToolCheckHotkey
+    )
+    ToolCheckInfo.ToolCheckHotKeyCtrl.Visible := false
     con := MyGui.Add("Button", Format("x{} y{} center w50", posX + 815, posY - 5), "编辑")
-    con.OnEvent("Click", (*) => MyEditHotkeyGui.ShowGui(ToolCheckInfo.ToolCheckHotKeyCtrl, false))
+    con.OnEvent("Click", OnOpenEditHotkeyGui.Bind(showCon, ToolCheckInfo.ToolCheckHotKeyCtrl, false))
 
     posY += 40
     con := MyGui.Add("Text", Format("x{} y{}", posX + 25, posY), "指令录制:")
     CtrlType := GetHotKeyCtrlType(ToolCheckInfo.ToolRecordMacroHotKey)
-    ToolCheckInfo.ToolRecordMacroHotKeyCtrl := MyGui.Add(CtrlType, Format("x{} y{} w130 center", posX + 100, posY - 4),
+    showCon := MyGui.Add(CtrlType, Format("x{} y{} w130", posX + 100, posY - 4),
     ToolCheckInfo.ToolRecordMacroHotKey)
-    ToolCheckInfo.ToolRecordMacroHotKeyCtrl.Enabled := false
+    showCon.Enabled := false
+    ToolCheckInfo.ToolRecordMacroHotKeyCtrl := MyGui.Add("Text", Format("x{} y{} w130", posX + 100, posY),
+    ToolCheckInfo.ToolRecordMacroHotKey)
+    ToolCheckInfo.ToolRecordMacroHotKeyCtrl.Visible := false
     con := MyGui.Add("Button", Format("x{} y{} center w50", posX + 235, posY - 5), "编辑")
-    con.OnEvent("Click", (*) => MyEditHotkeyGui.ShowGui(ToolCheckInfo.ToolRecordMacroHotKeyCtrl, false))
+    con.OnEvent("Click", OnOpenEditHotkeyGui.Bind(showCon, ToolCheckInfo.ToolRecordMacroHotKeyCtrl, false))
 
     con := MyGui.Add("Text", Format("x{} y{}", posX + 315, posY), "文本提取:")
     CtrlType := GetHotKeyCtrlType(ToolCheckInfo.ToolTextFilterHotKey)
-    ToolCheckInfo.ToolTextFilterHotKeyCtrl := MyGui.Add(CtrlType, Format("x{} y{} w130 center", posX + 385, posY - 4),
+    showCon := MyGui.Add(CtrlType, Format("x{} y{} w130", posX + 385, posY - 4),
     ToolCheckInfo.ToolTextFilterHotKey)
-    ToolCheckInfo.ToolTextFilterHotKeyCtrl.Enabled := false
+    showCon.Enabled := false
+    ToolCheckInfo.ToolTextFilterHotKeyCtrl := MyGui.Add("Text", Format("x{} y{} w130", posX + 385, posY),
+    ToolCheckInfo.ToolTextFilterHotKey)
+    ToolCheckInfo.ToolTextFilterHotKeyCtrl.Visible := false
     con := MyGui.Add("Button", Format("x{} y{} center w50", posX + 520, posY - 5), "编辑")
-    con.OnEvent("Click", (*) => MyEditHotkeyGui.ShowGui(ToolCheckInfo.ToolTextFilterHotKeyCtrl, false))
+    con.OnEvent("Click", OnOpenEditHotkeyGui.Bind(showCon, ToolCheckInfo.ToolTextFilterHotKeyCtrl, false))
 
     MyGui.Add("Text", Format("x{} y{}", posX + 605, posY), "屏幕截图:")
     CtrlType := GetHotKeyCtrlType(ToolCheckInfo.ScreenShotHotKey)
-    ToolCheckInfo.ScreenShotHotKeyCtrl := MyGui.Add(CtrlType, Format("x{} y{} w130 center", posX + 680, posY - 4),
+    showCon := MyGui.Add(CtrlType, Format("x{} y{} w130", posX + 680, posY - 4),
     ToolCheckInfo.ScreenShotHotKey)
-    ToolCheckInfo.ScreenShotHotKeyCtrl.Enabled := false
+    showCon.Enabled := false
+    ToolCheckInfo.ScreenShotHotKeyCtrl := MyGui.Add("Text", Format("x{} y{} w130", posX + 680, posY),
+    ToolCheckInfo.ScreenShotHotKey)
+    ToolCheckInfo.ScreenShotHotKeyCtrl.Visible := false
     con := MyGui.Add("Button", Format("x{} y{} center w50", posX + 815, posY - 5), "编辑")
-    con.OnEvent("Click", (*) => MyEditHotkeyGui.ShowGui(ToolCheckInfo.ScreenShotHotKeyCtrl, false))
+    con.OnEvent("Click", OnOpenEditHotkeyGui.Bind(showCon, ToolCheckInfo.ScreenShotHotKeyCtrl, false))
 
     posY += 40
     con := MyGui.Add("Text", Format("x{} y{}", posX + 25, posY), "自由贴:")
     CtrlType := GetHotKeyCtrlType(ToolCheckInfo.FreePasteHotKey)
-    ToolCheckInfo.FreePasteHotKeyCtrl := MyGui.Add(CtrlType, Format("x{} y{} w130 center", posX + 100, posY - 4),
+    showCon := MyGui.Add(CtrlType, Format("x{} y{} w130", posX + 100, posY - 4),
     ToolCheckInfo.FreePasteHotKey)
-    ToolCheckInfo.FreePasteHotKeyCtrl.Enabled := false
+    showCon.Enabled := false
+    ToolCheckInfo.FreePasteHotKeyCtrl := MyGui.Add("Text", Format("x{} y{} w130", posX + 100, posY),
+    ToolCheckInfo.FreePasteHotKey)
+    ToolCheckInfo.FreePasteHotKeyCtrl.Visible := false
     con := MyGui.Add("Button", Format("x{} y{} center w50", posX + 235, posY - 5), "编辑")
-    con.OnEvent("Click", (*) => MyEditHotkeyGui.ShowGui(ToolCheckInfo.FreePasteHotKeyCtrl, false))
+    con.OnEvent("Click", OnOpenEditHotkeyGui.Bind(showCon, ToolCheckInfo.FreePasteHotKeyCtrl, false))
 
     posY += 40
     posX := MySoftData.TabPosX

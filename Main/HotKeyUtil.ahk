@@ -433,7 +433,6 @@ OnSubMacro(tableItem, cmd, index) {
         }
     }
 
-    
     if (Data.CallType == 1) {   ;插入
         macro := macroItem.MacroArr[macroIndex]
         resultMacro := macro
@@ -713,7 +712,7 @@ OnPressKey(tableItem, cmd, index) {
         FloatHold := GetFloatTime(holdTime, MySoftData.HoldFloat)
         FloatInterval := GetFloatTime(IntervalTime, MySoftData.PreIntervalFloat)
         action(paramArr[2], FloatHold, tableItem, index, keyType)
-        if (keyType == 1 && A_Index != count)
+        if (keyType == 3 && A_Index != count)
             Sleep(FloatInterval)
     }
 }

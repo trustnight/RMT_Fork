@@ -465,6 +465,12 @@ class SearchProGui {
         ScreenShot(x1, y1, x2, y2, filePath)
         this.ImageCon.Value := filePath
         this.Data.SearchImagePath := filePath
+
+        AreaX1 := Max(0, x1 - 20)
+        AreaX2 := Min(A_ScreenWidth, x2 + 20)
+        AreaY1 := Max(0, y1 - 20)
+        AreaY2 := Min(A_ScreenHeight, y2 + 20)
+        this.OnSetSearchArea(AreaX1, AreaY1, AreaX2, AreaY2)
     }
 
     OnSureFoundMacroBtnClick(CommandStr) {
@@ -578,6 +584,7 @@ class SearchProGui {
         this.HexColorTipCon.Visible := true
         this.HexColorTipCon.Opt(Format("+Background0x{}", this.HexColorCon.Value))
         this.HexColorTipCon.Redraw()
+        this.OnSetSearchArea(mouseX, mouseY, mouseX, mouseY)
     }
 
     SaveSearchData() {
