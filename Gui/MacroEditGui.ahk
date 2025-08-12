@@ -8,7 +8,6 @@
 #Include CompareGui.ahk
 #Include MMProGui.ahk
 #Include OutputGui.ahk
-#Include StopGui.ahk
 #Include VariableGui.ahk
 #Include SubMacroGui.ahk
 #Include OperationGui.ahk
@@ -42,7 +41,7 @@ class MacroEditGui {
         this.DefaultFocusCon := ""
         this.SubMacroLastIndex := 0
 
-        this.CMDStrArr := ["间隔", "按键", "搜索", "搜索Pro", "移动", "移动Pro", "输出", "文件", "变量", "变量提取", "运算", "如果", "终止", "宏操作",
+        this.CMDStrArr := ["间隔", "按键", "搜索", "搜索Pro", "移动", "移动Pro", "输出", "文件", "变量", "变量提取", "运算", "如果", "宏操作",
             "后台鼠标"]
 
         this.InitSubGui()
@@ -84,10 +83,6 @@ class MacroEditGui {
         this.OutputGui := OutputGui()
         this.OutputGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
         this.SubGuiMap.Set("输出", this.OutputGui)
-
-        this.StopGui := StopGui()
-        this.StopGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
-        this.SubGuiMap.Set("终止", this.StopGui)
 
         this.VariableGui := VariableGui()
         this.VariableGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
@@ -217,10 +212,10 @@ class MacroEditGui {
 
         PosX := 15
         PosY += 40
-        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 75), "终止")
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 75), "RMT指令")
         btnCon.SetFont((Format("S{} W{} Q{}", 11, 400, 5)))
-        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.StopGui))
-        this.CmdBtnConMap.Set("终止", btnCon)
+        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.RMTCMDGui))
+        this.CmdBtnConMap.Set("RMT指令", btnCon)
 
         PosX += 85
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 75), "宏操作")
@@ -234,12 +229,6 @@ class MacroEditGui {
         btnCon.SetFont((Format("S{} W{} Q{}", 11, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.BGMouseGui))
         this.CmdBtnConMap.Set("后台鼠标", btnCon)
-
-        PosX += 85
-        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 75), "RMT指令")
-        btnCon.SetFont((Format("S{} W{} Q{}", 11, 400, 5)))
-        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.RMTCMDGui))
-        this.CmdBtnConMap.Set("RMT指令", btnCon)
 
         PosX := 200
         PosY := 10

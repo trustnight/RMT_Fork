@@ -95,7 +95,6 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         IsIf := StrCompare(paramArr[1], "如果", false) == 0
         IsMMPro := StrCompare(paramArr[1], "移动Pro", false) == 0
         IsOutput := StrCompare(paramArr[1], "输出", false) == 0
-        IsStop := StrCompare(paramArr[1], "终止", false) == 0
         IsVariable := StrCompare(paramArr[1], "变量", false) == 0
         IsExVariable := StrCompare(paramArr[1], "变量提取", false) == 0
         IsSubMacro := StrCompare(paramArr[1], "宏操作", false) == 0
@@ -133,9 +132,6 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         }
         else if (IsOutput) {
             OnOutput(tableItem, cmdArr[A_Index], index)
-        }
-        else if (IsStop) {
-            OnStop(tableItem, cmdArr[A_Index], index)
         }
         else if (IsVariable) {
             OnVariable(tableItem, cmdArr[A_Index], index)
@@ -417,46 +413,6 @@ OnOutput(tableItem, cmd, index) {
     else if (Data.OutputType == 3) {
         MyWinClip.Paste(A_Clipboard)
     }
-}
-
-OnStop(tableItem, cmd, index) {
-    paramArr := StrSplit(cmd, "_")
-    Data := GetMacroCMDData(StopFile, paramArr[2])
-    tableIndex := 0
-    if (Data.StopType == 1) {       ;终止自己
-        KillTableItemMacro(tableItem, index)
-        return
-    }
-    else if (Data.StopType == 2) {      ;终止按键宏
-        tableIndex := 1
-    }
-    else if (Data.StopType == 3) {      ;终止字串宏
-        tableIndex := 2
-    }
-    else if (Data.StopType == 4) {      ;终止定时宏
-        tableIndex := 3
-    }
-    else if (Data.StopType == 5) {      ;终止宏
-        tableIndex := 4
-    }
-    stopTableItem := MySoftData.TableInfo[tableIndex]
-    redirect := stopTableItem.SerialArr.Length < Data.StopIndex || stopTableItem.SerialArr[Data.StopIndex] != Data.MacroSerial
-    if (redirect) {
-        loop stopTableItem.ModeArr.Length {
-            if (Data.MacroSerial == stopTableItem.SerialArr[A_Index]) {
-                tableIndex := A_Index
-                break
-            }
-        }
-    }
-
-    isWork := stopTableItem.IsWorkArr[Data.StopIndex]
-    if (isWork || MySoftData.isWork) {
-        MySubMacroStopAction(tableIndex, Data.StopIndex)
-        return
-    }
-
-    KillTableItemMacro(stopTableItem, Data.StopIndex)
 }
 
 OnSubMacro(tableItem, cmd, index) {

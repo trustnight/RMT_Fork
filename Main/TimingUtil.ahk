@@ -7,7 +7,13 @@ TimingCheck() {
 
     tableItem := MySoftData.TableInfo[tableIndex]
     SetTimingNextTime(tableItem)
-    SetTimer(TimingChecker, 60000) ;一分钟轮询一次
+
+    leftTime := 60 - A_Sec
+    if (leftTime == 0)
+        InitTimingChecker()
+    else {
+        SetTimer(InitTimingChecker, leftTime * -1)
+    }
 }
 
 CheckIfHasTiming(&tableIndex) {
@@ -80,6 +86,11 @@ SetTimingNextTime(tableItem) {
     }
 }
 
+InitTimingChecker() {
+    TimingChecker() ;立刻检测一次
+    SetTimer(TimingChecker, 60000) ;然后一分钟轮询一次
+}
+
 TimingChecker() {
     tableIndex := GetTimingTableIndex()
     tableItem := MySoftData.TableInfo[tableIndex]
@@ -96,7 +107,7 @@ TimingChecker() {
             continue
         if (Data.NextTriggerTime == "" || CurTime < Data.NextTriggerTime)
             continue
-    
+
         ProcessName := tableItem.ProcessNameArr.Length >= index ? tableItem.ProcessNameArr[index] : ""
         if (ProcessName != "") {
             MouseGetPos &mouseX, &mouseY, &winId

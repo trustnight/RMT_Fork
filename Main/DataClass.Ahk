@@ -329,15 +329,6 @@ class OutputData {
     }
 }
 
-class StopData {
-    __New() {
-        this.SerialStr := ""
-        this.StopType := 1
-        this.StopIndex := 1
-        this.MacroSerial := "009973"
-    }
-}
-
 class SubMacroData {
     __New() {
         this.SerialStr := ""
