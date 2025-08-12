@@ -69,6 +69,10 @@ OnToolCheckHotkey(*) {
         ToolCheckInfo.MouseInfoTimer := ""
 }
 
+OnClickToolRecordSettingBtn(*) {
+    MyToolRecordSettingGui.ShowGui()
+}
+
 OnToolTextFilterScreenShot(*) {
     if (MySoftData.ScreenShotTypeCtrl.Value == 1) {
         A_Clipboard := ""  ; 清空剪贴板
@@ -125,10 +129,11 @@ OnToolRecordMacro(isHotkey, *) {
         ToolCheckInfo.RecordLastTime := GetCurMSec()
         ToolCheckInfo.RecordLastMousePos := [mouseX, mouseY]
 
-        if (ToolCheckInfo.RecordJoyValue)
+        if (ToolCheckInfo.RecordJoy)
             SetTimer(RecordJoy, -1)
 
-        SetTimer(RecordMouseTrail, -1)
+        if (ToolCheckInfo.RecordMouse && ToolCheckInfo.RecordMouseTrail)
+            SetTimer(RecordMouseTrail, -1)
     }
 
     StateSymbol := state ? "On" : "Off"
@@ -163,33 +168,33 @@ RecordMouseTrail() {
     loop {
         if (!ToolCheckInfo.ToolCheckRecordMacroCtrl.Value)
             return
-        IsTrail := true
-        span := GetCurMSec() - ToolCheckInfo.RecordLastTime
-        if (ToolCheckInfo.RecordMouseValue && IsTrail) {
-            CoordMode("Mouse", "Screen")
-            MouseGetPos &mouseX, &mouseY
-            if (ToolCheckInfo.RecordLastMousePos[1] != mouseX || ToolCheckInfo.RecordLastMousePos[2] != mouseY) {   ;鼠标位置发生改变
-                len := Abs(ToolCheckInfo.RecordLastMousePos[1] - mouseX)
-                len += Abs(ToolCheckInfo.RecordLastMousePos[2] - mouseY)
-                if (len <= 10) {
-                    Sleep(200)
-                    continue
-                }
-
-                speed := 93
-                IsRelative := ToolCheckInfo.RecordMouseRelativeValue
-                symbol := IsRelative ? "_" speed "_1" : "_" speed
-                targetX := mouseX
-                targetY := mouseY
-                if (IsRelative) {   ;相对位移，坐标变化
-                    targetX := mouseX - ToolCheckInfo.RecordLastMousePos[1]
-                    targetY := mouseY - ToolCheckInfo.RecordLastMousePos[2]
-                }
-                ToolCheckInfo.RecordMacroStr .= "移动_" targetX "_" targetY symbol ","
-                ToolCheckInfo.RecordLastMousePos := [mouseX, mouseY]
+        CoordMode("Mouse", "Screen")
+        MouseGetPos &mouseX, &mouseY
+        if (ToolCheckInfo.RecordLastMousePos[1] != mouseX || ToolCheckInfo.RecordLastMousePos[2] != mouseY) {   ;鼠标位置发生改变
+            len := Abs(ToolCheckInfo.RecordLastMousePos[1] - mouseX)
+            len += Abs(ToolCheckInfo.RecordLastMousePos[2] - mouseY)
+            if (len <= ToolCheckInfo.RecordMouseTrailLen) {
+                Sleep(ToolCheckInfo.RecordMouseTrailInterval)
+                continue
             }
+
+            speed := ToolCheckInfo.RecordMouseTrailSpeed
+            IsRelative := ToolCheckInfo.RecordMouseRelative
+            symbol := IsRelative ? "_" speed "_1" : "_" speed
+            targetX := mouseX
+            targetY := mouseY
+            if (IsRelative) {   ;相对位移，坐标变化
+                targetX := mouseX - ToolCheckInfo.RecordLastMousePos[1]
+                targetY := mouseY - ToolCheckInfo.RecordLastMousePos[2]
+            }
+            ToolCheckInfo.RecordMacroStr .= "移动_" targetX "_" targetY symbol ","
+            ToolCheckInfo.RecordLastMousePos := [mouseX, mouseY]
+
+            span := GetCurMSec() - ToolCheckInfo.RecordLastTime
+            ToolCheckInfo.RecordLastTime := GetCurMSec()
+            ToolCheckInfo.RecordMacroStr .= "间隔_" span ","
         }
-        Sleep(200)
+        Sleep(ToolCheckInfo.RecordMouseTrailInterval)
     }
 
 }
@@ -210,17 +215,41 @@ OnRecordMacroKeyUp(*) {
 }
 
 OnRecordAddMacroStr(keyName, isDown) {
+    if (keyName == "WheelUp" || keyName == "WheelDown") {
+        ; 处理鼠标滚轮事件（暂时留空，根据需求补充）
+    }
+    ; 处理按键按下事件
+    else if (isDown) {
+        ; 如果已按下且不记录长按多次，则直接返回
+        if (!ToolCheckInfo.RecordHoldMuti && ToolCheckInfo.RecordHoldKeyMap.Has(keyName))
+            return
+        ; 记录当前按键为按下状态
+        ToolCheckInfo.RecordHoldKeyMap[keyName] := true
+    }
+    ; 处理按键释放事件（仅在存在记录时删除）
+    else if (ToolCheckInfo.RecordHoldKeyMap.Has(keyName)) {
+        ToolCheckInfo.RecordHoldKeyMap.Delete(keyName)
+    }
+
     span := GetCurMSec() - ToolCheckInfo.RecordLastTime
     keySymbol := isDown ? 1 : 2
     ToolCheckInfo.RecordLastTime := GetCurMSec()
+    IsJoy := InStr(keyName, "Joy")
     IsMouse := keyName == "LButton" || keyName == "RButton" || keyName == "MButton"
+    IsKeyboard := !IsMouse && !IsJoy
 
-    if (IsMouse && ToolCheckInfo.RecordMouseValue) {
+    if (IsJoy || (IsKeyboard && ToolCheckInfo.RecordKeyboard)) {
+        ToolCheckInfo.RecordMacroStr .= "间隔_" span ","
+        ToolCheckInfo.RecordMacroStr .= "按键_" keyName "_" keySymbol ","
+    }
+
+    if (IsMouse && ToolCheckInfo.RecordMouse) {
         CoordMode("Mouse", "Screen")
         MouseGetPos &mouseX, &mouseY
         if (ToolCheckInfo.RecordLastMousePos[1] != mouseX || ToolCheckInfo.RecordLastMousePos[2] != mouseY) {   ;鼠标位置发生改变
             speed := Max(100 - Integer(span * 0.02), 90)
-            IsRelative := ToolCheckInfo.RecordMouseRelativeValue
+            speed := ToolCheckInfo.RecordMouseTrail ? 100 : speed
+            IsRelative := ToolCheckInfo.RecordMouseRelative
             symbol := IsRelative ? "_" speed "_1" : "_" speed
             targetX := mouseX
             targetY := mouseY
@@ -231,13 +260,18 @@ OnRecordAddMacroStr(keyName, isDown) {
             ToolCheckInfo.RecordMacroStr .= "移动_" targetX "_" targetY symbol ","
             ToolCheckInfo.RecordLastMousePos := [mouseX, mouseY]
         }
+        ToolCheckInfo.RecordMacroStr .= "间隔_" span ","
+        ToolCheckInfo.RecordMacroStr .= "按键_" keyName "_" keySymbol ","
     }
-
-    ToolCheckInfo.RecordMacroStr .= "间隔_" span ","
-    ToolCheckInfo.RecordMacroStr .= "按键_" keyName "_" keySymbol ","
 }
 
 OnFinishRecordMacro() {
+    if (ToolCheckInfo.RecordAutoLoosen) {
+        for Key, Value in ToolCheckInfo.RecordHoldKeyMap {
+            ToolCheckInfo.RecordMacroStr .= "按键_" Key "_2,"
+        }
+    }
+
     macro := Trim(ToolCheckInfo.RecordMacroStr, ",")
     if (MySoftData.MacroEditGui != "") {
         MySoftData.MacroEditCon.Value .= macro

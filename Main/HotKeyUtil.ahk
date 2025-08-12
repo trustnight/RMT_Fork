@@ -809,15 +809,8 @@ GetTableClosureAction(action, TableItem, index) {
 }
 
 MenuReload(*) {
-    SaveWinPos()
+    IniWrite(MySoftData.TabCtrl.Value, IniFile, IniSection, "TableIndex")
     Reload()
-}
-
-OnChangeRecordOption(*) {
-    ToolCheckInfo.RecordKeyboardValue := ToolCheckInfo.RecordKeyboardCtrl.Value
-    ToolCheckInfo.RecordMouseValue := ToolCheckInfo.RecordMouseCtrl.Value
-    ToolCheckInfo.RecordMouseRelativeValue := ToolCheckInfo.RecordMouseRelativeCtrl.value
-    ToolCheckInfo.RecordJoyValue := ToolCheckInfo.RecordJoyCtrl.Value
 }
 
 OnToolTextFilterSelectImage(*) {

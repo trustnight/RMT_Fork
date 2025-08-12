@@ -31,11 +31,7 @@ OnOpen() {
 }
 
 RefreshGui() {
-    global MySoftData
-    if (MySoftData.IsSavedWinPos)
-        MySoftData.MyGui.Show(Format("x{} y{} w{} h{}", MySoftData.WinPosX, MySoftData.WinPosY, 1050, 540))
-    else
-        MySoftData.MyGui.Show(Format("w{} h{} center", 1050, 540))
+    MySoftData.MyGui.Show(Format("w{} h{} center", 1050, 540))
 }
 
 RefreshToolUI() {
@@ -395,8 +391,8 @@ OnAddSetting(*) {
     height := GetTabHeight()
     MySoftData.TabCtrl.Move(MySoftData.TabPosX, MySoftData.TabPosY, 910, height)
     MySoftData.SB.UpdateScrollBars()
+    IniWrite(MySoftData.TabCtrl.Value, IniFile, IniSection, "TableIndex")
 
-    SaveWinPos()
     RefreshGui()
     RefreshGui()
 }
@@ -764,7 +760,7 @@ AddToolUI(index) {
     con.OnEvent("Click", OnToolFreePaste)
 
     posY += 40
-    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "指令并联录制：")
+    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "指令录制：")
 
     isHotKey := CheckIsHotKey(ToolCheckInfo.ToolRecordMacroHotKey)
     CtrlType := isHotKey ? "Hotkey" : "Text"
@@ -776,23 +772,8 @@ AddToolUI(index) {
     ToolCheckInfo.ToolCheckRecordMacroCtrl.Value := ToolCheckInfo.IsToolRecord
     ToolCheckInfo.ToolCheckRecordMacroCtrl.OnEvent("Click", OnHotToolRecordMacro.Bind(false))
 
-    posY += 25
-    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "相关选项：")
-    ToolCheckInfo.RecordKeyboardCtrl := MyGui.Add("CheckBox", Format("x{} y{}", posX + 120, posY, 60), "录制键盘")
-    ToolCheckInfo.RecordKeyboardCtrl.Value := ToolCheckInfo.RecordKeyboardValue
-    ToolCheckInfo.RecordKeyboardCtrl.OnEvent("Click", OnChangeRecordOption)
-
-    ToolCheckInfo.RecordMouseCtrl := MyGui.Add("CheckBox", Format("x{} y{}", posX + 260, posY, 60), "录制鼠标")
-    ToolCheckInfo.RecordMouseCtrl.Value := ToolCheckInfo.RecordMouseValue
-    ToolCheckInfo.RecordMouseCtrl.OnEvent("Click", OnChangeRecordOption)
-
-    ToolCheckInfo.RecordMouseRelativeCtrl := MyGui.Add("CheckBox", Format("x{} y{}", posX + 400, posY, 60), "鼠标相对位移")
-    ToolCheckInfo.RecordMouseRelativeCtrl.Value := ToolCheckInfo.RecordMouseRelativeValue
-    ToolCheckInfo.RecordMouseRelativeCtrl.OnEvent("Click", OnChangeRecordOption)
-
-    ToolCheckInfo.RecordJoyCtrl := MyGui.Add("CheckBox", Format("x{} y{}", posX + 520, posY, 60), "录制手柄")
-    ToolCheckInfo.RecordJoyCtrl.Value := ToolCheckInfo.RecordJoyValue
-    ToolCheckInfo.RecordMouseCtrl.OnEvent("Click", OnChangeRecordOption)
+    con := MyGui.Add("Button", Format("x{} y{} w{} h{}", posX + 400, posY - 5, 100, 25), "录制选项")
+    con.OnEvent("Click", OnClickToolRecordSettingBtn)
 
     posY += 40
     MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "图片文本提取：")
@@ -850,7 +831,6 @@ SetToolCheckInfo() {
 
 ; 系统托盘优化
 CustomTrayMenu() {
-    A_TrayMenu.Insert("&Suspend Hotkeys", "重置位置并显示窗口", ResetWinPosAndRefreshGui)
     A_TrayMenu.Insert("&Suspend Hotkeys", "显示窗口", (*) => RefreshGui())
     A_TrayMenu.Delete("&Pause Script")
     A_TrayMenu.ClickCount := 1

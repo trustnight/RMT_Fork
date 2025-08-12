@@ -99,35 +99,25 @@ class ToolCheck {
         this.MouseInfoTimer := ""
 
         this.MacroGui := ""
-        
+
         this.RecordLastMousePos := []
         this.RecordLastTime := ""
         this.RecordMacroStr := ""
-    
-        this.RecordNodeArr := []
-        this.RecordKeyboardArr := []
         this.RecordHoldKeyMap := Map()
         this.RecordSpecialKeyMap := Map(33, 0, 34, 0, 35, 0, 36, 0, 37, 0, 38, 0, 39, 0, 40, 0, 45, 0, 46, 0)
-        this.OldRecordLastMousePos := []
-        this.RecordKeyboardCtrl := ""
-        this.RecordKeyboardValue := ""
-        this.RecordMouseCtrl := ""
-        this.RecordMouseValue := ""
-        this.RecordMouseRelativeCtrl := ""
-        this.RecordMouseRelativeValue := ""
-        this.RecordJoyCtrl := ""
-        this.RecordJoyValue := ""
+        this.RecordHoldMuti := ""
+        this.RecordAutoLoosen := ""
+        this.RecordKeyboard := ""
+        this.RecordMouse := ""
+        this.RecordMouseRelative := ""
+        this.RecordMouseTrail := ""
+        this.RecordMouseTrailLen := ""
+        this.RecordMouseTrailSpeed := ""
+        this.RecordMouseTrailInterval := ""
+        this.RecordJoy := ""
+        this.RecordJoyInterval := ""
         this.OCRTypeCtrl := ""
         this.OCRTypeValue := 1
-    }
-
-    RecordMacroSwitch() {
-        if (this.IsToolRecord) {
-            this.RecordMacroTimer := Timer(() => {}, 100)
-            this.RecordMacroTimer.On()
-        }
-        else
-            this.RecordMacroTimer := ""
     }
 }
 
@@ -162,9 +152,6 @@ class SoftData {
         this.CoordXFloat := 0
         this.CoordYFloat := 0
         this.IsLastSaved := false
-        this.WinPosX := 0
-        this.WinPosY := 0
-        this.IsSavedWinPos := false
         this.TableIndex := 1
         this.HasSaved := false
         this.MacroEditGui := ""

@@ -27,13 +27,21 @@ OnSaveSetting(*) {
     IniWrite(ToolCheckInfo.ToolTextFilterHotKeyCtrl.Value, IniFile, IniSection, "ToolTextFilterHotKey")
     IniWrite(ToolCheckInfo.ScreenShotHotKeyCtrl.Value, IniFile, IniSection, "ScreenShotHotKey")
     IniWrite(ToolCheckInfo.FreePasteHotKeyCtrl.Value, IniFile, IniSection, "FreePasteHotKey")
-    IniWrite(ToolCheckInfo.RecordKeyboardCtrl.Value, IniFile, IniSection, "RecordKeyboardValue")
-    IniWrite(ToolCheckInfo.RecordMouseCtrl.Value, IniFile, IniSection, "RecordMouseValue")
-    IniWrite(ToolCheckInfo.RecordJoyCtrl.Value, IniFile, IniSection, "RecordJoyValue")
-    IniWrite(ToolCheckInfo.RecordMouseRelativeCtrl.Value, IniFile, IniSection, "RecordMouseRelativeValue")
+    IniWrite(ToolCheckInfo.RecordKeyboard, IniFile, IniSection, "RecordKeyboard")
+    IniWrite(ToolCheckInfo.RecordMouse, IniFile, IniSection, "RecordMouse")
+    IniWrite(ToolCheckInfo.RecordJoy, IniFile, IniSection, "RecordJoy")
+    IniWrite(ToolCheckInfo.RecordMouseRelative, IniFile, IniSection, "RecordMouseRelative")
+    IniWrite(ToolCheckInfo.RecordMouseTrail, IniFile, IniSection, "RecordMouseTrail")
+    IniWrite(ToolCheckInfo.RecordMouseTrailLen, IniFile, IniSection, "RecordMouseTrailLen")
+    IniWrite(ToolCheckInfo.RecordMouseTrailSpeed, IniFile, IniSection, "RecordMouseTrailSpeed")
+    IniWrite(ToolCheckInfo.RecordHoldMuti, IniFile, IniSection, "RecordHoldMuti")
+    IniWrite(ToolCheckInfo.RecordAutoLoosen, IniFile, IniSection, "RecordAutoLoosen")
+    IniWrite(ToolCheckInfo.RecordMouseTrailInterval, IniFile, IniSection, "MouseTrailInterval")
+    IniWrite(ToolCheckInfo.RecordJoyInterval, IniFile, IniSection, "RecordJoyInterval")
     IniWrite(ToolCheckInfo.OCRTypeCtrl.Value, IniFile, IniSection, "OCRType")
     IniWrite(MySoftData.TabCtrl.Value, IniFile, IniSection, "TableIndex")
     IniWrite(MySoftData.FontTypeCtrl.Text, IniFile, IniSection, "FontType")
+    IniWrite(MySoftData.TabCtrl.Value, IniFile, IniSection, "TableIndex")
     IniWrite(true, IniFile, IniSection, "HasSaved")
 
     MySoftData.CMDPosX := IniWrite(MySoftData.CMDPosX, IniFile, IniSection, "CMDPosX")
@@ -46,7 +54,6 @@ OnSaveSetting(*) {
     MySoftData.CMDFontColor := IniWrite(MySoftData.CMDFontColor, IniFile, IniSection, "CMDFontColor")
     MySoftData.CMDFontSize := IniWrite(MySoftData.CMDFontSize, IniFile, IniSection, "CMDFontSize")
 
-    SaveWinPos()
     Reload()
 }
 
@@ -173,12 +180,6 @@ SwapArrValue(Arr, indexA, indexB, valueType := 1) {
         Arr[indexA] := Arr[indexB]
         Arr[indexB] := temp
     }
-}
-
-ResetWinPosAndRefreshGui(*) {
-    IniWrite(false, IniFile, IniSection, "IsSavedWinPos")
-    MySoftData.IsSavedWinPos := false
-    RefreshGui()
 }
 
 BindSave() {

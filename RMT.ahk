@@ -13,6 +13,7 @@
 #Include Gui\FreePasteGui.ahk
 #Include Gui\MacroEditGui.ahk
 #Include Gui\ReplaceKeyGui.ahk
+#Include Gui\ToolRecordSettingGui.ahk
 #Include Gui\CMDTipGui.ahk
 #Include Gui\CMDTipSettingGui.ahk
 #Include Gui\ScrollBar.ahk
@@ -48,6 +49,7 @@ global MySettingMgrGui := SettingMgrGui()
 global MyCMDTipGui := CMDTipGui()
 global MyTimingGui := TimingGui()
 global MyCMDTipSettingGui := CMDTipSettingGui()
+global MyToolRecordSettingGui := ToolRecordSettingGui()
 global IniFile := A_WorkingDir "\Setting\MainSettings.ini"
 global MySubMacroStopAction := SubMacroStopAction
 global MyTriggerSubMacro := TriggerSubMacro

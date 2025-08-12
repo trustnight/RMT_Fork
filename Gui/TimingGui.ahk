@@ -3,7 +3,6 @@
 class TimingGui {
     __new() {
         this.Gui := ""
-        this.SureBtnAction := ""
         this.Data := ""
         this.IntervalLabelCon := ""
         this.IntervalUnitCon := ""
@@ -105,11 +104,11 @@ class TimingGui {
         if (!isValid)
             return
 
-        this.SaveSearchData()
+        this.SaveTimingData()
         this.Gui.Hide()
     }
 
-    SaveSearchData() {
+    SaveTimingData() {
         Data := this.Data
         Data.StartTime := FormatTime(this.StartTimeCon.Value, "yyyyMMddHHmm")
         Data.EndTime := this.EndTimeCon.Value == "" ? "" : FormatTime(this.EndTimeCon.Value, "yyyyMMddHHmm")

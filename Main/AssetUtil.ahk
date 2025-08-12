@@ -294,10 +294,17 @@ LoadMainSetting() {
     ToolCheckInfo.ToolTextFilterHotKey := IniRead(IniFile, IniSection, "ToolTextFilterHotKey", "!u")
     ToolCheckInfo.ScreenShotHotKey := IniRead(IniFile, IniSection, "ScreenShotHotKey", "!l")
     ToolCheckInfo.FreePasteHotKey := IniRead(IniFile, IniSection, "FreePasteHotKey", "!m")
-    ToolCheckInfo.RecordKeyboardValue := IniRead(IniFile, IniSection, "RecordKeyboardValue", true)
-    ToolCheckInfo.RecordMouseValue := IniRead(IniFile, IniSection, "RecordMouseValue", true)
-    ToolCheckInfo.RecordJoyValue := IniRead(IniFile, IniSection, "RecordJoyValue", true)
-    ToolCheckInfo.RecordMouseRelativeValue := IniRead(IniFile, IniSection, "RecordMouseRelativeValue", false)
+    ToolCheckInfo.RecordKeyboard := IniRead(IniFile, IniSection, "RecordKeyboard", true)
+    ToolCheckInfo.RecordMouse := IniRead(IniFile, IniSection, "RecordMouse", true)
+    ToolCheckInfo.RecordJoy := IniRead(IniFile, IniSection, "RecordJoy", false)
+    ToolCheckInfo.RecordMouseRelative := IniRead(IniFile, IniSection, "RecordMouseRelative", false)
+    ToolCheckInfo.RecordMouseTrail := IniRead(IniFile, IniSection, "RecordMouseTrail", false)
+    ToolCheckInfo.RecordMouseTrailLen := IniRead(IniFile, IniSection, "RecordMouseTrailLen", 100)
+    ToolCheckInfo.RecordMouseTrailSpeed := IniRead(IniFile, IniSection, "RecordMouseTrailSpeed", 95)
+    ToolCheckInfo.RecordHoldMuti := IniRead(IniFile, IniSection, "RecordHoldMuti", false)
+    ToolCheckInfo.RecordAutoLoosen := IniRead(IniFile, IniSection, "RecordAutoLoosen", true)
+    ToolCheckInfo.RecordMouseTrailInterval := IniRead(IniFile, IniSection, "MouseTrailInterval", 300)
+    ToolCheckInfo.RecordJoyInterval := IniRead(IniFile, IniSection, "RecordJoyInterval", 50)
     ToolCheckInfo.OCRTypeValue := IniRead(IniFile, IniSection, "OCRType", 1)
     MySoftData.IsExecuteShow := IniRead(IniFile, IniSection, "IsExecuteShow", true)
     MySoftData.IsBootStart := IniRead(IniFile, IniSection, "IsBootStart", false)
@@ -308,7 +315,6 @@ LoadMainSetting() {
     MySoftData.AgreeAgreement := IniRead(IniFile, IniSection, "AgreeAgreement", false)
     MySoftData.WinPosX := IniRead(IniFile, IniSection, "WinPosX", 0)
     MySoftData.WinPosY := IniRead(IniFile, IniSection, "WinPosY", 0)
-    MySoftData.IsSavedWinPos := IniRead(IniFile, IniSection, "IsSavedWinPos", false)
     MySoftData.TableIndex := IniRead(IniFile, IniSection, "TableIndex", 1)
     MySoftData.FontType := IniRead(IniFile, IniSection, "FontType", "微软雅黑")
 
@@ -574,19 +580,6 @@ GetSavedTableItemInfo(index) {
 
     return [TKArrStr, ModeArrStr, HoldTimeArrStr, ForbidArrStr, ProcessNameArrStr, RemarkArrStr,
         LoopCountArrStr, TriggerTypeArrStr, SerialArrStr, TimingSerialArrStr]
-}
-
-SaveWinPos() {
-    global MySoftData
-    MySoftData.MyGui.GetPos(&posX, &posY)
-    MySoftData.WinPosX := posX
-    MySoftData.WinPosy := posY
-    MySoftData.IsSavedWinPos := true
-    MySoftData.TableIndex := MySoftData.TabCtrl.Value
-    IniWrite(MySoftData.WinPosX, IniFile, IniSection, "WinPosX")
-    IniWrite(MySoftData.WinPosY, IniFile, IniSection, "WinPosY")
-    IniWrite(true, IniFile, IniSection, "IsSavedWinPos")
-    IniWrite(MySoftData.TabCtrl.Value, IniFile, IniSection, "TableIndex")
 }
 
 ;Table信息相关

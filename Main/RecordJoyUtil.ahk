@@ -58,13 +58,17 @@ RecordJoy() {
                 isHold := RecordCheckAxisMacro(key)
             }
 
-            if (!ToolCheckInfo.RecordHoldKeyMap.Has(key) && isHold)
-                OnRecordJoyDown(key)
+            realKey := key
+            if (RecordKeyMap.Has(key))
+                realKey := RecordKeyMap.Get(key)
 
-            if (ToolCheckInfo.RecordHoldKeyMap.Has(key) && !isHold)
-                OnRecordJoyUp(key)
+            if (isHold)
+                OnRecordAddMacroStr(realKey, true)
+
+            if (ToolCheckInfo.RecordHoldKeyMap.Has(realKey) && !isHold)
+                OnRecordAddMacroStr(realKey, false)
         }
-        Sleep(50)
+        Sleep(ToolCheckInfo.RecordJoyInterval)
     }
 }
 
