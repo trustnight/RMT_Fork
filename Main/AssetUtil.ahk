@@ -188,45 +188,7 @@ GetComboKeyArr(ComboKey) {
 }
 
 EditListen() {
-    ; 设置消息监听
-    OnMessage(0x0204, WM_RBUTTONDOWN)  ; WM_RBUTTONDOWN
-    OnMessage(0x0205, WM_RBUTTONUP)    ; WM_RBUTTONUP
     OnMessage(0x020A, WM_MOUSEWHEEL)  ; 0x020A 是 WM_MOUSEWHEEL
-}
-
-WM_RBUTTONDOWN(wParam, lParam, msg, hwnd) {
-    global MySoftData
-    static EM_CHARFROMPOS := 0x00D7
-    ; 检查是否点击在Edit控件上
-    if (MySoftData.MacroEditCon != "" && hwnd = MySoftData.MacroEditCon.Hwnd) {
-        ; 获取点击位置坐标
-        x := lParam & 0xFFFF
-        y := lParam >> 16
-
-        ; 将坐标转换为字符位置
-        charPos := SendMessage(EM_CHARFROMPOS, 0, (y << 16) | (x & 0xFFFF), MySoftData.MacroEditCon)
-
-        ; 低位字是字符索引
-        charIndex := charPos & 0xFFFF
-
-        ; 设置光标位置
-        PostMessage(0x00B1, charIndex, charIndex, MySoftData.MacroEditCon)  ; EM_SETSEL
-        MySoftData.MacroEditGui.CheckIfChangeLineNum()
-        return 0  ; 阻止默认右键菜单
-    }
-}
-
-WM_RBUTTONUP(wParam, lParam, msg, hwnd) {
-    static EM_CHARFROMPOS := 0x00D7
-    ; 检查是否在Edit控件上释放右键
-    if (MySoftData.MacroEditCon != "" && hwnd = MySoftData.MacroEditCon.Hwnd) {
-        ; 获取鼠标位置
-        x := lParam & 0xFFFF
-        y := lParam >> 16
-        menum := MySoftData.MacroEditGui.CreateMenu()
-        menum.Show(x, y)  ; 在鼠标位置显示菜单
-        return 0  ; 阻止默认行为
-    }
 }
 
 WM_MOUSEWHEEL(wParam, lParam, msg, hwnd) {
@@ -1130,7 +1092,7 @@ GetSelectVariableObjArr(macro) {
         IsSearchPro := StrCompare(paramArr[1], "搜索Pro", false) == 0
         IsOperation := StrCompare(paramArr[1], "运算", false) == 0
         IsIf := StrCompare(paramArr[1], "如果", false) == 0
-        IsSubMacro := StrCompare(paramArr[1], "子宏", false) == 0
+        IsSubMacro := StrCompare(paramArr[1], "宏操作", false) == 0
         if (!IsVariable && !IsExVariable && !IsSearchPro && !IsOperation && !IsIf && !IsSubMacro)
             continue
 

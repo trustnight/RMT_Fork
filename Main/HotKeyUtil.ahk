@@ -85,8 +85,6 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         if (tableItem.KilledArr[index])
             break
 
-        if (MySoftData.CMDTip)
-            MyCMDReportAciton(cmdArr[A_Index])
         paramArr := StrSplit(cmdArr[A_Index], "_")
         IsMouseMove := StrCompare(paramArr[1], "移动", false) == 0
         IsSearch := StrCompare(paramArr[1], "搜索", false) == 0
@@ -100,10 +98,18 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         IsStop := StrCompare(paramArr[1], "终止", false) == 0
         IsVariable := StrCompare(paramArr[1], "变量", false) == 0
         IsExVariable := StrCompare(paramArr[1], "变量提取", false) == 0
-        IsSubMacro := StrCompare(paramArr[1], "子宏", false) == 0
+        IsSubMacro := StrCompare(paramArr[1], "宏操作", false) == 0
         IsOperation := StrCompare(paramArr[1], "运算", false) == 0
         IsBGMouse := StrCompare(paramArr[1], "后台鼠标", false) == 0
         IsRMT := StrCompare(paramArr[1], "RMT指令", false) == 0
+
+        if (MySoftData.CMDTip) {
+            NoRemark := IsMouseMove || IsPressKey || IsInterval || IsRMT
+            hasRemark := !NoRemark && paramArr.Length > 2
+            tipStr := hasRemark ? paramArr[1] "_" paramArr[3] : cmdArr[A_Index]
+            MyCMDReportAciton(tipStr)
+        }
+
         if (IsInterval) {
             OnInterval(tableItem, cmdArr[A_Index], index)
         }
@@ -457,40 +463,23 @@ OnSubMacro(tableItem, cmd, index) {
     global MySoftData
     paramArr := StrSplit(cmd, "_")
     Data := GetMacroCMDData(SubMacroFile, paramArr[2])
-    macroTableIndex := 1
-    macroItem := tableItem
-    macro := tableItem.MacroArr[index]
-    macroIndex := Data.Type != 1 ? Data.Index : index
-    if (Data.Type == 2) {
-        macroTableIndex := 1
-        macroItem := MySoftData.TableInfo[1]
-    }
-    else if (Data.Type == 3) {
-        macroTableIndex := 2
-        macroItem := MySoftData.TableInfo[2]
-    }
-    else if (Data.Type == 4) {
-        macroTableIndex := 3
-        macroItem := MySoftData.TableInfo[3]
-    }
-    else if (Data.Type == 5) {
-        macroTableIndex := 4
-        macroItem := MySoftData.TableInfo[4]
-    }
+    macroIndex := Data.MacroType == 1 ? index : Data.Index
+    macroTableIndex := Data.MacroType == 1 ? tableItem.Index : Data.MacroType - 1
+    macroItem := Data.MacroType == 1 ? tableItem : MySoftData.TableInfo[macroTableIndex]
 
     redirect := macroItem.SerialArr.Length < Data.Index || macroItem.SerialArr[Data.Index] != Data.MacroSerial
-    if (Data.Type != 1 && redirect) {
+    if (Data.MacroType != 1 && redirect) {
         loop macroItem.ModeArr.Length {
             if (Data.MacroSerial == macroItem.SerialArr[A_Index]) {
-                macro := macroItem.MacroArr[A_Index]
                 macroIndex := A_Index
                 break
             }
         }
     }
 
-    macro := macroItem.MacroArr[macroIndex]
+    
     if (Data.CallType == 1) {   ;插入
+        macro := macroItem.MacroArr[macroIndex]
         resultMacro := macro
         LoopCount := macroItem.LoopCountArr[macroIndex]
         IsLoop := macroItem.LoopCountArr[macroIndex] == -1
@@ -505,6 +494,15 @@ OnSubMacro(tableItem, cmd, index) {
     }
     else if (Data.CallType == 2) {  ;触发
         MyTriggerSubMacro(macroTableIndex, macroIndex)
+    }
+    else if (Data.CallType == 3) {
+        isWork := macroItem.IsWorkArr[macroIndex]
+        if (isWork || MySoftData.isWork) {
+            MySubMacroStopAction(macroTableIndex, macroIndex)
+            return
+        }
+
+        KillTableItemMacro(macroItem, macroIndex)
     }
 }
 

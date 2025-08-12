@@ -1306,8 +1306,8 @@ class KeyGui {
         isShowInterval := isShowCount && this.PerIntervalCon.Value != 0
 
         this.HoldTimeCon.Enabled := isShowHoldTime
-        this.KeyCountCon.Enabled := isShowCount
-        this.PerIntervalCon.Enabled := isShowInterval
+        this.KeyCountCon.Enabled := isShowHoldTime
+        this.PerIntervalCon.Enabled := isShowCount
         this.CommandStrCon.Value := "当前指令：" this.CommandStr
     }
 }

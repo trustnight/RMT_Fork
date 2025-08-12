@@ -42,7 +42,7 @@ class MacroEditGui {
         this.DefaultFocusCon := ""
         this.SubMacroLastIndex := 0
 
-        this.CMDStrArr := ["间隔", "按键", "搜索", "搜索Pro", "移动", "移动Pro", "输出", "文件", "变量", "变量提取", "运算", "如果", "终止", "子宏",
+        this.CMDStrArr := ["间隔", "按键", "搜索", "搜索Pro", "移动", "移动Pro", "输出", "文件", "变量", "变量提取", "运算", "如果", "终止", "宏操作",
             "后台鼠标"]
 
         this.InitSubGui()
@@ -66,7 +66,6 @@ class MacroEditGui {
         this.SubGuiMap.Set("搜索", this.SearchGui)
 
         this.SearchProGui := SearchProGui()
-        this.SearchProGui.MacroEditGui := this
         this.SearchProGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
         this.SubGuiMap.Set("搜索Pro", this.SearchProGui)
 
@@ -76,7 +75,6 @@ class MacroEditGui {
 
         this.CompareGui := CompareGui()
         this.CompareGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
-        this.CompareGui.MacroEditGui := this
         this.SubGuiMap.Set("如果", this.CompareGui)
 
         this.MMProGui := MMProGui()
@@ -101,7 +99,7 @@ class MacroEditGui {
 
         this.SubMacroGui := SubMacroGui()
         this.SubMacroGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
-        this.SubGuiMap.Set("子宏", this.SubMacroGui)
+        this.SubGuiMap.Set("宏操作", this.SubMacroGui)
 
         this.OperationGui := OperationGui()
         this.OperationGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
@@ -126,6 +124,7 @@ class MacroEditGui {
         }
 
         MySoftData.RecordToggleCon := this.RecordMacroCon
+        MySoftData.MacroEditGui := this
         this.Init(CommandStr, ShowSaveBtn)
     }
 
@@ -224,10 +223,10 @@ class MacroEditGui {
         this.CmdBtnConMap.Set("终止", btnCon)
 
         PosX += 85
-        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 75), "子宏")
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 75), "宏操作")
         btnCon.SetFont((Format("S{} W{} Q{}", 11, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.SubMacroGui))
-        this.CmdBtnConMap.Set("子宏", btnCon)
+        this.CmdBtnConMap.Set("宏操作", btnCon)
 
         PosX := 15
         PosY += 40
@@ -242,23 +241,23 @@ class MacroEditGui {
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.RMTCMDGui))
         this.CmdBtnConMap.Set("RMT指令", btnCon)
 
-        PosX := 190
+        PosX := 200
         PosY := 10
-        this.RecordMacroCon := MyGui.Add("Checkbox", Format("x{} y{} w{} h{}", PosX, PosY - 3, 110, 20), "指令并联录制")
+        this.RecordMacroCon := MyGui.Add("Checkbox", Format("x{} y{}", PosX, PosY), "指令录制")
         this.RecordMacroCon.Value := false
-        this.RecordMacroCon.OnEvent("Click", OnHotToolRecordMacro)
-        PosX += 120
+        this.RecordMacroCon.OnEvent("Click", this.OnClickRecordTog.Bind(this))
+        PosX += 95
         isHotKey := CheckIsHotKey(ToolCheckInfo.ToolRecordMacroHotKey)
         CtrlType := isHotKey ? "Hotkey" : "Text"
-        con := MyGui.Add(CtrlType, Format("x{} y{} w{} h{}", posX, posY - 3, 100, 20), ToolCheckInfo.ToolRecordMacroHotKey
+        con := MyGui.Add(CtrlType, Format("x{} y{} w{}", posX, posY - 3, 130), ToolCheckInfo.ToolRecordMacroHotKey
         )
         con.Enabled := false
 
         PosX := 190
         PosY += 25
         MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", PosX, PosY, 620, 360), "当前宏指令")
-        PosY += 15
-        this.MacroTreeViewCon := MyGui.Add("TreeView", Format("x{} y{} w{} h{}", PosX + 5, PosY, 605, 340), "")
+        PosY += 20
+        this.MacroTreeViewCon := MyGui.Add("TreeView", Format("x{} y{} w{} h{}", PosX + 5, PosY, 605, 335), "")
         this.MacroTreeViewCon.OnEvent("ContextMenu", this.ShowContextMenu.Bind(this))  ; 右键菜单事件
 
         PosX := 190
@@ -299,6 +298,12 @@ class MacroEditGui {
 
     ClearStr() {
         this.MacroTreeViewCon.Delete()
+    }
+
+    OnClickRecordTog(*) {
+        MySoftData.RecordToggleCon := this.RecordMacroCon
+        MySoftData.MacroEditGui := this
+        OnHotToolRecordMacro(true)
     }
 
     OnSaveBtnClick() {
@@ -501,6 +506,8 @@ class MacroEditGui {
         else if (this.EditModeType == 4) {
             this.OnNextInsertCmd(CommandStr)
         }
+        MySoftData.RecordToggleCon := this.RecordMacroCon
+        MySoftData.MacroEditGui := this
     }
 
     ;添加指令

@@ -155,7 +155,6 @@ class SoftData {
         this.TableIndex := 1
         this.HasSaved := false
         this.MacroEditGui := ""
-        this.MacroEditCon := ""
         this.RecordToggleCon := ""
         this.FontType := "微软雅黑"
         this.FontList := []
@@ -342,7 +341,7 @@ class StopData {
 class SubMacroData {
     __New() {
         this.SerialStr := ""
-        this.Type := 1
+        this.MacroType := 1
         this.CallType := 1
         this.Index := 1
         this.MacroSerial := "009973"

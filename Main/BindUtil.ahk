@@ -117,11 +117,13 @@ OnToolRecordMacro(isHotkey, *) {
         LastState := ToolCheckInfo.ToolCheckRecordMacroCtrl.Value
         ToolCheckInfo.ToolCheckRecordMacroCtrl.Value := !LastState
     }
+    state := ToolCheckInfo.ToolCheckRecordMacroCtrl.Value
+
 
     if (MySoftData.MacroEditGui != "") {
-        MySoftData.RecordToggleCon.Value := ToolCheckInfo.IsToolRecord
+        MySoftData.RecordToggleCon.Value := state
     }
-    state := ToolCheckInfo.ToolCheckRecordMacroCtrl.Value
+    
     if (state) {
         CoordMode("Mouse", "Screen")
         MouseGetPos &mouseX, &mouseY
@@ -274,7 +276,7 @@ OnFinishRecordMacro() {
 
     macro := Trim(ToolCheckInfo.RecordMacroStr, ",")
     if (MySoftData.MacroEditGui != "") {
-        MySoftData.MacroEditCon.Value .= macro
+        MySoftData.MacroEditGui.InitTreeView(macro)
     }
     ToolCheckInfo.ToolTextCtrl.Value := macro
     A_Clipboard := macro
