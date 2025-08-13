@@ -13,6 +13,7 @@ BindKey() {
     BindScrollHotkey("~+WheelUp", OnChangeSrollValue)
     BindScrollHotkey("~+WheelDown", OnChangeSrollValue)
     BindTabHotKey()
+    BindSave()
     OnExit(OnExitSoft)
 }
 

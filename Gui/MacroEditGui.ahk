@@ -41,7 +41,8 @@ class MacroEditGui {
         this.DefaultFocusCon := ""
         this.SubMacroLastIndex := 0
 
-        this.CMDStrArr := ["间隔", "按键", "搜索", "搜索Pro", "移动", "移动Pro", "输出", "运行", "变量", "变量提取", "运算", "如果", "宏操作", "RMT指令",
+        this.CMDStrArr := ["间隔", "按键", "搜索", "搜索Pro", "移动", "移动Pro", "输出", "运行", "变量", "变量提取", "运算", "如果", "宏操作",
+            "RMT指令",
             "后台鼠标"]
 
         this.InitSubGui()
@@ -516,18 +517,16 @@ class MacroEditGui {
             return
         }
 
+        macroStr := this.GetMacroStr(ParentID)
+        isTrueMacro := this.MacroTreeViewCon.GetText(ParentID) == "真"
+        RealItemID := this.MacroTreeViewCon.GetParent(ParentID)
+        RealCommandStr := this.MacroTreeViewCon.GetText(RealItemID)
+        this.CurItemID := RealItemID
         if (this.TreeBranchMap.Has(paramsArr[2])) {
-            RealCommandStr := CommandStr
-        }
-        else {
-            macroStr := this.GetMacroStr(ParentID)
-            isTrueMacro := this.MacroTreeViewCon.GetText(ParentID) == "真"
-            RealItemID := this.MacroTreeViewCon.GetParent(ParentID)
-            RealCommandStr := this.MacroTreeViewCon.GetText(RealItemID)
-            this.CurItemID := RealItemID
-            this.SaveCommandData(RealCommandStr, macroStr, isTrueMacro, false)
+            this.TreeBranchMap.Delete(paramsArr[2])
         }
 
+        this.SaveCommandData(RealCommandStr, macroStr, isTrueMacro, false)
         this.RefreshTree(this.CurItemID)
     }
 

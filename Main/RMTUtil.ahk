@@ -190,6 +190,21 @@ BindSave() {
     MyMacroGui.SaveBtnAction := OnSaveSetting
 }
 
+PluginInit() {
+    global MyWorkPool := WorkPool()
+    global MyChineseOcr := RapidOcr(A_ScriptDir)
+    global MyEnglishOcr := RapidOcr(A_ScriptDir, 2)
+    global MyPToken := Gdip_Startup()
+
+
+    dllpath := A_ScriptDir "\Plugins\OpenCV\x64\ImageFinder.dll"
+    ; 构建包含 DLL 文件的目录路径
+    dllDir := A_ScriptDir "\Plugins\OpenCV\x64"
+    ; 使用 SetDllDirectory 将 dllDir 添加到 DLL 搜索路径中
+    DllCall("SetDllDirectory", "Str", dllDir)
+    DllCall('LoadLibrary', 'str', dllpath, "Ptr")
+}
+
 OnToolAlwaysOnTop(*) {
     global MySoftData, ToolCheckInfo
     state := ToolCheckInfo.AlwaysOnTopCtrl.Value

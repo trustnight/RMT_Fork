@@ -65,12 +65,7 @@ EditListen()        ;右键编辑数据监听
 InitData()          ;初始化软件数据
 InitUI()            ;初始化UI
 SetGlobalVar()      ;缓存全局变量
-BindSave()          ;绑定保存方法
-BindKey()           ;绑定快捷键
-TimingCheck()       ;轮询检测触发
 ;放后面初始化，因为这初始化时间比较长
-global MyWorkPool := WorkPool()
-global MyChineseOcr := RapidOcr(A_ScriptDir)
-global MyEnglishOcr := RapidOcr(A_ScriptDir, 2)
-global MyPToken := Gdip_Startup()
-OpenCVLoadDll()
+PluginInit()
+TimingCheck()       ;轮询检测触发
+BindKey()           ;绑定快捷键
