@@ -38,7 +38,11 @@ class SettingMgrGui {
         MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "当前配置：")
 
         PosX += 80
-        this.CurSettingCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 200), "")
+        this.CurSettingCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 180), "")
+
+        PosX := 270
+        con := MyGui.Add("Button", Format("x{} y{} w100", PosX, PosY - 3), "路径修正")
+        con.OnEvent("Click", this.OnRepairBtnClick.Bind(this))
 
         PosX := 10
         PosY += 30
@@ -54,7 +58,7 @@ class SettingMgrGui {
         PosY += 35
         con := MyGui.Add("Button", Format("x{} y{} w100", PosX, PosY), "加载配置")
         con.OnEvent("Click", this.OnLoadBtnClick.Bind(this))
-        PosX := 260
+        PosX := 270
         con := MyGui.Add("Button", Format("x{} y{} w100", PosX, PosY), "删除配置")
         con.OnEvent("Click", this.OnDelBtnClick.Bind(this))
 
@@ -77,6 +81,22 @@ class SettingMgrGui {
         con.OnEvent("Click", this.OnCopyBtnClick.Bind(this))
 
         MyGui.Show(Format("w{} h{}", 420, 300))
+    }
+
+    OnRepairBtnClick(*) {
+        hasRepair := RepairPath(SearchFile, 1)
+        hasRepair := hasRepair || RepairPath(SearchProFile, 1)
+        if (hasRepair) {
+            MsgBox("路径已修复")
+        }
+        else {
+            tipStr := (
+                "未发现异常路径配置`n"
+                "重要须知：`n"
+                "- 此操作是针对覆盖配置文件后，调整当前配置的路径`n"
+            )
+            MsgBox(tipStr)
+        }
     }
 
     OnLoadBtnClick(*) {

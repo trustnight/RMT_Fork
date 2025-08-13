@@ -272,7 +272,7 @@ class SearchProGui {
         this.SerialStr := cmdArr.Length >= 2 ? cmdArr[2] : GetSerialStr("Search")
         this.RemarkCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : ""
 
-        this.Data := this.GetCompareData(this.SerialStr)
+        this.Data := this.GetSearchData(this.SerialStr)
         this.SearchTypeCon.Value := this.Data.SearchType
         this.SimilarCon.Value := this.Data.Similar
         this.OCRTypeCon.Value := this.Data.OCRType
@@ -320,7 +320,7 @@ class SearchProGui {
         return CommandStr
     }
 
-    GetCompareData(SerialStr) {
+    GetSearchData(SerialStr) {
         saveStr := IniRead(SearchProFile, IniSection, SerialStr, "")
         if (!saveStr) {
             data := SearchData()

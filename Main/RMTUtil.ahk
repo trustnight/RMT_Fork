@@ -443,6 +443,47 @@ SelectArea(action) {
     action(x1, y1, x2, y2)
 }
 
+;DataType 1:SearchData
+RepairPath(FilePath, DataType) {
+    SymbolArr := ["Search"]
+    Symbol := SymbolArr[DataType]
+    if (!FileExist(FilePath))
+        return false
+
+    hasRepair := false
+    loop read, FilePath {
+        LineStr := A_LoopReadLine
+        if (SubStr(LineStr, 1, StrLen(Symbol)) != Symbol)
+            continue
+
+        SerialStr := SubStr(LineStr, 1, StrLen(Symbol) + 7)
+        Data := ""
+        if (DataType == 1) {
+            saveStr := IniRead(FilePath, IniSection, SerialStr, "")
+            Data := JSON.parse(saveStr, , false)
+        }
+
+        if (Data == "")
+            continue
+
+        if (DataType == 1 && Data.SearchImagePath != "") {
+            StartPos := InStr(Data.SearchImagePath, "Setting", 1)
+            SubPath := SubStr(Data.SearchImagePath, StartPos)
+            NewPath := A_WorkingDir "\" SubPath
+            if (!FileExist(Data.SearchImagePath) && FileExist(NewPath)) {
+                Data.SearchImagePath := NewPath
+                saveStr := JSON.stringify(Data, 0)
+                IniWrite(saveStr, SearchProFile, IniSection, Data.SerialStr)
+                if (MySoftData.DataCacheMap.Has(Data.SerialStr)) {
+                    MySoftData.DataCacheMap.Delete(Data.SerialStr)
+                }
+                hasRepair := true
+            }
+        }
+    }
+    return hasRepair
+}
+
 ; 语言播报
 ; spovice:=ComObject("sapi.spvoice")
 ; spovice.Speak("世界你好")
