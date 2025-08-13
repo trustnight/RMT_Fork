@@ -136,6 +136,14 @@ GetMacroStrVar(macroStr, VariableMap, visitMap) {
                 VariableMap[Data.SaveName] := true
             }
         }
+        else if (IsSearch || IsSearchPro) {
+            FileName := IsSearch ? SearchFile : SearchProFile
+            saveStr := IniRead(FileName, IniSection, paramArr[2], "")
+            Data := JSON.parse(saveStr, , false)
+            if (Data.ResultToggle) {
+                VariableMap[Data.ResultSaveName] := true
+            }
+        }
 
         TrueMacro := ""
         FalseMacro := ""
