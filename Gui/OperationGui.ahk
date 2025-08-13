@@ -228,6 +228,13 @@ class OperationGui {
         this.Data.IsGlobal := this.IsGlobalCon.Value
         this.Data.IsIgnoreExist := this.IsIgnoreExistCon.Value
 
+        ; 添加全局变量，方便下拉选取
+        if (this.Data.IsGlobal)
+            loop 4 {
+                if (this.Data.ToggleArr[A_Index])
+                    MySoftData.GlobalVariMap[this.Data.UpdateNameArr[A_Index]] := true
+            }
+
         saveStr := JSON.stringify(this.Data, 0)
         IniWrite(saveStr, OperationFile, IniSection, this.Data.SerialStr)
         if (MySoftData.DataCacheMap.Has(this.Data.SerialStr)) {

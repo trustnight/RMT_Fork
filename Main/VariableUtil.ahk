@@ -27,6 +27,7 @@ GetMacroStrGlobalVar(macroStr, VariableMap, visitMap) {
         IsVariable := StrCompare(paramArr[1], "变量", false) == 0
         IsExVariable := StrCompare(paramArr[1], "变量提取", false) == 0
         IsIf := StrCompare(paramArr[1], "如果", false) == 0
+        IsOpera := StrCompare(paramArr[1], "运算", false) == 0
         IsSearch := StrCompare(paramArr[1], "搜索", false) == 0
         IsSearchPro := StrCompare(paramArr[1], "搜索Pro", false) == 0
 
@@ -59,6 +60,16 @@ GetMacroStrGlobalVar(macroStr, VariableMap, visitMap) {
                 VariableMap[Data.SaveName] := true
             }
         }
+        else if (IsOpera) {
+            saveStr := IniRead(OperationFile, IniSection, paramArr[2], "")
+            Data := JSON.parse(saveStr, , false)
+            if (!Data.IsGlobal)
+                continue
+            loop 4 {
+                if (Data.ToggleArr[A_Index])
+                    VariableMap[Data.UpdateNameArr[A_Index]] := true
+            }
+        }
 
         TrueMacro := ""
         FalseMacro := ""
@@ -69,15 +80,9 @@ GetMacroStrGlobalVar(macroStr, VariableMap, visitMap) {
             TrueMacro := Data.TrueMacro
             FalseMacro := Data.FalseMacro
         }
-        else if (IsSearch) {
-            saveStr := IniRead(SearchFile, IniSection, paramArr[2], "")
-            Data := JSON.parse(saveStr, , false)
-
-            TrueMacro := Data.TrueMacro
-            FalseMacro := Data.FalseMacro
-        }
-        else if (IsSearchPro) {
-            saveStr := IniRead(SearchProFile, IniSection, paramArr[2], "")
+        else if (IsSearch || IsSearchPro) {
+            FileName := IsSearch ? SearchFile : SearchProFile
+            saveStr := IniRead(FileName, IniSection, paramArr[2], "")
             Data := JSON.parse(saveStr, , false)
 
             TrueMacro := Data.TrueMacro
@@ -110,6 +115,7 @@ GetMacroStrVar(macroStr, VariableMap, visitMap) {
         IsVariable := StrCompare(paramArr[1], "变量", false) == 0
         IsExVariable := StrCompare(paramArr[1], "变量提取", false) == 0
         IsIf := StrCompare(paramArr[1], "如果", false) == 0
+        IsOpera := StrCompare(paramArr[1], "运算", false) == 0
         IsSearch := StrCompare(paramArr[1], "搜索", false) == 0
         IsSearchPro := StrCompare(paramArr[1], "搜索Pro", false) == 0
 
@@ -143,6 +149,19 @@ GetMacroStrVar(macroStr, VariableMap, visitMap) {
             if (Data.ResultToggle) {
                 VariableMap[Data.ResultSaveName] := true
             }
+
+            if (Data.CoordToogle) {
+                VariableMap[Data.CoordXName] := true
+                VariableMap[Data.CoordXName] := true
+            }
+        }
+        else if (IsOpera) {
+            saveStr := IniRead(OperationFile, IniSection, paramArr[2], "")
+            Data := JSON.parse(saveStr, , false)
+            loop 4 {
+                if (Data.ToggleArr[A_Index])
+                    VariableMap[Data.UpdateNameArr[A_Index]] := true
+            }
         }
 
         TrueMacro := ""
@@ -154,15 +173,9 @@ GetMacroStrVar(macroStr, VariableMap, visitMap) {
             TrueMacro := Data.TrueMacro
             FalseMacro := Data.FalseMacro
         }
-        else if (IsSearch) {
-            saveStr := IniRead(SearchFile, IniSection, paramArr[2], "")
-            Data := JSON.parse(saveStr, , false)
-
-            TrueMacro := Data.TrueMacro
-            FalseMacro := Data.FalseMacro
-        }
-        else if (IsSearchPro) {
-            saveStr := IniRead(SearchProFile, IniSection, paramArr[2], "")
+        else if (IsSearch || IsSearchPro) {
+            FileName := IsSearch ? SearchFile : SearchProFile
+            saveStr := IniRead(FileName, IniSection, paramArr[2], "")
             Data := JSON.parse(saveStr, , false)
 
             TrueMacro := Data.TrueMacro

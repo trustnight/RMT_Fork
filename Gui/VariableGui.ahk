@@ -289,6 +289,14 @@ class VariableGui {
             this.Data.MaxVariableArr[A_Index] := this.MaxVariableConArr[A_Index].Text
         }
 
+        ; 添加全局变量，方便下拉选取
+        if (this.Data.IsGlobal) {
+            loop 4 {
+                if (this.Data.ToggleArr[A_Index])
+                    MySoftData.GlobalVariMap[this.Data.VariableArr[A_Index]] := true
+            }
+        }
+
         saveStr := JSON.stringify(this.Data, 0)
         IniWrite(saveStr, VariableFile, IniSection, this.Data.SerialStr)
         if (MySoftData.DataCacheMap.Has(this.Data.SerialStr)) {

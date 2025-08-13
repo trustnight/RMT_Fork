@@ -362,6 +362,14 @@ class CompareGui {
             this.Data.CompareTypeArr[A_Index] := this.CompareTypeConArr[A_Index].Value
             this.Data.VariableArr[A_Index] := this.VariableConArr[A_Index].Text
         }
+
+        ; 添加全局变量，方便下拉选取
+        if (this.Data.IsGlobal) {
+            if (this.Data.SaveToggle) {
+                MySoftData.GlobalVariMap[this.Data.SaveName] := true
+            }
+        }
+
         saveStr := JSON.stringify(this.Data, 0)
         IniWrite(saveStr, CompareFile, IniSection, this.Data.SerialStr)
         if (MySoftData.DataCacheMap.Has(this.Data.SerialStr)) {
