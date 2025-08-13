@@ -28,7 +28,6 @@ class VariableGui {
 
         this.Init(cmd)
         this.OnRefresh()
-        this.ToggleFunc(true)
     }
 
     AddGui() {
@@ -38,16 +37,6 @@ class VariableGui {
 
         PosX := 10
         PosY := 10
-        this.FocusCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "快捷方式:")
-        PosX += 80
-        con := MyGui.Add("Hotkey", Format("x{} y{} w{}", PosX, PosY - 3, 70), "!l")
-        con.Enabled := false
-
-        PosX += 90
-        btnCon := MyGui.Add("Button", Format("x{} y{} w{}", PosX, PosY - 5, 80), "执行指令")
-        btnCon.OnEvent("Click", (*) => this.TriggerMacro())
-
-        PosX += 90
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 50), "备注:")
         PosX += 50
         this.RemarkCon := MyGui.Add("Edit", Format("x{} y{} w{}", PosX, PosY - 5, 150), "")
@@ -201,7 +190,6 @@ class VariableGui {
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{} Center", PosX, PosY, 100, 40), "确定")
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
 
-        MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
         MyGui.Show(Format("w{} h{}", 680, 320))
     }
 
@@ -234,20 +222,10 @@ class VariableGui {
         }
     }
 
-    ToggleFunc(state) {
-        MacroAction := (*) => this.TriggerMacro()
-        if (state) {
-            Hotkey("!l", MacroAction, "On")
-        }
-        else {
-            Hotkey("!l", MacroAction, "Off")
-        }
-    }
-
     OnRefresh() {
         loop 4 {
             OperaTypeValue := this.OperaTypeConArr[A_Index].Value
-            EnableCopy := OperaTypeValue == 1 || OperaTypeValue == 3 
+            EnableCopy := OperaTypeValue == 1 || OperaTypeValue == 3
             EnableMinMax := OperaTypeValue == 2
             this.CopyVariableConArr[A_Index].Enabled := EnableCopy
             this.MinVariableConArr[A_Index].Enabled := EnableMinMax
@@ -260,7 +238,6 @@ class VariableGui {
         if (!valid)
             return
         this.SaveVariableData()
-        this.ToggleFunc(false)
         CommandStr := this.GetCommandStr()
         action := this.SureBtnAction
         action(CommandStr)
@@ -268,20 +245,15 @@ class VariableGui {
     }
 
     CheckIfValid() {
+        loop 4 {
+            if (this.ToggleConArr[A_Index].Value) {
+                if (IsNumber(this.VariableConArr[A_Index].Value)) {
+                    MsgBox(Format("{}. 变量名不规范：变量名不能是纯数字", A_Index))
+                    return false
+                }
+            }
+        }
         return true
-    }
-
-    TriggerMacro() {
-        this.SaveVariableData()
-        CommandStr := this.GetCommandStr()
-        tableItem := MySoftData.SpecialTableItem
-        tableItem.CmdActionArr[1] := []
-        tableItem.KilledArr[1] := false
-        tableItem.ActionCount[1] := 0
-        tableItem.SuccessClearActionArr[1] := Map()
-        tableItem.VariableMapArr[1] := Map()
-
-        ; OnVariable(tableItem, CommandStr, 1)
     }
 
     GetCommandStr() {
