@@ -903,9 +903,7 @@ GetScreenTextObjArr(X1, Y1, X2, Y2, mode) {
 
     ; 调用 ocr_from_bitmapdata 方法
     ocr := mode == 1 ? MyChineseOcr : MyEnglishOcr
-    param := RapidOcr.OcrParam()
-    param.boxScoreThresh := 0.4  ; 降低置信度阈值，保留更多候选框
-    result := ocr.ocr_from_bitmapdata(BITMAP_DATA, param, true)
+    result := ocr.ocr_from_bitmapdata(BITMAP_DATA, , true)
 
     ; 解锁位图
     Gdip_UnlockBits(pBitmap, &BitmapData)

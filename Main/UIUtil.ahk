@@ -681,7 +681,8 @@ AddHelpUI(index) {
     "软件反馈表格：")
     con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
     con := MyGui.Add("Link", Format("x{} y{} w{} h{}", posX + 140, posY, 700, 30),
-    '<a href="https://docs.qq.com/sheet/DVWJIdEVMV1pHUVJj">bug文档</a>、<a href="https://docs.qq.com/sheet/DVWRQaXBFUVV5bERo">需求文档</a>、<a href="https://docs.qq.com/sheet/DVXpxQWtQcnFWWU1m">使用备注</a>(问题反馈，提出优化方案)')
+    '<a href="https://docs.qq.com/sheet/DVWJIdEVMV1pHUVJj">bug文档</a>、<a href="https://docs.qq.com/sheet/DVWRQaXBFUVV5bERo">需求文档</a>、<a href="https://docs.qq.com/sheet/DVXpxQWtQcnFWWU1m">使用备注</a>(问题反馈，提出优化方案)'
+    )
     con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
 
     posY += 30
@@ -719,7 +720,7 @@ AddToolUI(index) {
     ToolCheckInfo.AlwaysOnTopCtrl.Value := false
     ToolCheckInfo.AlwaysOnTopCtrl.OnEvent("Click", OnToolAlwaysOnTop)
 
-    posY += 30
+    posY += 35
     MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "屏幕坐标：")
     ToolCheckInfo.ToolMousePosCtrl := MyGui.Add("Edit", Format("x{} y{} w240", posX + 120, posY - 5), ToolCheckInfo.PosStr
     )
@@ -728,7 +729,7 @@ AddToolUI(index) {
     ToolCheckInfo.ToolMouseWinPosCtrl := MyGui.Add("Edit", Format("x{} y{} w240", posX + 480, posY - 5), ToolCheckInfo.ProcessName
     )
 
-    posY += 30
+    posY += 35
     MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "进程标题：")
     ToolCheckInfo.ToolProcessTileCtrl := MyGui.Add("Edit", Format("x{} y{} w240", posX + 120, posY - 5), ToolCheckInfo.ProcessTile
     )
@@ -737,7 +738,7 @@ AddToolUI(index) {
     ToolCheckInfo.ToolProcessNameCtrl := MyGui.Add("Edit", Format("x{} y{} w240", posX + 480, posY - 5), ToolCheckInfo.ProcessName
     )
 
-    posY += 30
+    posY += 35
     MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "进程窗口类：")
     ToolCheckInfo.ToolProcessClassCtrl := MyGui.Add("Edit", Format("x{} y{} w240", posX + 120, posY - 5), ToolCheckInfo
     .ProcessClass
@@ -747,7 +748,7 @@ AddToolUI(index) {
     ToolCheckInfo.ToolProcessPidCtrl := MyGui.Add("Edit", Format("x{} y{} w240", posX + 480, posY - 5), ToolCheckInfo.ProcessPid
     )
 
-    posY += 30
+    posY += 35
     MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "句柄Id:")
     ToolCheckInfo.ToolProcessIdCtrl := MyGui.Add("Edit", Format("x{} y{} w240", posX + 120, posY - 5), ToolCheckInfo.ProcessId
     )
@@ -765,7 +766,7 @@ AddToolUI(index) {
     )
     con.Enabled := false
 
-    con := MyGui.Add("Button", Format("x{} y{} w{} h{}", posX + 260, posY - 5, 100, 25), "截图")
+    con := MyGui.Add("Button", Format("x{} y{} w{}", posX + 260, posY - 5, 100), "截图")
     con.OnEvent("Click", OnToolScreenShot)
 
     isHotKey := CheckIsHotKey(ToolCheckInfo.FreePasteHotKey)
@@ -774,7 +775,7 @@ AddToolUI(index) {
     )
     con.Enabled := false
 
-    con := MyGui.Add("Button", Format("x{} y{} w{} h{}", posX + 540, posY - 5, 100, 25), "自由贴")
+    con := MyGui.Add("Button", Format("x{} y{} w{}", posX + 540, posY - 5, 100), "自由贴")
     con.OnEvent("Click", OnToolFreePaste)
 
     posY += 40
@@ -782,7 +783,7 @@ AddToolUI(index) {
 
     isHotKey := CheckIsHotKey(ToolCheckInfo.ToolRecordMacroHotKey)
     CtrlType := isHotKey ? "Hotkey" : "Text"
-    con := MyGui.Add(CtrlType, Format("x{} y{} w{} h{}", posX + 120, posY - 3, 130, 20), ToolCheckInfo.ToolRecordMacroHotKey
+    con := MyGui.Add(CtrlType, Format("x{} y{} w{}", posX + 120, posY - 3, 130), ToolCheckInfo.ToolRecordMacroHotKey
     )
     con.Enabled := false
 
@@ -790,7 +791,7 @@ AddToolUI(index) {
     ToolCheckInfo.ToolCheckRecordMacroCtrl.Value := ToolCheckInfo.IsToolRecord
     ToolCheckInfo.ToolCheckRecordMacroCtrl.OnEvent("Click", OnHotToolRecordMacro.Bind(false))
 
-    con := MyGui.Add("Button", Format("x{} y{} w{} h{}", posX + 400, posY - 5, 100, 25), "录制选项")
+    con := MyGui.Add("Button", Format("x{} y{} w{}", posX + 400, posY - 5, 100), "录制选项")
     con.OnEvent("Click", OnClickToolRecordSettingBtn)
 
     posY += 40
@@ -802,13 +803,13 @@ AddToolUI(index) {
     )
     con.Enabled := false
 
-    con := MyGui.Add("Button", Format("x{} y{} w{} h{}", posX + 260, posY - 5, 100, 25), "截图提取文本")
+    con := MyGui.Add("Button", Format("x{} y{} w{}", posX + 260, posY - 5, 100), "截图提取文本")
     con.OnEvent("Click", OnToolTextFilterScreenShot)
 
-    con := MyGui.Add("Button", Format("x{} y{} w{} h{}", posX + 400, posY - 5, 120, 25), "从图片提取文本")
+    con := MyGui.Add("Button", Format("x{} y{} w{}", posX + 400, posY - 5, 120), "从图片提取文本")
     con.OnEvent("Click", OnToolTextFilterSelectImage)
 
-    posY += 25
+    posY += 35
     MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "相关选项：")
 
     MyGui.Add("Text", Format("x{} y{} w{}", PosX + 120, PosY, 110), "文本识别模型:")

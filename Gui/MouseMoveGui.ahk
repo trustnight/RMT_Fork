@@ -35,14 +35,14 @@ class MouseMoveGui {
         PosY := 10
         MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 80, 20), "快捷方式:")
         PosX += 80
-        con := MyGui.Add("Hotkey", Format("x{} y{} w{} h{} Center", PosX, PosY - 3, 70, 20), "!l")
+        con := MyGui.Add("Hotkey", Format("x{} y{} w{}", PosX, PosY - 3, 70), "!l")
         con.Enabled := false
 
         PosX += 90
-        btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY - 10, 80, 30), "执行指令")
+        btnCon := MyGui.Add("Button", Format("x{} y{} w{}", PosX, PosY - 5, 80), "执行指令")
         btnCon.OnEvent("Click", (*) => this.TriggerMacro())
 
-        PosY += 20
+        PosY += 30
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 500), "F1:选取当前坐标")
 
@@ -75,7 +75,7 @@ class MouseMoveGui {
 
         PosY += 40
         PosX := 10
-        this.CommandStrCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 350), "MouseMove_0_0_0")
+        this.CommandStrCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 350), "当前指令：移动_0_0_0")
 
         PosY += 25
         PosX += 150

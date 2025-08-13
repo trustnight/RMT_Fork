@@ -1121,57 +1121,57 @@ class TriggerKeyGui {
             con.OnEvent("Click", (*) => this.OnCheckedKey("JoyXMin"))
             this.ConMap.Set("JoyXMin", con)
 
-            PosX += 75
+            PosX += 85
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "JoyXMax")
             con.OnEvent("Click", (*) => this.OnCheckedKey("JoyXMax"))
             this.ConMap.Set("JoyXMax", con)
 
-            PosX += 75
+            PosX += 85
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "JoyYMin")
             con.OnEvent("Click", (*) => this.OnCheckedKey("JoyYMin"))
             this.ConMap.Set("JoyYMin", con)
 
-            PosX += 75
+            PosX += 85
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "JoyYMax")
             con.OnEvent("Click", (*) => this.OnCheckedKey("JoyYMax"))
             this.ConMap.Set("JoyYMax", con)
 
-            PosX += 75
+            PosX += 85
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "JoyZMin")
             con.OnEvent("Click", (*) => this.OnCheckedKey("JoyZMin"))
             this.ConMap.Set("JoyZMin", con)
 
-            PosX += 75
+            PosX += 85
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "JoyZMax")
             con.OnEvent("Click", (*) => this.OnCheckedKey("JoyZMax"))
             this.ConMap.Set("JoyZMax", con)
 
-            PosX += 75
+            PosX += 85
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "JoyRMin")
             con.OnEvent("Click", (*) => this.OnCheckedKey("JoyRMin"))
             this.ConMap.Set("JoyRMin", con)
 
-            PosX += 75
+            PosX += 85
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "JoyRMax")
             con.OnEvent("Click", (*) => this.OnCheckedKey("JoyRMax"))
             this.ConMap.Set("JoyRMax", con)
 
-            PosX += 75
+            PosX += 85
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "JoyUMin")
             con.OnEvent("Click", (*) => this.OnCheckedKey("JoyUMin"))
             this.ConMap.Set("JoyUMin", con)
 
-            PosX += 75
+            PosX += 85
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "JoyUMax")
             con.OnEvent("Click", (*) => this.OnCheckedKey("JoyUMax"))
             this.ConMap.Set("JoyUMax", con)
 
-            PosX += 75
+            PosX += 85
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "JoyVMin")
             con.OnEvent("Click", (*) => this.OnCheckedKey("JoyVMin"))
             this.ConMap.Set("JoyVMin", con)
 
-            PosX += 75
+            PosX += 85
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "JoyVMax")
             con.OnEvent("Click", (*) => this.OnCheckedKey("JoyVMax"))
             this.ConMap.Set("JoyUMax", con)
@@ -1215,7 +1215,7 @@ class TriggerKeyGui {
         con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY - 5), "确定")
         con.OnEvent("Click", (*) => this.OnSureHotkey())
 
-        PosY += 25
+        PosY += 30
         PosX := 20
         this.HoldTimeLabelCon := MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "触发键长按时间：")
         this.HoldTimeCon := MyGui.Add("Edit", Format("x{} y{} w{}", PosX + 120, PosY - 2, 100), "500")
@@ -1252,15 +1252,15 @@ class TriggerKeyGui {
         this.CheckedInvalidTipCon := con
 
         PosY += 40
-        PosX := 250
+        PosX := 280
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "清空选项")
         btnCon.OnEvent("Click", (*) => this.ClearCheckedBox())
 
-        PosX += 250
+        PosX += 280
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "确定选项")
         btnCon.OnEvent("Click", (*) => this.OnSureBtnClick())
 
-        PosX += 250
+        PosX += 280
         this.SaveBtnCtrl := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "应用并保存")
         this.SaveBtnCtrl.OnEvent("Click", (*) => this.OnSaveBtnClick())
 

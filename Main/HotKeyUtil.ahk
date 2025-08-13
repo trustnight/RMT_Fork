@@ -91,7 +91,7 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         IsSearchPro := StrCompare(paramArr[1], "搜索Pro", false) == 0
         IsPressKey := StrCompare(paramArr[1], "按键", false) == 0
         IsInterval := StrCompare(paramArr[1], "间隔", false) == 0
-        IsFile := StrCompare(paramArr[1], "文件", false) == 0
+        IsRun := StrCompare(paramArr[1], "运行", false) == 0
         IsIf := StrCompare(paramArr[1], "如果", false) == 0
         IsMMPro := StrCompare(paramArr[1], "移动Pro", false) == 0
         IsOutput := StrCompare(paramArr[1], "输出", false) == 0
@@ -124,7 +124,7 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         else if (IsMMPro) {
             OnMMPro(tableItem, cmdArr[A_Index], index)
         }
-        else if (IsFile) {
+        else if (IsRun) {
             OnRunFile(tableItem, cmdArr[A_Index], index)
         }
         else if (IsIf) {
@@ -271,20 +271,16 @@ OnSearchOnce(tableItem, Data, index, curCount) {
 
 OnRunFile(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
-    Data := GetMacroCMDData(FileFile, paramArr[2])
-    if (Data.ProcessName != "") {
-        Run(Data.ProcessName)
-        return
-    }
+    Data := GetMacroCMDData(RunFile, paramArr[2])
 
-    isMp3 := RegExMatch(Data.FilePath, ".mp3$")
+    isMp3 := RegExMatch(Data.RunPath, ".mp3$")
     if (isMp3 && Data.BackPlay) {
-        playAudioCmd := Format('wscript.exe "{}" "{}"', VBSPath, Data.FilePath)
+        playAudioCmd := Format('wscript.exe "{}" "{}"', VBSPath, Data.RunPath)
         Run(playAudioCmd)
         return
     }
 
-    Run(Data.FilePath)
+    Run(Data.RunPath)
 }
 
 OnCompare(tableItem, cmd, index) {
@@ -393,25 +389,34 @@ OnMMProOnce(tableItem, index, Data) {
 OnOutput(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
     Data := GetMacroCMDData(OutputFile, paramArr[2])
-    VariableMap := tableItem.VariableMapArr[index]
-    OutputText := Data.Text
-    if (Data.Name != "空" && Data.Name != "") {
-        hasValue := TryGetVariableValue(&OutputText, tableItem, index, Data.Name)
+    Content := ""
+    if (Data.ContentType == 1)
+        Content := Data.Text
+    else if (Data.ContentType == 2) {
+        hasValue := TryGetVariableValue(&Content, tableItem, index, Data.VariName)
         if (!hasValue)
             return
     }
-    if (Data.IsCover) {
-        A_Clipboard := OutputText
+    else if (Data.ContentType == 3) {
+        Content := Data.Text
+        hasValue := TryGetVariableValue(&VariValue, tableItem, index, Data.VariName, false)
+        if (hasValue)
+            Content := Content "" VariValue
     }
 
     if (Data.OutputType == 1) {
-        SendText(OutputText)
+        SendText(Content)
     }
     else if (Data.OutputType == 2) {
+        A_Clipboard := Content
         Send "{Blind}^v"
     }
     else if (Data.OutputType == 3) {
+        A_Clipboard := Content
         MyWinClip.Paste(A_Clipboard)
+    }
+    else if (Data.OutputType == 3) {
+        A_Clipboard := Content
     }
 }
 
@@ -750,11 +755,6 @@ OnReplaceUpKey(tableItem, info, index) {
 
 }
 
-;软件宏
-OnSoftTriggerKey(tableItem, info, index) {
-    run info
-}
-
 ;按钮回调
 GetTableClosureAction(action, TableItem, index) {
     funcObj := action.Bind(TableItem, index)
@@ -772,9 +772,7 @@ OnToolTextFilterSelectImage(*) {
     if (path == "")
         return
     ocr := ToolCheckInfo.OCRTypeCtrl.Value == 1 ? MyChineseOcr : MyEnglishOcr
-    param := RapidOcr.OcrParam()
-    param.boxScoreThresh := 0.4  ; 降低置信度阈值，保留更多候选框
-    result := ocr.ocr_from_file(path, param)
+    result := ocr.ocr_from_file(path)
     ToolCheckInfo.ToolTextCtrl.Value := result
     A_Clipboard := result
 }

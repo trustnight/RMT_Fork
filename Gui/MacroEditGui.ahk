@@ -4,7 +4,7 @@
 #Include MouseMoveGui.ahk
 #Include SearchGui.ahk
 #Include SearchProGui.ahk
-#Include FileGui.ahk
+#Include RunGui.ahk
 #Include CompareGui.ahk
 #Include MMProGui.ahk
 #Include OutputGui.ahk
@@ -41,7 +41,7 @@ class MacroEditGui {
         this.DefaultFocusCon := ""
         this.SubMacroLastIndex := 0
 
-        this.CMDStrArr := ["间隔", "按键", "搜索", "搜索Pro", "移动", "移动Pro", "输出", "文件", "变量", "变量提取", "运算", "如果", "宏操作", "RMT指令",
+        this.CMDStrArr := ["间隔", "按键", "搜索", "搜索Pro", "移动", "移动Pro", "输出", "运行", "变量", "变量提取", "运算", "如果", "宏操作", "RMT指令",
             "后台鼠标"]
 
         this.InitSubGui()
@@ -68,9 +68,9 @@ class MacroEditGui {
         this.SearchProGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
         this.SubGuiMap.Set("搜索Pro", this.SearchProGui)
 
-        this.FileGui := FileGui()
-        this.FileGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
-        this.SubGuiMap.Set("文件", this.FileGui)
+        this.RunGui := RunGui()
+        this.RunGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
+        this.SubGuiMap.Set("运行", this.RunGui)
 
         this.CompareGui := CompareGui()
         this.CompareGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
@@ -179,10 +179,10 @@ class MacroEditGui {
         this.CmdBtnConMap.Set("输出", btnCon)
 
         PosX += 85
-        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 75), "文件")
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 75), "运行")
         btnCon.SetFont((Format("S{} W{} Q{}", 11, 400, 5)))
-        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.FileGui))
-        this.CmdBtnConMap.Set("文件", btnCon)
+        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.RunGui))
+        this.CmdBtnConMap.Set("运行", btnCon)
 
         PosX := 15
         PosY += 40

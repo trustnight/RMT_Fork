@@ -52,10 +52,15 @@ class OperationGui {
 
         PosX := 10
         PosY += 25
-        MyGui.Add("Text", Format("x{} y{}", PosX, PosY, 70, 20),
-        "开关   选择/输入           运算表达式                          创建/更新")
+        MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "开关")
+        PosX += 50
+        MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "选择/输入")
+        PosX += 150
+        MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "运算表达式")
+        PosX += 230
+        MyGui.Add("Text", Format("x{} y{}", PosX, PosY), " 创建/更新")
 
-        PosY += 20
+        PosY += 25
         PosX := 15
         con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
         this.ToggleConArr.Push(con)

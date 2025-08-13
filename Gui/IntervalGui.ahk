@@ -40,19 +40,19 @@ class IntervalGui {
         MyGui.SetFont("S10 W550 Q2", MySoftData.FontType)
 
 
-        PosX := 80
+        PosX := 40
         PosY := 20
         MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 90, 20), "时间(毫秒)：")
 
         PosX += 90
-        this.TimeVarCon := MyGui.Add("ComboBox", Format("x{} y{} w{} R5 Center", PosX, PosY - 2, 100), [])
+        this.TimeVarCon := MyGui.Add("ComboBox", Format("x{} y{} w{} R5 Center", PosX, PosY - 2, 130), [])
 
         PosY += 40
-        PosX := 130
+        PosX := 110
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 100, 40), "确定")
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
 
-        MyGui.Show(Format("w{} h{}", 360, 120))
+        MyGui.Show(Format("w{} h{}", 320, 120))
     }
 
     OnClickSureBtn() {

@@ -45,17 +45,17 @@ class CompareGui {
 
         PosX := 10
         PosY := 10
-        this.FocusCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 80, 20), "快捷方式:")
+        this.FocusCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "快捷方式:")
         PosX += 80
-        con := MyGui.Add("Hotkey", Format("x{} y{} w{} h{} Center", PosX, PosY - 3, 70, 20), "!l")
+        con := MyGui.Add("Hotkey", Format("x{} y{} w{}", PosX, PosY - 3, 70), "!l")
         con.Enabled := false
 
         PosX += 90
-        btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY - 10, 80, 30), "执行指令")
+        btnCon := MyGui.Add("Button", Format("x{} y{} w{}", PosX, PosY - 5, 80), "执行指令")
         btnCon.OnEvent("Click", (*) => this.TriggerMacro())
 
         PosX += 90
-        this.FocusCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 50, 30), "备注:")
+        this.FocusCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 50), "备注:")
         PosX += 50
         this.RemarkCon := MyGui.Add("Edit", Format("x{} y{} w{}", PosX, PosY - 5, 150), "")
 
@@ -76,9 +76,13 @@ class CompareGui {
 
         PosY += 30
         PosX := 10
-        MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "开关  选择/输入                       选择/输入")
+        MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "开关")
+        PosX += 50
+        MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "选择/输入")
+        PosX += 150
+        MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "选择/输入")
 
-        PosY += 20
+        PosY += 25
         PosX := 15
         con := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
         this.ToggleConArr.Push(con)
@@ -196,7 +200,7 @@ class CompareGui {
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
 
         ; MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 600, 450))
+        MyGui.Show(Format("w{} h{}", 600, 470))
     }
 
     Init(cmd) {

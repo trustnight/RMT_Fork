@@ -128,7 +128,9 @@ OnTableEditTiming(tableItem, index) {
 OnTableEditTriggerStr(tableItem, index) {
     triggerStr := tableItem.TKConArr[index].Value
     MyTriggerStrGui.SureBtnAction := (sureTriggerStr) => tableItem.TKConArr[index].Value := sureTriggerStr
-    MyTriggerStrGui.ShowGui(triggerStr, true)
+    args := TriggerKeyGuiArgs()
+    args.IsToolEdit := false
+    MyTriggerStrGui.ShowGui(triggerStr, args)
 }
 
 OnEditCMDTipGui() {
@@ -238,7 +240,7 @@ InitFilePath() {
     global CompareFile := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\CompareFile.ini"
     global MMProFile := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\MMProFile.ini"
     global TimingFile := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\TimingFile.ini"
-    global FileFile := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\FileFile.ini"
+    global RunFile := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\RunFile.ini"
     global OutputFile := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\OutputFile.ini"
     global StopFile := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\StopFile.ini"
     global VariableFile := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\VariableFile.ini"
@@ -371,9 +373,7 @@ OnToolTextFilterGetArea(x1, y1, x2, y2) {
     filePath := A_WorkingDir "\Images\ScreenShot\TextFilter.png"
     ScreenShot(x1, y1, x2, y2, filePath)
     ocr := ToolCheckInfo.OCRTypeCtrl.Value == 1 ? MyChineseOcr : MyEnglishOcr
-    param := RapidOcr.OcrParam()
-    param.boxScoreThresh := 0.4  ; 降低置信度阈值，保留更多候选框
-    result := ocr.ocr_from_file(filePath, param)
+    result := ocr.ocr_from_file(filePath)
     ToolCheckInfo.ToolTextCtrl.Value := result
     A_Clipboard := result
 }
@@ -385,9 +385,7 @@ OnToolTextCheckScreenShot() {
         filePath := A_WorkingDir "\Images\ScreenShot\TextFilter.png"
         SaveClipToBitmap(filePath)
         ocr := ToolCheckInfo.OCRTypeCtrl.Value == 1 ? MyChineseOcr : MyEnglishOcr
-        param := RapidOcr.OcrParam()
-        param.boxScoreThresh := 0.4  ; 降低置信度阈值，保留更多候选框
-        result := ocr.ocr_from_file(filePath, param)
+        result := ocr.ocr_from_file(filePath)
         ToolCheckInfo.ToolTextCtrl.Value := result
         A_Clipboard := result
         ; 停止监听

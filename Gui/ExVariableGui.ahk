@@ -40,27 +40,27 @@ class ExVariableGui {
     }
 
     AddGui() {
-        MyGui := Gui(, "变量创建指令编辑")
+        MyGui := Gui(, "变量提取指令编辑")
         this.Gui := MyGui
         MyGui.SetFont("S10 W550 Q2", MySoftData.FontType)
 
         PosX := 10
         PosY := 10
-        this.FocusCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 80, 20), "快捷方式:")
+        this.FocusCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80, 20), "快捷方式:")
         PosX += 80
-        con := MyGui.Add("Hotkey", Format("x{} y{} w{} h{} Center", PosX, PosY - 3, 70, 20), "!l")
+        con := MyGui.Add("Hotkey", Format("x{} y{} w{}", PosX, PosY - 3, 70), "!l")
         con.Enabled := false
 
         PosX += 90
-        btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY - 10, 80, 30), "执行指令")
+        btnCon := MyGui.Add("Button", Format("x{} y{} w{}", PosX, PosY - 5, 80), "执行指令")
         btnCon.OnEvent("Click", (*) => this.TriggerMacro())
 
         PosX += 90
-        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 50, 30), "备注:")
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 50), "备注:")
         PosX += 50
         this.RemarkCon := MyGui.Add("Edit", Format("x{} y{} w{}", PosX, PosY - 5, 150), "")
 
-        PosY += 25
+        PosY += 30
         PosX := 20
         con := MyGui.Add("Edit", Format("x{} y{} w{}", PosX, PosY, 25), "F1")
         con.Enabled := false
@@ -99,13 +99,15 @@ class ExVariableGui {
 
         PosX := 20
         PosY += 30
-        MyGui.Add("Text", Format("x{} y{} h{}", PosX, PosY, 20), "  开关      变量名                    开关       变量名")
+        MyGui.Add("Text", Format("x{} y{} h{}", PosX, PosY, 20), "  开关      变量名")
+        PosX += 260
+        MyGui.Add("Text", Format("x{} y{} h{}", PosX, PosY, 20), "  开关      变量名")
 
         PosX := 20
         PosY += 20
         MyGui.Add("Text", Format("x{} y{}", PosX, PosY + 3), "1.")
         PosX += 20
-        con := MyGui.Add("Checkbox", Format("x{} y{} w{} h{} Center", PosX, PosY, 30, 20), "")
+        con := MyGui.Add("Checkbox", Format("x{} y{} w{} h{} Center", PosX, PosY + 3, 30, 20), "")
         this.ToggleConArr.Push(con)
 
         PosX += 35
@@ -115,7 +117,7 @@ class ExVariableGui {
         PosX += 200
         MyGui.Add("Text", Format("x{} y{}", PosX, PosY + 3), "2.")
         PosX += 20
-        con := MyGui.Add("Checkbox", Format("x{} y{} w{} h{} Center", PosX, PosY, 30, 20), "")
+        con := MyGui.Add("Checkbox", Format("x{} y{} w{} h{} Center", PosX, PosY + 3, 30, 20), "")
         this.ToggleConArr.Push(con)
 
         PosX += 35
@@ -126,7 +128,7 @@ class ExVariableGui {
         PosY += 30
         MyGui.Add("Text", Format("x{} y{}", PosX, PosY + 3), "3.")
         PosX += 20
-        con := MyGui.Add("Checkbox", Format("x{} y{} w{} h{} Center", PosX, PosY, 30, 20), "")
+        con := MyGui.Add("Checkbox", Format("x{} y{} w{} h{} Center", PosX, PosY + 3, 30, 20), "")
         this.ToggleConArr.Push(con)
 
         PosX += 35
@@ -136,7 +138,7 @@ class ExVariableGui {
         PosX += 200
         MyGui.Add("Text", Format("x{} y{}", PosX, PosY + 3), "4.")
         PosX += 20
-        con := MyGui.Add("Checkbox", Format("x{} y{} w{} h{} Center", PosX, PosY, 30, 20), "")
+        con := MyGui.Add("Checkbox", Format("x{} y{} w{} h{} Center", PosX, PosY + 3, 30, 20), "")
         this.ToggleConArr.Push(con)
 
         PosX += 35

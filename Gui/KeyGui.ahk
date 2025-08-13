@@ -1070,57 +1070,57 @@ class KeyGui {
             con.OnEvent("Click", (*) => this.OnCheckedKey("JoyAxis1Min"))
             this.ConMap.Set("JoyAxis1Min", con)
 
-            PosX += 75
+            PosX += 85
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "轴1Max")
             con.OnEvent("Click", (*) => this.OnCheckedKey("JoyAxis1Max"))
             this.ConMap.Set("JoyAxis1Max", con)
 
-            PosX += 75
+            PosX += 85
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "轴2Min")
             con.OnEvent("Click", (*) => this.OnCheckedKey("JoyAxis2Min"))
             this.ConMap.Set("JoyAxis2Min", con)
 
-            PosX += 75
+            PosX += 85
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "轴2Max")
             con.OnEvent("Click", (*) => this.OnCheckedKey("JoyAxis2Max"))
             this.ConMap.Set("JoyAxis2Max", con)
 
-            PosX += 75
+            PosX += 85
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "轴3Min")
             con.OnEvent("Click", (*) => this.OnCheckedKey("JoyAxis3Min"))
             this.ConMap.Set("JoyAxis3Min", con)
 
-            PosX += 75
+            PosX += 85
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "轴3Max")
             con.OnEvent("Click", (*) => this.OnCheckedKey("JoyAxis3Max"))
             this.ConMap.Set("JoyAxis3Max", con)
 
-            PosX += 75
+            PosX += 85
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "轴4Min")
             con.OnEvent("Click", (*) => this.OnCheckedKey("JoyAxis4Min"))
             this.ConMap.Set("JoyAxis4Min", con)
 
-            PosX += 75
+            PosX += 85
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "轴4Max")
             con.OnEvent("Click", (*) => this.OnCheckedKey("JoyAxis4Max"))
             this.ConMap.Set("JoyAxis4Max", con)
 
-            PosX += 75
+            PosX += 85
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "轴5Min")
             con.OnEvent("Click", (*) => this.OnCheckedKey("JoyAxis5Min"))
             this.ConMap.Set("JoyAxis5Min", con)
 
-            PosX += 75
+            PosX += 85
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "轴5Max")
             con.OnEvent("Click", (*) => this.OnCheckedKey("JoyAxis5Max"))
             this.ConMap.Set("JoyAxis5Max", con)
 
-            PosX += 75
+            PosX += 85
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "轴6Min")
             con.OnEvent("Click", (*) => this.OnCheckedKey("JoyAxis6Min"))
             this.ConMap.Set("JoyAxis6Min", con)
 
-            PosX += 75
+            PosX += 85
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "轴6Max")
             con.OnEvent("Click", (*) => this.OnCheckedKey("JoyAxis6Max"))
             this.ConMap.Set("JoyAxis6Max", con)
@@ -1131,17 +1131,17 @@ class KeyGui {
             con.OnEvent("Click", (*) => this.OnCheckedKey("JoyAxis7Min"))
             this.ConMap.Set("JoyAxis7Min", con)
 
-            PosX += 100
+            PosX += 85
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "轴7Max")
             con.OnEvent("Click", (*) => this.OnCheckedKey("JoyAxis7Max"))
             this.ConMap.Set("JoyAxis7Max", con)
 
-            PosX += 125
+            PosX += 85
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "轴8Min")
             con.OnEvent("Click", (*) => this.OnCheckedKey("JoyAxis8Min"))
             this.ConMap.Set("JoyAxis8Min", con)
 
-            PosX += 125
+            PosX += 85
             con := MyGui.Add("Checkbox", Format("x{} y{} h{}", PosX, PosY, 20), "轴8Max")
             con.OnEvent("Click", (*) => this.OnCheckedKey("JoyAxis8Max"))
             this.ConMap.Set("JoyAxis8Max", con)
@@ -1179,11 +1179,11 @@ class KeyGui {
         this.CommandStrCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 300), "当前指令：无")
 
         PosY += 40
-        PosX := 400
+        PosX := 300
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "清空")
         btnCon.OnEvent("Click", (*) => this.ClearCheckedBox())
 
-        PosX += 250
+        PosX += 450
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 40, 100), "确定")
         btnCon.OnEvent("Click", (*) => this.OnSureBtnClick())
 
