@@ -435,14 +435,14 @@ AddSettingUI(index) {
     con.OnEvent("Click", OnOpenEditHotkeyGui.Bind(showCon, MySoftData.PauseHotkeyCtrl, false))
 
     MyGui.Add("Text", Format("x{} y{}", posX + 605, posY), "终止宏:")
-    CtrlType := GetHotKeyCtrlType(ToolCheckInfo.KillMacroHotkey)
-    showCon := MyGui.Add(CtrlType, Format("x{} y{} w130", posX + 680, posY - 4), ToolCheckInfo.KillMacroHotkey)
+    CtrlType := GetHotKeyCtrlType(MySoftData.KillMacroHotkey)
+    showCon := MyGui.Add(CtrlType, Format("x{} y{} w130", posX + 680, posY - 4), MySoftData.KillMacroHotkey)
     showCon.Enabled := false
-    ToolCheckInfo.KillMacroHotkeyCtrl := MyGui.Add("Text", Format("x{} y{} w130", posX + 680, posY), ToolCheckInfo.KillMacroHotkey
+    MySoftData.KillMacroHotkeyCtrl := MyGui.Add("Text", Format("x{} y{} w130", posX + 680, posY), MySoftData.KillMacroHotkey
     )
-    ToolCheckInfo.KillMacroHotkeyCtrl.Visible := false
+    MySoftData.KillMacroHotkeyCtrl.Visible := false
     con := MyGui.Add("Button", Format("x{} y{} center w50", posX + 815, posY - 5), "编辑")
-    con.OnEvent("Click", OnOpenEditHotkeyGui.Bind(showCon, ToolCheckInfo.KillMacroHotkeyCtrl, false))
+    con.OnEvent("Click", OnOpenEditHotkeyGui.Bind(showCon, MySoftData.KillMacroHotkeyCtrl, false))
 
     posY += 40
     con := MyGui.Add("Text", Format("x{} y{}", posX + 25, posY), "指令录制:")

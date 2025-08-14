@@ -249,12 +249,13 @@ LoadMainSetting() {
     MySoftData.CoordYFloat := IniRead(IniFile, IniSection, "CoordYFloat", 0)
     MySoftData.IsLastSaved := IniRead(IniFile, IniSection, "LastSaved", false)
     MySoftData.SuspendHotkey := IniRead(IniFile, IniSection, "SuspendHotkey", "!p")
+    MySoftData.PauseHotkey := IniRead(IniFile, IniSection, "PauseHotkey", "!i")
     MySoftData.KillMacroHotkey := IniRead(IniFile, IniSection, "KillMacroHotkey", "!k")
     ToolCheckInfo.IsToolCheck := IniRead(IniFile, IniSection, "IsToolCheck", false)
     ToolCheckInfo.ToolCheckHotKey := IniRead(IniFile, IniSection, "ToolCheckHotKey", "!o")
     ToolCheckInfo.ToolRecordMacroHotKey := IniRead(IniFile, IniSection, "RecordMacroHotKey", "!r")
     ToolCheckInfo.ToolTextFilterHotKey := IniRead(IniFile, IniSection, "ToolTextFilterHotKey", "!u")
-    ToolCheckInfo.ScreenShotHotKey := IniRead(IniFile, IniSection, "ScreenShotHotKey", "!l")
+    ToolCheckInfo.ScreenShotHotKey := IniRead(IniFile, IniSection, "ScreenShotHotKey", "!j")
     ToolCheckInfo.FreePasteHotKey := IniRead(IniFile, IniSection, "FreePasteHotKey", "!m")
     ToolCheckInfo.RecordKeyboard := IniRead(IniFile, IniSection, "RecordKeyboard", true)
     ToolCheckInfo.RecordMouse := IniRead(IniFile, IniSection, "RecordMouse", true)
@@ -1335,7 +1336,7 @@ WaitIfPaused(tableIndex, itemIndex) {
     while (tableItem.PauseArr[itemIndex]) {
         if (tableItem.KilledArr[itemIndex])
             break
-    
+
         Sleep(200)
     }
 }

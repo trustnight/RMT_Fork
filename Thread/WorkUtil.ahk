@@ -34,6 +34,7 @@ OnWorkGetCmdStr(wParam, lParam, msg, hwnd) {
     isSetVari := StrCompare(paramArr[1], "SetVari", false) == 0
     isDelVari := StrCompare(paramArr[1], "DelVari", false) == 0
     isCMDTip := StrCompare(paramArr[1], "CMDTip", false) == 0
+    isPauseState := StrCompare(paramArr[1], "PauseState", false) == 0
     if (isSetVari) {
         OnWorkSetGlobalVariable(paramArr[2], paramArr[3])
     }
@@ -42,6 +43,10 @@ OnWorkGetCmdStr(wParam, lParam, msg, hwnd) {
     }
     else if (isCMDTip) {
         MySoftData.CMDTip := paramArr[2]
+    }
+    else if (isPauseState) {
+        tableItem := MySoftData.TableInfo[paramArr[2]]
+        tableItem.PauseArr[paramArr[3]] := paramArr[4]
     }
 }
 

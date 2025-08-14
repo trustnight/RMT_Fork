@@ -14,6 +14,7 @@ OnSaveSetting(*) {
     IniWrite(MySoftData.CoordXFloatCon.Value, IniFile, IniSection, "CoordXFloat")
     IniWrite(MySoftData.CoordYFloatCon.Value, IniFile, IniSection, "CoordYFloat")
     IniWrite(MySoftData.SuspendHotkeyCtrl.Value, IniFile, IniSection, "SuspendHotkey")
+    IniWrite(MySoftData.PauseHotkeyCtrl.Value, IniFile, IniSection, "PauseHotkey")
     IniWrite(MySoftData.KillMacroHotkeyCtrl.Value, IniFile, IniSection, "KillMacroHotkey")
     IniWrite(true, IniFile, IniSection, "LastSaved")
     IniWrite(MySoftData.ShowWinCtrl.Value, IniFile, IniSection, "IsExecuteShow")
@@ -380,12 +381,18 @@ CancelTableItemStopState(tableIndex, itemIndex) {
 SetItemPauseState(tableIndex, itemIndex, state) {
     tableItem := MySoftData.TableInfo[tableIndex]
     tableItem.PauseArr[itemIndex] := state
+    isWork := tableItem.IsWorkArr[itemIndex]
+    if (isWork) {
+        workPath := MyWorkPool.GetWorkPath(tableItem.IsWorkArr[itemIndex])
+        str := Format("PauseState_{}_{}_{}", tableIndex, itemIndex, state)
+        MyWorkPool.PostMessage(WM_COPYDATA, workPath, str)
+        return
+    }
 
     LastColorState := tableItem.ColorStateArr[itemIndex]
-
     if (LastColorState == 1 && state == 1)
         SetTableItemState(tableIndex, itemIndex, 2)
-    else if(LastColorState == 2 && state == 0)
+    else if (LastColorState == 2 && state == 0)
         SetTableItemState(tableIndex, itemIndex, 1)
 }
 

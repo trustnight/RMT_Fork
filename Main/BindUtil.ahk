@@ -2,6 +2,7 @@
 
 BindKey() {
     BindSuspendHotkey()
+    BindShortcut(MySoftData.PauseHotkey, OnPauseHotKey)
     BindShortcut(MySoftData.KillMacroHotkey, OnKillAllMacro)
     BindShortcut(ToolCheckInfo.ToolCheckHotKey, OnToolCheckHotkey)
     BindShortcut(ToolCheckInfo.ToolTextFilterHotKey, OnToolTextFilterScreenShot)
@@ -40,6 +41,20 @@ OnSuspendHotkey(*) {
     }
 
     Suspend(MySoftData.IsSuspend)
+}
+
+OnPauseHotKey(*) {
+    MySoftData.IsPause := !MySoftData.IsPause
+    MySoftData.PauseToggleCtrl.Value := MySoftData.IsPause
+
+    loop MySoftData.TableInfo.Length {
+        tableItem := MySoftData.TableInfo[A_Index]
+        for index, value in tableItem.ModeArr {
+            SetItemPauseState(tableItem.index, index, MySoftData.IsPause)
+        }
+    }
+
+    MySoftData.SpecialTableItem.PauseArr[1] := MySoftData.IsPause
 }
 
 OnKillAllMacro(*) {
