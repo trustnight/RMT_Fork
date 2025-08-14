@@ -1,7 +1,7 @@
 #Requires AutoHotkey v2.0
 
 BindKey() {
-    BindPauseHotkey()
+    BindSuspendHotkey()
     BindShortcut(MySoftData.KillMacroHotkey, OnKillAllMacro)
     BindShortcut(ToolCheckInfo.ToolCheckHotKey, OnToolCheckHotkey)
     BindShortcut(ToolCheckInfo.ToolTextFilterHotKey, OnToolTextFilterScreenShot)
@@ -17,15 +17,15 @@ BindKey() {
     OnExit(OnExitSoft)
 }
 
-BindPauseHotkey() {
+BindSuspendHotkey() {
     global MySoftData
-    if (MySoftData.PauseHotkey != "") {
-        key := "$*~" MySoftData.PauseHotkey
-        Hotkey(key, OnPauseHotkey, "S")
+    if (MySoftData.SuspendHotkey != "") {
+        key := "$*~" MySoftData.SuspendHotkey
+        Hotkey(key, OnSuspendHotkey, "S")
     }
 }
 
-OnPauseHotkey(*) {
+OnSuspendHotkey(*) {
     global MySoftData ; 访问全局变量
     MySoftData.IsSuspend := !MySoftData.IsSuspend
     MySoftData.SuspendToggleCtrl.Value := MySoftData.IsSuspend

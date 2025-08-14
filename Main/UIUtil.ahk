@@ -96,8 +96,20 @@ AddOperBtnUI() {
     ; 休眠
     MySoftData.SuspendToggleCtrl := MyGui.Add("CheckBox", Format("x{} y{} w{} h{}", 15, posY, 100, 20), "休眠")
     MySoftData.SuspendToggleCtrl.Value := MySoftData.IsSuspend
-    MySoftData.SuspendToggleCtrl.OnEvent("Click", OnPauseHotkey)
+    MySoftData.SuspendToggleCtrl.OnEvent("Click", OnSuspendHotkey)
     MySoftData.FixedCons.Push(MySoftData.SuspendToggleCtrl)
+    posY += 20
+    CtrlType := GetHotKeyCtrlType(MySoftData.SuspendHotkey)
+    con := MyGui.Add(CtrlType, Format("x{} y{} w{}", 15, posY, 100), MySoftData.SuspendHotkey)
+    con.Enabled := false
+    MySoftData.FixedCons.Push(con)
+    posY += 40
+
+    ; 暂停
+    MySoftData.PauseToggleCtrl := MyGui.Add("CheckBox", Format("x{} y{} w{} h{}", 15, posY, 100, 20), "暂停")
+    MySoftData.PauseToggleCtrl.Value := MySoftData.IsPause
+    MySoftData.PauseToggleCtrl.OnEvent("Click", OnSuspendHotkey)
+    MySoftData.FixedCons.Push(MySoftData.PauseToggleCtrl)
     posY += 20
     CtrlType := GetHotKeyCtrlType(MySoftData.PauseHotkey)
     con := MyGui.Add(CtrlType, Format("x{} y{} w{}", 15, posY, 100), MySoftData.PauseHotkey)
@@ -124,23 +136,6 @@ AddOperBtnUI() {
     MySoftData.BtnAdd := MyGui.Add("Button", Format("x{} y{} w{} h{} center", 15, posY, 100, 30), "新增宏")
     MySoftData.BtnAdd.OnEvent("Click", OnAddSetting)
     posY += 40
-
-    ; posY := 250
-    ; con := MyGui.Add("Picture", Format("x{} y{} w{} h{} center", 15, posY, 100, 100), "Images\Soft\WeiXin.png")
-    ; MySoftData.FixedCons.Push(con)
-
-    ; posY := 350
-    ; con := MyGui.Add("Text", Format("x{} y{} w{} center", 15, posY, 100), "游戏项目")
-    ; MySoftData.FixedCons.Push(con)
-    ; con := MyGui.Add("Text", Format("x{} y{} w{} center", 15, posY + 20, 100), "为爱发电")
-    ; MySoftData.FixedCons.Push(con)
-    ; con := MyGui.Add("Text", Format("x{} y{} w{} center", 15, posY + 40, 100), "诚邀美术、程序")
-    ; MySoftData.FixedCons.Push(con)
-    ; con := MyGui.Add("Link", Format("x{} y{} w{} center", 25, posY + 60, 100),
-    ; '<a href="https://www.bilibili.com/video/BV1jPwTe3EtB">项目演示链接</a>')
-    ; MySoftData.FixedCons.Push(con)
-    ; con := MyGui.Add("Text", Format("x{} y{} w{} center", 15, posY + 80, 100), "QQ:2660681757")
-    ; MySoftData.FixedCons.Push(con)
 
     posY := 490
     MySoftData.BtnSave := MyGui.Add("Button", Format("x{} y{} w{} h{} center", 15, posY, 100, 30), "应用并保存")
@@ -420,34 +415,34 @@ AddSettingUI(index) {
     MyGui.Add("GroupBox", Format("x{} y{} w870 h140", posX + 10, posY), "快捷键修改")
     posY += 30
     con := MyGui.Add("Text", Format("x{} y{}", posX + 25, posY), "软件休眠:")
-    CtrlType := GetHotKeyCtrlType(MySoftData.PauseHotkey)
-    showCon := MyGui.Add(CtrlType, Format("x{} y{} w130", posX + 100, posY - 4), MySoftData.PauseHotkey)
+    CtrlType := GetHotKeyCtrlType(MySoftData.SuspendHotkey)
+    showCon := MyGui.Add(CtrlType, Format("x{} y{} w130", posX + 100, posY - 4), MySoftData.SuspendHotkey)
     showCon.Enabled := false
-    MySoftData.PauseHotkeyCtrl := MyGui.Add("Text", Format("x{} y{} w130", posX + 100, posY), MySoftData.PauseHotkey
+    MySoftData.SuspendHotkeyCtrl := MyGui.Add("Text", Format("x{} y{} w130", posX + 100, posY), MySoftData.SuspendHotkey
+    )
+    MySoftData.SuspendHotkeyCtrl.Visible := false
+    con := MyGui.Add("Button", Format("x{} y{} w50", posX + 235, posY - 5), "编辑")
+    con.OnEvent("Click", OnOpenEditHotkeyGui.Bind(showCon, MySoftData.SuspendHotkeyCtrl, true))
+
+    con := MyGui.Add("Text", Format("x{} y{}", posX + 315, posY), "暂停宏:")
+    CtrlType := GetHotKeyCtrlType(MySoftData.PauseHotkey)
+    showCon := MyGui.Add(CtrlType, Format("x{} y{} w130", posX + 385, posY - 4), MySoftData.PauseHotkey)
+    showCon.Enabled := false
+    MySoftData.PauseHotkeyCtrl := MyGui.Add("Text", Format("x{} y{} w130", posX + 385, posY), MySoftData.PauseHotkey
     )
     MySoftData.PauseHotkeyCtrl.Visible := false
-    con := MyGui.Add("Button", Format("x{} y{} w50", posX + 235, posY - 5), "编辑")
-    con.OnEvent("Click", OnOpenEditHotkeyGui.Bind(showCon, MySoftData.PauseHotkeyCtrl, true))
-
-    con := MyGui.Add("Text", Format("x{} y{}", posX + 315, posY), "终止宏:")
-    CtrlType := GetHotKeyCtrlType(MySoftData.KillMacroHotkey)
-    showCon := MyGui.Add(CtrlType, Format("x{} y{} w130", posX + 385, posY - 4), MySoftData.KillMacroHotkey)
-    showCon.Enabled := false
-    MySoftData.KillMacroHotkeyCtrl := MyGui.Add("Text", Format("x{} y{} w130", posX + 385, posY), MySoftData.KillMacroHotkey
-    )
-    MySoftData.KillMacroHotkeyCtrl.Visible := false
     con := MyGui.Add("Button", Format("x{} y{} center w50", posX + 520, posY - 5), "编辑")
-    con.OnEvent("Click", OnOpenEditHotkeyGui.Bind(showCon, MySoftData.KillMacroHotkeyCtrl, false))
+    con.OnEvent("Click", OnOpenEditHotkeyGui.Bind(showCon, MySoftData.PauseHotkeyCtrl, false))
 
-    MyGui.Add("Text", Format("x{} y{}", posX + 605, posY), "鼠标信息:")
-    CtrlType := GetHotKeyCtrlType(ToolCheckInfo.ToolCheckHotkey)
-    showCon := MyGui.Add(CtrlType, Format("x{} y{} w130", posX + 680, posY - 4), ToolCheckInfo.ToolCheckHotkey)
+    MyGui.Add("Text", Format("x{} y{}", posX + 605, posY), "终止宏:")
+    CtrlType := GetHotKeyCtrlType(ToolCheckInfo.KillMacroHotkey)
+    showCon := MyGui.Add(CtrlType, Format("x{} y{} w130", posX + 680, posY - 4), ToolCheckInfo.KillMacroHotkey)
     showCon.Enabled := false
-    ToolCheckInfo.ToolCheckHotKeyCtrl := MyGui.Add("Text", Format("x{} y{} w130", posX + 680, posY), ToolCheckInfo.ToolCheckHotkey
+    ToolCheckInfo.KillMacroHotkeyCtrl := MyGui.Add("Text", Format("x{} y{} w130", posX + 680, posY), ToolCheckInfo.KillMacroHotkey
     )
-    ToolCheckInfo.ToolCheckHotKeyCtrl.Visible := false
+    ToolCheckInfo.KillMacroHotkeyCtrl.Visible := false
     con := MyGui.Add("Button", Format("x{} y{} center w50", posX + 815, posY - 5), "编辑")
-    con.OnEvent("Click", OnOpenEditHotkeyGui.Bind(showCon, ToolCheckInfo.ToolCheckHotKeyCtrl, false))
+    con.OnEvent("Click", OnOpenEditHotkeyGui.Bind(showCon, ToolCheckInfo.KillMacroHotkeyCtrl, false))
 
     posY += 40
     con := MyGui.Add("Text", Format("x{} y{}", posX + 25, posY), "指令录制:")
@@ -494,6 +489,17 @@ AddSettingUI(index) {
     ToolCheckInfo.FreePasteHotKeyCtrl.Visible := false
     con := MyGui.Add("Button", Format("x{} y{} center w50", posX + 235, posY - 5), "编辑")
     con.OnEvent("Click", OnOpenEditHotkeyGui.Bind(showCon, ToolCheckInfo.FreePasteHotKeyCtrl, false))
+
+    con := MyGui.Add("Text", Format("x{} y{}", posX + 315, posY), "鼠标信息:")
+    CtrlType := GetHotKeyCtrlType(ToolCheckInfo.ToolCheckHotkey)
+    showCon := MyGui.Add(CtrlType, Format("x{} y{} w130", posX + 385, posY - 4),
+    ToolCheckInfo.ToolCheckHotkey)
+    showCon.Enabled := false
+    ToolCheckInfo.ToolCheckHotKeyCtrl := MyGui.Add("Text", Format("x{} y{} w130", posX + 385, posY),
+    ToolCheckInfo.ToolCheckHotkey)
+    ToolCheckInfo.ToolCheckHotKeyCtrl.Visible := false
+    con := MyGui.Add("Button", Format("x{} y{} center w50", posX + 520, posY - 5), "编辑")
+    con.OnEvent("Click", OnOpenEditHotkeyGui.Bind(showCon, ToolCheckInfo.ToolCheckHotKeyCtrl, false))
 
     posY += 40
     posX := MySoftData.TabPosX

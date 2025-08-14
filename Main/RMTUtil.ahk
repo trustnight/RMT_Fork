@@ -13,7 +13,7 @@ OnSaveSetting(*) {
     IniWrite(MySoftData.IntervalFloatCtrl.Value, IniFile, IniSection, "IntervalFloat")
     IniWrite(MySoftData.CoordXFloatCon.Value, IniFile, IniSection, "CoordXFloat")
     IniWrite(MySoftData.CoordYFloatCon.Value, IniFile, IniSection, "CoordYFloat")
-    IniWrite(MySoftData.PauseHotkeyCtrl.Value, IniFile, IniSection, "PauseHotkey")
+    IniWrite(MySoftData.SuspendHotkeyCtrl.Value, IniFile, IniSection, "SuspendHotkey")
     IniWrite(MySoftData.KillMacroHotkeyCtrl.Value, IniFile, IniSection, "KillMacroHotkey")
     IniWrite(true, IniFile, IniSection, "LastSaved")
     IniWrite(MySoftData.ShowWinCtrl.Value, IniFile, IniSection, "IsExecuteShow")
@@ -444,7 +444,7 @@ ExcuteRMTCMDAction(cmdStr) {
         DllCall("user32\BlockInput", "int", 2)  ; 禁用键鼠
     }
     else if (cmdStr == "休眠") {
-        OnPauseHotkey()
+        OnSuspendHotkey()
     }
     else if (cmdStr == "终止所有宏") {
         OnKillAllMacro()

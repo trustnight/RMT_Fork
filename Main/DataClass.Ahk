@@ -142,6 +142,10 @@ class SoftData {
         this.MutiThreadNumCtrl := ""
         this.IsSuspend := false
         this.SuspendToggleCtrl := ""
+        this.SuspendHotkey := ""
+        this.SuspendHotkeyCtrl := ""
+        this.IsPause := false
+        this.PauseToggleCtrl := ""
         this.PauseHotkey := ""
         this.PauseHotkeyCtrl := ""
         this.KillMacroHotkey := ""

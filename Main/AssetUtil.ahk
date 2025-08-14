@@ -248,7 +248,7 @@ LoadMainSetting() {
     MySoftData.CoordXFloat := IniRead(IniFile, IniSection, "CoordXFloat", 0)
     MySoftData.CoordYFloat := IniRead(IniFile, IniSection, "CoordYFloat", 0)
     MySoftData.IsLastSaved := IniRead(IniFile, IniSection, "LastSaved", false)
-    MySoftData.PauseHotkey := IniRead(IniFile, IniSection, "PauseHotkey", "!p")
+    MySoftData.SuspendHotkey := IniRead(IniFile, IniSection, "SuspendHotkey", "!p")
     MySoftData.KillMacroHotkey := IniRead(IniFile, IniSection, "KillMacroHotkey", "!k")
     ToolCheckInfo.IsToolCheck := IniRead(IniFile, IniSection, "IsToolCheck", false)
     ToolCheckInfo.ToolCheckHotKey := IniRead(IniFile, IniSection, "ToolCheckHotKey", "!o")
