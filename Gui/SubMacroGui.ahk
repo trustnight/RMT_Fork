@@ -68,7 +68,7 @@ class SubMacroGui {
         MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 70, 20), "调用方式:")
 
         PosX += 70
-        this.CallTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX, PosY - 5, 100), ["插入", "触发", "终止"])
+        this.CallTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX, PosY - 5, 100), ["插入", "触发", "暂停", "取消暂停", "终止"])
         this.CallTypeCon.Value := 1
 
         PosX := 10
@@ -181,6 +181,7 @@ class SubMacroGui {
         tableItem := MySoftData.SpecialTableItem
         tableItem.CmdActionArr[1] := []
         tableItem.KilledArr[1] := false
+        tableItem.PauseArr[1] := 0
         tableItem.ActionCount[1] := 0
         tableItem.SuccessClearActionArr[1] := Map()
         tableItem.VariableMapArr[1] := Map()

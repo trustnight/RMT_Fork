@@ -31,6 +31,7 @@ class TableItem {
         this.SuccessClearActionArr := []        ;成功后清除后续操作
         this.HoldKeyArr := []
         this.KilledArr := []
+        this.PauseArr := []         ;暂停
         this.ActionCount := []      ; 记录执行次数，用于循环次数判断
         this.ToggleStateArr := []   ; 触发键开关状态
         this.ToggleActionArr := []   ; 触发键开关Action
@@ -126,6 +127,8 @@ class ToolCheck {
 class SoftData {
     __New() {
         this.isWork := false
+        this.ToolTipText := ""
+        this.ToolTipEndTime := ""
         this.AgreeAgreement := false
         this.IsExecuteShow := true
         this.ShowWinCtrl := ""
@@ -137,8 +140,8 @@ class SoftData {
         this.ScreenShotTypeCtrl := ""
         this.MutiThreadNum := 3
         this.MutiThreadNumCtrl := ""
-        this.IsPause := false
-        this.PauseToggleCtrl := ""
+        this.IsSuspend := false
+        this.SuspendToggleCtrl := ""
         this.PauseHotkey := ""
         this.PauseHotkeyCtrl := ""
         this.KillMacroHotkey := ""

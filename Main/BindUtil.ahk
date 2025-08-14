@@ -27,14 +27,19 @@ BindPauseHotkey() {
 
 OnPauseHotkey(*) {
     global MySoftData ; 访问全局变量
-    MySoftData.IsPause := !MySoftData.IsPause
-    MySoftData.PauseToggleCtrl.Value := MySoftData.IsPause
-    OnKillAllMacro()
-    if (MySoftData.IsPause)
+    MySoftData.IsSuspend := !MySoftData.IsSuspend
+    MySoftData.SuspendToggleCtrl.Value := MySoftData.IsSuspend
+    if (MySoftData.IsSuspend) {
+        OnKillAllMacro()
+        SetTimer(TimingChecker, 0)
         TraySetIcon("Images\Soft\IcoPause.ico")
-    else
+    }
+    else {
+        TimingCheck()
         TraySetIcon("Images\Soft\rabit.ico")
-    Suspend(MySoftData.IsPause)
+    }
+
+    Suspend(MySoftData.IsSuspend)
 }
 
 OnKillAllMacro(*) {
@@ -54,7 +59,6 @@ OnKillAllMacro(*) {
     }
 
     KillSingleTableMacro(MySoftData.SpecialTableItem)
-    SetTimer(TimingChecker, 0)
 }
 
 OnToolCheckHotkey(*) {
@@ -120,11 +124,10 @@ OnToolRecordMacro(isHotkey, *) {
     }
     state := ToolCheckInfo.ToolCheckRecordMacroCtrl.Value
 
-
     if (MySoftData.MacroEditGui != "") {
         MySoftData.RecordToggleCon.Value := state
     }
-    
+
     if (state) {
         CoordMode("Mouse", "Screen")
         MouseGetPos &mouseX, &mouseY

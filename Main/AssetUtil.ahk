@@ -424,7 +424,7 @@ GetTableItemDefaultInfo(index) {
     if (symbol == "Normal") {
         savedTKArrStr := "k"
         savedHoldTimeArrStr := "500"
-        savedModeArrStr := "0"
+        savedModeArrStr := "1"
         savedForbidArrStr := "1"
         savedProcessNameStr := ""
         savedRemarkArrStr := "取消禁止配置才能生效"
@@ -435,7 +435,7 @@ GetTableItemDefaultInfo(index) {
     else if (symbol == "String") {
         savedTKArrStr := ":?*:AA"
         savedHoldTimeArrStr := "0"
-        savedModeArrStr := "0"
+        savedModeArrStr := "1"
         savedForbidArrStr := "1"
         savedProcessNameStr := ""
         savedRemarkArrStr := "按两次a触发"
@@ -446,7 +446,7 @@ GetTableItemDefaultInfo(index) {
     else if (symbol == "SubMacro") {
         savedTKArrStr := ""
         savedHoldTimeArrStr := "500"
-        savedModeArrStr := "0"
+        savedModeArrStr := "1"
         savedForbidArrStr := "1"
         savedProcessNameStr := ""
         savedRemarkArrStr := "插入时循环无效"
@@ -457,7 +457,7 @@ GetTableItemDefaultInfo(index) {
     else if (symbol == "Replace") {
         savedTKArrStr := "l"
         savedHoldTimeArrStr := "500"
-        savedModeArrStr := "0"
+        savedModeArrStr := "1"
         savedForbidArrStr := "1"
         savedProcessNameStr := ""
         savedTriggerTypeStr := "1"
@@ -567,8 +567,7 @@ InitTableItemState() {
     }
 
     tableItem := MySoftData.SpecialTableItem
-    tableItem.ModeArr := [0]
-    tableItem.index := 1    ;这可能是个坑
+    tableItem.ModeArr := [1]
     InitSingleTableState(tableItem)
 }
 
@@ -582,8 +581,10 @@ InitSingleTableState(tableItem) {
     tableItem.ToggleActionArr := []
     tableItem.VariableMapArr := []
     tableItem.IsWorkArr := []
+    tableItem.PauseArr := []
     for index, value in tableItem.ModeArr {
         tableItem.KilledArr.Push(false)
+        tableItem.PauseArr.Push(false)
         tableItem.CmdActionArr.Push([])
         tableItem.ActionCount.Push(0)
         tableItem.SuccessClearActionArr.Push(Map())
@@ -608,7 +609,6 @@ KillTableItemMacro(tableItem, index) {
     if (tableItem.KilledArr.Length < index)
         return
     tableItem.KilledArr[index] := true
-    MySetTableItemState(tableItem.index, index, 3)
 
     for key, value in tableItem.HoldKeyArr[index] {
         if (value == "Game") {
@@ -1271,6 +1271,24 @@ GetMacroCMDData(fileName, serialStr) {
     return Data
 }
 
+GetOutPutContent(tableItem, tableIndex, text) {
+    matches := []  ; 初始化空数组
+    pos := 1  ; 从字符串开头开始搜索
+
+    while (pos := RegExMatch(text, "\{(.*?)\}", &match, pos)) {
+        matches.Push(match[1])  ; 把花括号内的内容存入数组
+        pos += match.Len  ; 移动到匹配结束位置，继续搜索
+    }
+
+    Content := text
+    for index, value in matches {
+        hasValue := TryGetVariableValue(&variValue, tableItem, tableIndex, value, false)
+        if (hasValue)
+            Content := StrReplace(Content, "{" value "}", variValue)
+    }
+    return Content
+}
+
 TryGetVariableValue(&Value, tableItem, index, variableName, variTip := true) {
     if (IsNumber(variableName)) {
         Value := variableName
@@ -1310,4 +1328,14 @@ GetSerialStr(CmdStr) {
     currentDateTime := FormatTime(, "HHmmss")
     randomNum := Random(0, 9)
     return CmdStr CurrentDateTime randomNum
+}
+
+WaitIfPaused(tableIndex, itemIndex) {
+    tableItem := MySoftData.TableInfo[tableIndex]
+    while (tableItem.PauseArr[itemIndex]) {
+        if (tableItem.KilledArr[itemIndex])
+            break
+    
+        Sleep(200)
+    }
 }

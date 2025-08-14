@@ -141,7 +141,7 @@ OnEditCMDTipGui() {
 
 OnTableMoveUp(tableItem, index, *) {
     if (index == 1) {
-        MsgBox("上面有元素吗，你就上移动！！！")
+        MsgBox("上面没有元素，无法上移！！！")
         return
     }
     SwapTableContent(tableItem, index, index - 1)
@@ -150,7 +150,7 @@ OnTableMoveUp(tableItem, index, *) {
 OnTableMoveDown(tableItem, index, *) {
     lastIndex := tableItem.ModeArr.length
     if (lastIndex == index) {
-        MsgBox("下面有元素吗，你就下移！！！")
+        MsgBox("下面没有元素，无法下移！！！")
         return
     }
     SwapTableContent(tableItem, index, index + 1)
@@ -337,7 +337,7 @@ CMDReport(CMDStr) {
     MyCMDTipGui.ShowGui(CMDStr)
 }
 
-;0默认状态 1运行 2暂停 3终止
+;0默认状态 1运行 2暂停 3取消暂停 4终止
 SetTableItemState(tableIndex, itemIndex, state) {
     tableItem := MySoftData.TableInfo[tableIndex]
     LastColorState := tableItem.ColorStateArr[itemIndex]
@@ -352,7 +352,7 @@ SetTableItemState(tableIndex, itemIndex, state) {
             tableItem.ColorStateArr[itemIndex] := LastColorState
             return
         }
-    
+
         ColorCon.Value := "Images\Soft\YellowColor.png"
     }
     else if (state == 3) {
@@ -373,6 +373,42 @@ CancelTableItemStopState(tableIndex, itemIndex) {
     ColorCon := tableItem.ColorConArr[itemIndex]
     if (ColorCon.Visible && ColorState == 3) {
         ColorCon.Visible := false
+        tableItem.ColorStateArr[itemIndex] := 0
+    }
+}
+
+SetItemPauseState(tableIndex, itemIndex, state) {
+    tableItem := MySoftData.TableInfo[tableIndex]
+    tableItem.PauseArr[itemIndex] := state
+
+    LastColorState := tableItem.ColorStateArr[itemIndex]
+
+    if (LastColorState == 1 && state == 1)
+        SetTableItemState(tableIndex, itemIndex, 2)
+    else if(LastColorState == 2 && state == 0)
+        SetTableItemState(tableIndex, itemIndex, 1)
+}
+
+MsgBoxContent(content) {
+    MySoftData.MyGui.Flash()
+    SoundPlay "*-1"
+    MsgBox(content)
+}
+
+ToolTipContent(content) {
+    MySoftData.ToolTipText := content
+    MySoftData.ToolTipEndTime := A_TickCount + 5000  ; 设置5秒后结束的时间戳
+    SetTimer(ToolTipTimer, 100)  ; 启动/重置定时器，每100ms执行一次
+}
+
+ToolTipTimer() {
+    if (A_TickCount >= MySoftData.ToolTipEndTime) {
+        ; 超过显示时间，隐藏ToolTip并停止定时器
+        ToolTip
+        SetTimer(ToolTipTimer, 0)
+    } else {
+        ; 仍在显示时间内，更新ToolTip
+        ToolTip(MySoftData.ToolTipText)
     }
 }
 
@@ -539,8 +575,3 @@ RepairPath(FilePath, DataType) {
     }
     return hasRepair
 }
-
-; 语言播报
-; spovice:=ComObject("sapi.spvoice")
-; spovice.Speak("世界你好")
-; spovice.Speak("You can read simple text.")

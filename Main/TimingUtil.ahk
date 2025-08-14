@@ -7,7 +7,6 @@ TimingCheck() {
 
     tableItem := MySoftData.TableInfo[tableIndex]
     SetTimingNextTime(tableItem)
-
     if (A_Sec == 0)
         InitTimingChecker()
     else {

@@ -54,11 +54,11 @@ class OutputGui {
         MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 80, 20), "输出方式:")
         PosX += 80
         this.OutputTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX, PosY - 5, 110), ["发送内容",
-            "Send粘贴", "Win粘贴", "复制到剪切板"])
+            "Send粘贴", "Win粘贴", "临时提示", "复制到剪切板", "软件弹窗", "系统语音"])
         this.OutputTypeCon.Value := 1
         this.OutputTypeCon.OnEvent("Change", this.OnChangeType.Bind(this))
 
-        PosX += 155
+        PosX += 160
         MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 80, 20), "输出内容:")
         PosX += 80
         this.ContentTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX, PosY - 5, 110), ["文本",
@@ -78,14 +78,18 @@ class OutputGui {
 
         PosX += 240
         this.VariCon := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX, PosY, 130), [])
+    
+        PosX := 10
+        PosY += 60
+        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 350, 20), "提示：文本中{变量名}表示变量值、例如：变量1 = {变量1}")
 
-        PosY += 70
+        PosY += 30
         PosX := 200
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 100, 40), "确定")
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
 
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 500, 230))
+        MyGui.Show(Format("w{} h{}", 500, 240))
     }
 
     Init(cmd) {
@@ -143,6 +147,7 @@ class OutputGui {
         tableItem := MySoftData.SpecialTableItem
         tableItem.CmdActionArr[1] := []
         tableItem.KilledArr[1] := false
+        tableItem.PauseArr[1] := 0
         tableItem.ActionCount[1] := 0
         tableItem.SuccessClearActionArr[1] := Map()
         tableItem.VariableMapArr[1] := Map()

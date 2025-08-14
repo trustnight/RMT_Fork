@@ -94,10 +94,10 @@ AddOperBtnUI() {
 
     posY += 25
     ; 休眠
-    MySoftData.PauseToggleCtrl := MyGui.Add("CheckBox", Format("x{} y{} w{} h{}", 15, posY, 100, 20), "休眠")
-    MySoftData.PauseToggleCtrl.Value := MySoftData.IsPause
-    MySoftData.PauseToggleCtrl.OnEvent("Click", OnPauseHotkey)
-    MySoftData.FixedCons.Push(MySoftData.PauseToggleCtrl)
+    MySoftData.SuspendToggleCtrl := MyGui.Add("CheckBox", Format("x{} y{} w{} h{}", 15, posY, 100, 20), "休眠")
+    MySoftData.SuspendToggleCtrl.Value := MySoftData.IsSuspend
+    MySoftData.SuspendToggleCtrl.OnEvent("Click", OnPauseHotkey)
+    MySoftData.FixedCons.Push(MySoftData.SuspendToggleCtrl)
     posY += 20
     CtrlType := GetHotKeyCtrlType(MySoftData.PauseHotkey)
     con := MyGui.Add(CtrlType, Format("x{} y{} w{}", 15, posY, 100), MySoftData.PauseHotkey)
@@ -177,6 +177,7 @@ AddMacroHotkeyUI(index) {
 
     MyGui.Add("Text", Format("x{} y{} w80", MySoftData.TabPosX + 120 + offsetPosx, tableItem.underPosY), "循环次数")
     MyGui.Add("Text", Format("x{} y{} w550", MySoftData.TabPosX + 205 + offsetPosx, tableItem.underPosY), "宏指令")
+    MyGui.Add("Text", Format("x{} y{} w550", MySoftData.TabPosX + 520, tableItem.underPosY), "按键类型")
     MyGui.Add("Text", Format("x{} y{}", MySoftData.TabPosX + 690, tableItem.underPosY), "前台进程触发（填写进程名）")
 
     UpdateUnderPosY(index, 20)
@@ -238,7 +239,7 @@ LoadSavedSettingUI(index) {
             InfoHeight), "")
         newInfoControl.Value := tableItem.MacroArr.Length >= A_Index ? tableItem.MacroArr[A_Index] : ""
 
-        newModeControl := MyGui.Add("Checkbox", Format("x{} y{}", TabPosX + 528, tableItem.underPosY), "游戏")
+        newModeControl := MyGui.Add("DropDownList", Format("x{} y{} w60 Center", TabPosX + 520, tableItem.underPosY), ["虚拟", "拟真"])
         newModeControl.value := tableItem.ModeArr[A_Index]
         newForbidControl := MyGui.Add("Checkbox", Format("x{} y{}", TabPosX + 590, tableItem.underPosY), "禁用")
         newForbidControl.value := tableItem.ForbidArr[A_Index]
@@ -309,7 +310,7 @@ OnAddSetting(*) {
     EditMacroAction := isMacro ? OnTableEditMacro : OnTableEditReplaceKey
     tableItem.TKArr.Push("")
     tableItem.MacroArr.Push("")
-    tableItem.ModeArr.Push(0)
+    tableItem.ModeArr.Push(1)
     tableItem.ForbidArr.Push(0)
     tableItem.ProcessNameArr.Push("")
     tableItem.RemarkArr.Push("")
@@ -357,8 +358,8 @@ OnAddSetting(*) {
     newInfoControl := MyGui.Add("Edit", Format("x{} y{} w{} h{}", TabPosX + 180 - subMacroWidth, tableItem.underPosY,
         335 + subMacroWidth, InfoHeight), "")
 
-    newModeControl := MyGui.Add("Checkbox", Format("x{} y{}", TabPosX + 528, tableItem.underPosY), "游戏")
-    newModeControl.value := 0
+    newModeControl := MyGui.Add("DropDownList", Format("x{} y{} w60", TabPosX + 520, tableItem.underPosY), ["虚拟", "拟真"])
+    newModeControl.value := 1
     newForbidControl := MyGui.Add("Checkbox", Format("x{} y{}", TabPosX + 590, tableItem.underPosY), "禁用")
     newForbidControl.value := 0
 

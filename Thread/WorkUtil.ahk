@@ -134,3 +134,18 @@ WorkSetTableItemState(tableIndex, itemIndex, state) {
     str := Format("ItemState_{}_{}_{}", tableIndex, itemIndex, state)
     MsgSendHandler(str)
 }
+
+WorkSetItemPauseState(tableIndex, itemIndex, state) {
+    str := Format("PauseState_{}_{}_{}", tableIndex, itemIndex, state)
+    MsgSendHandler(str)
+}
+
+WorkMsgBoxContent(content) {
+    str := Format("MsgBox_{}", content)
+    MsgSendHandler(str)
+}
+
+WorkToolTipContent(content) {
+    str := Format("ToolTip_{}", content)
+    MsgSendHandler(str)
+}

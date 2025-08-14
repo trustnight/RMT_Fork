@@ -58,6 +58,9 @@ global MyDelGlobalVariable := DelGlobalVariable
 global MyCMDReportAciton := CMDReport
 global MyExcuteRMTCMDAction := ExcuteRMTCMDAction
 global MySetTableItemState := SetTableItemState
+global MySetItemPauseState := SetItemPauseState
+global MyMsgBoxContent := MsgBoxContent
+global MyToolTipContent := ToolTipContent
 
 LoadMainSetting()       ;加载配置
 InitFilePath()          ;初始化文件路径
@@ -66,6 +69,7 @@ EditListen()        ;右键编辑数据监听
 InitData()          ;初始化软件数据
 InitUI()            ;初始化UI
 SetGlobalVar()      ;缓存全局变量
+
 ;放后面初始化，因为这初始化时间比较长
 PluginInit()
 TimingCheck()       ;轮询检测触发

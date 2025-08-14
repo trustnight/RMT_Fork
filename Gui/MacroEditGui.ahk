@@ -512,7 +512,7 @@ class MacroEditGui {
         this.MacroTreeViewCon.Modify(this.CurItemID, , CommandStr)
         paramsArr := StrSplit(CommandStr, "_")
         ParentID := this.MacroTreeViewCon.GetParent(this.CurItemID)
-        if (ParentID == 0 && !this.TreeBranchMap.Has(paramsArr[2])) {
+        if (ParentID == 0) {
             this.RefreshTree(this.CurItemID)
             return
         }

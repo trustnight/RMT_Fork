@@ -36,6 +36,7 @@ GetClosureAction(tableItem, macro, index, func) {     ;获取闭包函数
 OnTriggerMacroKeyAndInit(tableItem, macro, index) {
     tableItem.CmdActionArr[index] := []
     tableItem.KilledArr[index] := false
+    tableItem.PauseArr[index] := false
     tableItem.ActionCount[index] := 0
     tableItem.VariableMapArr[index]["当前循环次数"] := 1
     tableItem.SuccessClearActionArr[index] := Map()
@@ -47,6 +48,8 @@ OnTriggerMacroKeyAndInit(tableItem, macro, index) {
         isOver := tableItem.ActionCount[index] >= tableItem.LoopCountArr[index]
         isFirst := tableItem.ActionCount[index] == 0
         isSecond := tableItem.ActionCount[index] == 1
+
+        WaitIfPaused(tableItem.index, index)
 
         if (tableItem.KilledArr[index])
             break
@@ -87,6 +90,8 @@ OnTriggerMacroOnce(tableItem, macro, index) {
     for value in cmdArr {
         if (tableItem.KilledArr[index])
             break
+
+        WaitIfPaused(tableItem.index, index)
 
         paramArr := StrSplit(cmdArr[A_Index], "_")
         IsMouseMove := StrCompare(paramArr[1], "移动", false) == 0
@@ -164,8 +169,6 @@ OnSearch(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
     dataFile := StrCompare(paramArr[1], "搜索", false) == 0 ? SearchFile : SearchProFile
     Data := GetMacroCMDData(dataFile, paramArr[2])
-    if (tableItem.KilledArr[index])
-        return
     OnSearchOnce(tableItem, Data, index, 1)
 }
 
@@ -177,6 +180,8 @@ FindImage(targetPath, searchX, searchY, searchW, searchH, matchThreshold, x, y) 
 }
 
 OnSearchOnce(tableItem, Data, index, curCount) {
+    WaitIfPaused(tableItem.index, index)
+
     if (tableItem.KilledArr[index])
         return
 
@@ -211,9 +216,6 @@ OnSearchOnce(tableItem, Data, index, curCount) {
         hasValue := TryGetVariableValue(&text, tableItem, index, Data.SearchText, false)
         found := CheckScreenContainText(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, text, Data.OCRType)
     }
-
-    if (tableItem.KilledArr[index])
-        return
 
     if (found) {
         ;自动移动鼠标
@@ -355,6 +357,8 @@ OnMMPro(tableItem, cmd, index) {
 
     LastSumTime := 0
     loop Data.Count {
+        WaitIfPaused(tableItem.index, index)
+
         if (tableItem.KilledArr[index])
             return
 
@@ -394,32 +398,42 @@ OnOutput(tableItem, cmd, index) {
     Data := GetMacroCMDData(OutputFile, paramArr[2])
     Content := ""
     if (Data.ContentType == 1)
-        Content := Data.Text
+        Content := GetOutPutContent(tableItem, index, Data.Text)
     else if (Data.ContentType == 2) {
         hasValue := TryGetVariableValue(&Content, tableItem, index, Data.VariName)
         if (!hasValue)
             return
     }
     else if (Data.ContentType == 3) {
-        Content := Data.Text
+        Content := GetOutPutContent(tableItem, index, Data.Text)
         hasValue := TryGetVariableValue(&VariValue, tableItem, index, Data.VariName, false)
         if (hasValue)
             Content := Content "" VariValue
     }
 
-    if (Data.OutputType == 1) {
+    if (Data.OutputType == 1) {     ;send
         SendText(Content)
     }
-    else if (Data.OutputType == 2) {
+    else if (Data.OutputType == 2) {    ;粘贴
         A_Clipboard := Content
         Send "{Blind}^v"
     }
-    else if (Data.OutputType == 3) {
+    else if (Data.OutputType == 3) {    ;粘贴
         A_Clipboard := Content
         MyWinClip.Paste(A_Clipboard)
     }
-    else if (Data.OutputType == 3) {
+    else if (Data.OutputType == 4) {    ;提示
+        MyToolTipContent(Content)
+    }
+    else if (Data.OutputType == 5) {    ;剪切板
         A_Clipboard := Content
+    }
+    else if (Data.OutputType == 6) {    ;弹窗
+        MyMsgBoxContent(Content)
+    }
+    else if (Data.OutputType == 7) {    ;语音
+        spovice := ComObject("sapi.spvoice")
+        spovice.Speak(Content)
     }
 }
 
@@ -458,7 +472,13 @@ OnSubMacro(tableItem, cmd, index) {
     else if (Data.CallType == 2) {  ;触发
         MyTriggerSubMacro(macroTableIndex, macroIndex)
     }
-    else if (Data.CallType == 3) {
+    else if (Data.CallType == 3) {  ;暂停
+        MySetItemPauseState(macroTableIndex, macroIndex, 1)
+    }
+    else if (Data.CallType == 4) {  ;取消暂停
+        MySetItemPauseState(macroTableIndex, macroIndex, 0)
+    }
+    else if (Data.CallType == 5) {  ;终止
         isWork := macroItem.IsWorkArr[macroIndex]
         if (isWork || MySoftData.isWork) {
             MySubMacroStopAction(macroTableIndex, macroIndex)
@@ -525,6 +545,8 @@ OnExVariable(tableItem, cmd, index) {
 }
 
 OnExVariableOnce(tableItem, index, Data, curCount) {
+    WaitIfPaused(tableItem.index, index)
+
     if (tableItem.KilledArr[index])
         return
 
@@ -692,6 +714,8 @@ OnInterval(tableItem, cmd, index) {
     curTime := 0
     clip := Min(500, FloatInterval)
     while (curTime < FloatInterval) {
+        WaitIfPaused(tableItem.index, index)
+
         if (tableItem.KilledArr[index])
             break
         Sleep(clip)
@@ -704,7 +728,7 @@ OnPressKey(tableItem, cmd, index) {
     paramArr := SplitKeyCommand(cmd)
     isJoyKey := SubStr(paramArr[2], 1, 3) == "Joy"
     isJoyAxis := StrCompare(SubStr(paramArr[2], 1, 7), "JoyAxis", false) == 0
-    action := tableItem.ModeArr[index] == 1 ? SendGameModeKeyClick : SendNormalKeyClick
+    action := tableItem.ModeArr[index] == 2 ? SendGameModeKeyClick : SendNormalKeyClick
     action := isJoyKey ? SendJoyBtnClick : action
     action := isJoyAxis ? SendJoyAxisClick : action
 
@@ -714,6 +738,8 @@ OnPressKey(tableItem, cmd, index) {
     IntervalTime := paramArr.Length >= 6 ? Integer(paramArr[6]) : 1000
 
     loop count {
+        WaitIfPaused(tableItem.index, index)
+
         if (tableItem.KilledArr[index])
             break
 
@@ -732,7 +758,7 @@ OnReplaceDownKey(tableItem, info, index) {
 
     loop infos.Length {
         assistKey := infos[A_Index]
-        if (mode == 1) {
+        if (mode == 2) {
             SendGameModeKey(assistKey, 1, tableItem, index)
         }
         else {
@@ -748,7 +774,7 @@ OnReplaceUpKey(tableItem, info, index) {
 
     loop infos.Length {
         assistKey := infos[A_Index]
-        if (mode == 1) {
+        if (mode == 2) {
             SendGameModeKey(assistKey, 0, tableItem, index)
         }
         else {

@@ -126,6 +126,9 @@ class WorkPool {
         isReport := StrCompare(paramArr[1], "Report", false) == 0
         isRMT := StrCompare(paramArr[1], "RMT", false) == 0
         isItemState := StrCompare(paramArr[1], "ItemState", false) == 0
+        isPauseState := StrCompare(paramArr[1], "PauseState", false) == 0
+        isMsgBox := StrCompare(paramArr[1], "MsgBox", false) == 0
+        isToolTip := StrCompare(paramArr[1], "ToolTip", false) == 0
         if (isSetVari) {
             SetGlobalVariable(paramArr[2], paramArr[3], false)
         }
@@ -141,6 +144,15 @@ class WorkPool {
         }
         else if (isItemState) {
             MySetTableItemState(paramArr[2], paramArr[3], paramArr[4])
+        }
+        else if (isPauseState) {
+            MySetItemPauseState(paramArr[2], paramArr[3], paramArr[4])
+        }
+        else if (isMsgBox) {
+            MyMsgBoxContent(paramArr[2])
+        }
+        else if (isToolTip) {
+            MyToolTipContent(paramArr[2])
         }
     }
 }
