@@ -21,6 +21,7 @@ class TableItem {
         this.RemarkTipConArr := []
         this.RemarkConArr := []
         this.ColorConArr := []
+        this.ColorStateArr := []
         this.IndexConArr := []
         this.TriggerTypeConArr := []
         this.TimingSerialArr := []

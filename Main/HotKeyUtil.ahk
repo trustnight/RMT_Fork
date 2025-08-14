@@ -42,7 +42,7 @@ OnTriggerMacroKeyAndInit(tableItem, macro, index) {
     isContinue := tableItem.TKArr.Has(index) && MySoftData.ContinueKeyMap.Has(tableItem.TKArr[index]) && tableItem.LoopCountArr[
         index] == 1
     isLoop := tableItem.LoopCountArr[index] == -1
-
+    MySetTableItemState(tableItem.index, index, 1)
     loop {
         isOver := tableItem.ActionCount[index] >= tableItem.LoopCountArr[index]
         isFirst := tableItem.ActionCount[index] == 0
@@ -75,6 +75,9 @@ OnFinishMacro(tableItem, macro, index) {
     if (tableItem.TriggerTypeArr[index] == 4) { ;开关状态下
         tableItem.ToggleStateArr[index] := false
     }
+
+    itemState := tableItem.KilledArr[index] ? 3 : 0
+    MySetTableItemState(tableItem.index, index, itemState)
 }
 
 OnTriggerMacroOnce(tableItem, macro, index) {

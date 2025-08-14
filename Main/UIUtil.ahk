@@ -202,9 +202,12 @@ LoadSavedSettingUI(index) {
         heightValue := 70
         InfoHeight := 60
 
-        newColorCon := MyGui.Add("Pic", Format("x{} y{} w{} h27", TabPosX + 10, tableItem.underPosY, 29), "Images\Soft\GreenColor.png")
-        newIndexCon := MyGui.Add("Text", Format("x{} y{} w{} +BackgroundTrans", TabPosX + 10, tableItem.underPosY + 5, 30), A_Index ".")
-        
+        newColorCon := MyGui.Add("Pic", Format("x{} y{} w{} h27", TabPosX + 10, tableItem.underPosY, 29),
+        "Images\Soft\GreenColor.png")
+        newColorCon.Visible := false
+        newIndexCon := MyGui.Add("Text", Format("x{} y{} w{} +BackgroundTrans", TabPosX + 10, tableItem.underPosY + 5,
+            30), A_Index ".")
+
         newTriggerTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", TabPosX + 40, tableItem.underPosY, 70),
         ["按下", "松开", "松止", "开关", "长按"])
         newTriggerTypeCon.Value := tableItem.TriggerTypeArr.Length >= A_Index ? tableItem.TriggerTypeArr[A_Index] : 1
@@ -276,6 +279,7 @@ LoadSavedSettingUI(index) {
         tableItem.ProcessNameConArr.Push(newProcessNameControl)
         tableItem.IndexConArr.Push(newIndexCon)
         tableItem.ColorConArr.push(newColorCon)
+        tableItem.ColorStateArr.push(0)
         tableItem.TriggerTypeConArr.Push(newTriggerTypeCon)
         UpdateUnderPosY(index, heightValue)
     }
@@ -322,7 +326,9 @@ OnAddSetting(*) {
 
     MySoftData.TabCtrl.UseTab(TableIndex)
 
-    newColorCon := MyGui.Add("Pic", Format("x{} y{} w{} h27", TabPosX + 10, tableItem.underPosY, 29), "Images\Soft\GreenColor.png")
+    newColorCon := MyGui.Add("Pic", Format("x{} y{} w{} h27", TabPosX + 10, tableItem.underPosY, 29),
+    "Images\Soft\GreenColor.png")
+    newColorCon.Visible := false
     newIndexCon := MyGui.Add("Text", Format("x{} y{} w{}", TabPosX + 10, tableItem.underPosY + 5, 30), index ".")
     newTriggerTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", TabPosX + 40, tableItem.underPosY, 70), ["按下",
         "松开",
@@ -388,6 +394,7 @@ OnAddSetting(*) {
     tableItem.ProcessNameConArr.Push(newProcessNameControl)
     tableItem.IndexConArr.Push(newIndexCon)
     tableItem.ColorConArr.push(newColorCon)
+    tableItem.ColorStateArr.push(0)
     tableItem.TriggerTypeConArr.Push(newTriggerTypeCon)
 
     UpdateUnderPosY(TableIndex, heightValue)

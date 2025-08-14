@@ -125,6 +125,7 @@ class WorkPool {
         isDelVari := StrCompare(paramArr[1], "DelVari", false) == 0
         isReport := StrCompare(paramArr[1], "Report", false) == 0
         isRMT := StrCompare(paramArr[1], "RMT", false) == 0
+        isItemState := StrCompare(paramArr[1], "ItemState", false) == 0
         if (isSetVari) {
             SetGlobalVariable(paramArr[2], paramArr[3], false)
         }
@@ -137,6 +138,9 @@ class WorkPool {
         }
         else if (isRMT) {
             MyExcuteRMTCMDAction(paramArr[2])
+        }
+        else if (isItemState) {
+            MySetTableItemState(paramArr[2], paramArr[3], paramArr[4])
         }
     }
 }

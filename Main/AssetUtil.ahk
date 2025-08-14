@@ -568,6 +568,7 @@ InitTableItemState() {
 
     tableItem := MySoftData.SpecialTableItem
     tableItem.ModeArr := [0]
+    tableItem.index := 1    ;这可能是个坑
     InitSingleTableState(tableItem)
 }
 
@@ -607,6 +608,7 @@ KillTableItemMacro(tableItem, index) {
     if (tableItem.KilledArr.Length < index)
         return
     tableItem.KilledArr[index] := true
+    MySetTableItemState(tableItem.index, index, 3)
 
     for key, value in tableItem.HoldKeyArr[index] {
         if (value == "Game") {

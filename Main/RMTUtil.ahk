@@ -87,6 +87,7 @@ OnTableDelete(tableItem, index) {
         tableItem.TimingSerialArr.RemoveAt(index)
     tableItem.IndexConArr.RemoveAt(index)
     tableItem.ColorConArr.RemoveAt(index)
+    tableItem.ColorStateArr.RemoveAt(index)
     tableItem.TriggerTypeConArr.RemoveAt(index)
     tableItem.ModeConArr.RemoveAt(index)
     tableItem.ForbidConArr.RemoveAt(index)
@@ -196,7 +197,6 @@ PluginInit() {
     global MyChineseOcr := RapidOcr(A_ScriptDir)
     global MyEnglishOcr := RapidOcr(A_ScriptDir, 2)
     global MyPToken := Gdip_Startup()
-
 
     dllpath := A_ScriptDir "\Plugins\OpenCV\x64\ImageFinder.dll"
     ; 构建包含 DLL 文件的目录路径
@@ -340,25 +340,38 @@ CMDReport(CMDStr) {
 ;0默认状态 1运行 2暂停 3终止
 SetTableItemState(tableIndex, itemIndex, state) {
     tableItem := MySoftData.TableInfo[tableIndex]
+    LastColorState := tableItem.ColorStateArr[itemIndex]
     ColorCon := tableItem.ColorConArr[itemIndex]
-    isVisible := state == 0
-    ColorCon.Visible = isVisible
+    isVisible := state != 0
+    tableItem.ColorStateArr[itemIndex] := state
     if (state == 1) {
         ColorCon.Value := "Images\Soft\GreenColor.png"
     }
     else if (state == 2) {
+        if (!ColorCon.Visible || LastColorState != 1) { ;非运行状态忽略
+            tableItem.ColorStateArr[itemIndex] := LastColorState
+            return
+        }
+    
         ColorCon.Value := "Images\Soft\YellowColor.png"
     }
     else if (state == 3) {
+        if (!ColorCon.Visible || LastColorState == 3) { ;终止状态忽略
+            tableItem.ColorStateArr[itemIndex] := LastColorState
+            return
+        }
+
         ColorCon.Value := "Images\Soft\RedColor.png"
-        SetTimer(CancelTableItemStopState.Bind(tableIndex, itemIndex), -5)
+        SetTimer(CancelTableItemStopState.Bind(tableIndex, itemIndex), -5000)
     }
+    ColorCon.Visible := isVisible
 }
 
 CancelTableItemStopState(tableIndex, itemIndex) {
     tableItem := MySoftData.TableInfo[tableIndex]
+    ColorState := tableItem.ColorStateArr[itemIndex]
     ColorCon := tableItem.ColorConArr[itemIndex]
-    if (ColorCon.Visible && ColorCon.Value == "Images\Soft\RedColor.png") {
+    if (ColorCon.Visible && ColorState == 3) {
         ColorCon.Visible := false
     }
 }
