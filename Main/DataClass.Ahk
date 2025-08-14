@@ -20,6 +20,7 @@ class TableItem {
         this.LoopCountConArr := []
         this.RemarkTipConArr := []
         this.RemarkConArr := []
+        this.ColorConArr := []
         this.IndexConArr := []
         this.TriggerTypeConArr := []
         this.TimingSerialArr := []
@@ -34,7 +35,7 @@ class TableItem {
         this.ToggleActionArr := []   ; 触发键开关Action
         this.VariableMapArr := []    ;  每条宏对应的变量映射
         this.UnderPosY := 0
-        this.Index := 0
+        this.Index := 0             ;tableIndex
         this.IsWorkArr := []        ;work正在执行中
     }
 }

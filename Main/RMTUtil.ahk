@@ -86,6 +86,7 @@ OnTableDelete(tableItem, index) {
     if (tableItem.TimingSerialArr.Length >= index)
         tableItem.TimingSerialArr.RemoveAt(index)
     tableItem.IndexConArr.RemoveAt(index)
+    tableItem.ColorConArr.RemoveAt(index)
     tableItem.TriggerTypeConArr.RemoveAt(index)
     tableItem.ModeConArr.RemoveAt(index)
     tableItem.ForbidConArr.RemoveAt(index)
@@ -247,6 +248,9 @@ InitFilePath() {
     FileInstall("Images\Soft\ZhiFuBao.png", "Images\Soft\ZhiFuBao.png", 1)
     FileInstall("Images\Soft\rabit.ico", "Images\Soft\rabit.ico", 1)
     FileInstall("Images\Soft\IcoPause.ico", "Images\Soft\IcoPause.ico", 1)
+    FileInstall("Images\Soft\GreenColor.png", "Images\Soft\GreenColor.png", 1)
+    FileInstall("Images\Soft\RedColor.png", "Images\Soft\RedColor.png", 1)
+    FileInstall("Images\Soft\YellowColor.png", "Images\Soft\YellowColor.png", 1)
 
     global VBSPath := A_WorkingDir "\VBS\PlayAudio.vbs"
     global MacroFile := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\MacroFile.ini"
@@ -331,6 +335,32 @@ SetCMDTipValue(value) {
 
 CMDReport(CMDStr) {
     MyCMDTipGui.ShowGui(CMDStr)
+}
+
+;0默认状态 1运行 2暂停 3终止
+SetTableItemState(tableIndex, itemIndex, state) {
+    tableItem := MySoftData.TableInfo[tableIndex]
+    ColorCon := tableItem.ColorConArr[itemIndex]
+    isVisible := state == 0
+    ColorCon.Visible = isVisible
+    if (state == 1) {
+        ColorCon.Value := "Images\Soft\GreenColor.png"
+    }
+    else if (state == 2) {
+        ColorCon.Value := "Images\Soft\YellowColor.png"
+    }
+    else if (state == 3) {
+        ColorCon.Value := "Images\Soft\RedColor.png"
+        SetTimer(CancelTableItemStopState.Bind(tableIndex, itemIndex), -5)
+    }
+}
+
+CancelTableItemStopState(tableIndex, itemIndex) {
+    tableItem := MySoftData.TableInfo[tableIndex]
+    ColorCon := tableItem.ColorConArr[itemIndex]
+    if (ColorCon.Visible && ColorCon.Value == "Images\Soft\RedColor.png") {
+        ColorCon.Visible := false
+    }
 }
 
 ExcuteRMTCMDAction(cmdStr) {

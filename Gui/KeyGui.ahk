@@ -202,7 +202,7 @@ class KeyGui {
         this.CheckRuleBtn.OnEvent("Click", (*) => this.OnClickRuleBtn())
 
         PosX += 80
-        con := MyGui.Add("Text", Format("x{} y{} h{}  Center Background{}", PosX, PosY, 20, "FF0000"),
+        con := MyGui.Add("Text", Format("x{} y{} h{} Center Background{}", PosX, PosY, 20, "FF0000"),
         "当前配置无效,请浏览勾选规则后，检查配置")
         con.Visible := false
         this.CheckedInvalidTipCon := con

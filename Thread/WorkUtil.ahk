@@ -129,3 +129,8 @@ WorkExcuteRMTCMDAction(cmdStr) {
     str := Format("RMT_{}", cmdStr)
     MsgSendHandler(str)
 }
+
+WorkSetTableItemState(tableIndex, itemIndex, state) {
+    str := Format("ItemState_{}_{}_{}", tableIndex, itemIndex, state)
+    MsgSendHandler(str)
+}

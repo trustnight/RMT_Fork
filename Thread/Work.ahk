@@ -40,6 +40,7 @@ global MySetGlobalVariable := WorkSetGlobalVariable
 global MyDelGlobalVariable := WorkDelGlobalVariable
 global MyCMDReportAciton := WorkCMDReport
 global MyExcuteRMTCMDAction := WorkExcuteRMTCMDAction
+global MySetTableItemState := WorkSetTableItemState
 WorkOpenCVLoadDll()
 
 ; 注册消息
