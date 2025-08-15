@@ -49,6 +49,11 @@ class SearchProGui {
         this.CoordXNameCon := ""
         this.CoordYNameCon := ""
         this.MacroGui := ""
+
+        this.CountTogArr := []
+        this.MouseTogArr := []
+        this.ResultTogArr := []
+        this.CoordTogArr := []
     }
 
     ShowGui(cmd) {
@@ -125,7 +130,7 @@ class SearchProGui {
         PosX += 80
         this.SearchTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} h{}", PosX, PosY - 3, 80, 100), ["图片", "颜色",
             "文本"])
-        this.SearchTypeCon.OnEvent("Change", (*) => this.OnChangeSearchType())
+        this.SearchTypeCon.OnEvent("Change", (*) => this.OnChangeType())
         this.SearchTypeCon.Value := 1
         PosY += 30
         PosX := 10
@@ -151,10 +156,13 @@ class SearchProGui {
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "搜索次数:")
         PosX += 75
         this.SearchCountCon := MyGui.Add("ComboBox", Format("x{} y{} w{} Center", PosX, PosY - 5, 55))
+        this.SearchCountCon.OnEvent("LoseFocus", this.OnChangeType.Bind(this))
         PosX := 150
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "每次间隔:")
+        con := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "每次间隔:")
+        this.CountTogArr.Push(con)
         PosX += 75
-        this.SearchIntervalCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 55))
+        con := this.SearchIntervalCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 55))
+        this.CountTogArr.Push(con)
         PosY += 30
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "鼠标动作:")
@@ -162,16 +170,21 @@ class SearchProGui {
         this.MouseActionTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} Center", PosX, PosY - 5, 130), ["无动作",
             "移动至目标", "移动至目标点击"])
         this.MouseActionTypeCon.Value := 1
+        this.MouseActionTypeCon.OnEvent("Change", this.OnChangeType.Bind(this))
         PosY += 30
         PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 120), "移动速度(0~100):")
+        con := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 120), "移动速度(0~100):")
+        this.MouseTogArr.Push(con)
         PosX += 120
-        this.SpeedCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 55), "90")
+        con := this.SpeedCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 55), "90")
+        this.MouseTogArr.Push(con)
         PosY += 30
         PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 120), "鼠标点击次数:")
+        con := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 120), "鼠标点击次数:")
+        this.MouseTogArr.Push(con)
         PosX += 120
-        this.ClickCountCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 55), "1")
+        con := this.ClickCountCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 55), "1")
+        this.MouseTogArr.Push(con)
 
         PosY := SplitPosY
         PosX := 330
@@ -208,8 +221,8 @@ class SearchProGui {
         PosX := 330
         this.TextTipCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "搜索文本:")
         PosX += 80
-        this.TextCon := MyGui.Add("Edit", Format("x{} y{} w{} h{} Center", PosX, PosY - 3, 80, 20), "检索文本")
-        PosY += 25
+        this.TextCon := MyGui.Add("ComboBox", Format("x{} y{} w{} Center R5", PosX, PosY - 3, 80), [])
+        PosY += 30
         PosX := 330
         this.OCRLabelCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "识别模型:")
         PosX += 80
@@ -238,28 +251,55 @@ class SearchProGui {
         TempPosY := PosY
         PosY += 90
         PosX := 10
-        MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", PosX, PosY, 310, 70), "结果保存到变量中")
+        MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", PosX, PosY, 310, 75), "结果保存到变量中")
+
         PosY += 20
         PosX := 15
-        MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "开关    选择/输入      真值        假值")
-        PosY += 20
+        MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "开关")
+        PosX += 50
+        con := MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "变量名")
+        this.ResultTogArr.Push(con)
+        PosX += 110
+        con := MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "真值")
+        this.ResultTogArr.Push(con)
+        PosX += 85
+        con := MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "假值")
+        this.ResultTogArr.Push(con)
+
+        PosY += 25
         PosX := 20
         this.ResultToggleCon := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
+        this.ResultToggleCon.OnEvent("Click", this.OnChangeType.Bind(this))
         this.ResultSaveNameCon := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 30, PosY - 3, 100), [])
+        this.ResultTogArr.Push(this.ResultSaveNameCon)
         this.TrueValueCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX + 135, PosY - 4, 70), 0)
+        this.ResultTogArr.Push(this.TrueValueCon)
         this.FalseValueCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX + 220, PosY - 4, 70), 0)
+        this.ResultTogArr.Push(this.FalseValueCon)
         PosY := TempPosY
         PosY += 90
         PosX := 330
-        MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", PosX, PosY, 290, 70), "找到后目标点保存到变量中")
+        MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", PosX, PosY, 290, 75), "找到后目标点保存到变量中")
+
         PosY += 20
         PosX := 335
-        MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "开关  坐标X选择/输入  坐标Y选择/输入")
-        PosY += 20
+        MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "开关")
+        PosX += 45
+        con := MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "坐标X变量名")
+        this.CoordTogArr.Push(con)
+        PosX += 110
+        con := MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "坐标Y变量名")
+        this.CoordTogArr.Push(con)
+
+        PosY += 25
         PosX := 340
         this.CoordToogleCon := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
+        this.CoordToogleCon.OnEvent("Click", this.OnChangeType.Bind(this))
         this.CoordXNameCon := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 35, PosY - 3, 100), [])
+        this.CoordTogArr.Push(this.CoordXNameCon)
         this.CoordYNameCon := MyGui.Add("ComboBox", Format("x{} y{} w{} R5", PosX + 150, PosY - 3, 100), [])
+        this.CoordTogArr.Push(this.CoordYNameCon)
+
         PosY += 40
         PosX := 270
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 100, 40), "确定")
@@ -282,7 +322,9 @@ class SearchProGui {
         this.ImageCon.Value := this.Data.SearchImagePath
         this.ImageCon.Move(imagePosX, imagePosY, 80, 80)
         this.HexColorCon.Value := this.Data.SearchColor
-        this.TextCon.Value := this.Data.SearchText
+        this.TextCon.Delete()
+        this.TextCon.Add(this.VariableObjArr)
+        this.TextCon.Text := this.Data.SearchText
         this.StartPosXCon.Value := this.Data.StartPosX
         this.StartPosYCon.Value := this.Data.StartPosY
         this.EndPosXCon.Value := this.Data.EndPosX
@@ -309,7 +351,7 @@ class SearchProGui {
         this.CoordYNameCon.Delete()
         this.CoordYNameCon.Add(this.VariableObjArr)
         this.CoordYNameCon.Text := this.Data.CoordYName
-        this.OnChangeSearchType()
+        this.OnChangeType()
     }
 
     GetCommandStr() {
@@ -505,7 +547,7 @@ class SearchProGui {
         this.MacroGui.ShowGui(this.UnFoundCommandStrCon.Value, false)
     }
 
-    OnChangeSearchType() {
+    OnChangeType(*) {
         isImage := this.SearchTypeCon.Value == 1
         isColor := this.SearchTypeCon.Value == 2
         isText := this.SearchTypeCon.Value == 3
@@ -535,6 +577,25 @@ class SearchProGui {
         this.OCRTypeCon.Enabled := isText
         this.TextTipCon.Enabled := isText
         this.MousePosCon.Focus()
+
+        CountValue := this.SearchCountCon.Text == "无限" ? -1 : this.SearchCountCon.Text
+        isCount := IsNumber(CountValue) && (CountValue == -1 || CountValue > 1)
+        this.SetConArrState(this.CountTogArr, isCount)
+
+        isMouseAction := this.MouseActionTypeCon.Value != 1
+        this.SetConArrState(this.MouseTogArr, isMouseAction)
+
+        isSaveResult := this.ResultToggleCon.Value
+        this.SetConArrState(this.ResultTogArr, isSaveResult)
+
+        isCoord := this.CoordToogleCon.Value
+        this.SetConArrState(this.CoordTogArr, isCoord)
+    }
+
+    SetConArrState(ConArr, state) {
+        for Value in ConArr {
+            Value.Enabled := state
+        }
     }
 
     TriggerMacro() {
@@ -547,7 +608,6 @@ class SearchProGui {
         tableItem.KilledArr[1] := false
         tableItem.PauseArr[1] := 0
         tableItem.ActionCount[1] := 0
-        tableItem.SuccessClearActionArr[1] := Map()
         tableItem.VariableMapArr[1] := Map()
 
         OnSearch(tableItem, this.GetCommandStr(), 1)
@@ -596,7 +656,7 @@ class SearchProGui {
         data.SearchImageType := this.ImageTypeCon.Value
         data.SearchType := this.SearchTypeCon.Value
         data.SearchColor := this.HexColorCon.Value
-        data.SearchText := this.TextCon.Value
+        data.SearchText := this.TextCon.Text
         data.StartPosX := this.StartPosXCon.Value
         data.StartPosY := this.StartPosYCon.Value
         data.EndPosX := this.EndPosXCon.Value

@@ -39,7 +39,6 @@ OnTriggerMacroKeyAndInit(tableItem, macro, index) {
     tableItem.PauseArr[index] := false
     tableItem.ActionCount[index] := 0
     tableItem.VariableMapArr[index]["当前循环次数"] := 1
-    tableItem.SuccessClearActionArr[index] := Map()
     isContinue := tableItem.TKArr.Has(index) && MySoftData.ContinueKeyMap.Has(tableItem.TKArr[index]) && tableItem.LoopCountArr[
         index] == 1
     isLoop := tableItem.LoopCountArr[index] == -1
@@ -539,7 +538,6 @@ OnExVariable(tableItem, cmd, index) {
     Data := GetMacroCMDData(ExVariableFile, paramArr[2])
     count := Data.SearchCount
     interval := Data.SearchInterval
-    tableItem.SuccessClearActionArr[index].Set(Data.ExtractStr, [])
 
     OnExVariableOnce(tableItem, index, Data, 1)
 }

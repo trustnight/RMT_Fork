@@ -28,7 +28,6 @@ class TableItem {
 
         this.SerialArr := []
         this.CmdActionArr := []
-        this.SuccessClearActionArr := []        ;成功后清除后续操作
         this.HoldKeyArr := []
         this.KilledArr := []
         this.PauseArr := []         ;暂停

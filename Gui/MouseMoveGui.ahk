@@ -184,7 +184,6 @@ class MouseMoveGui {
         tableItem.KilledArr[1] := false
         tableItem.PauseArr[1] := 0
         tableItem.ActionCount[1] := 0
-        tableItem.SuccessClearActionArr[1] := Map()
         tableItem.VariableMapArr[1] := Map()
 
         OnMouseMove(tableItem, this.CommandStrCon.Value, 1)

@@ -20,7 +20,9 @@ global parentHwnd := A_Args[1]
 global workIndex := A_Args[2]
 global MySoftData := SoftData()
 global ToolCheckInfo := ToolCheck()
-global MyvJoy := SuperCvJoyInterface().GetMyvJoy()
+if (CheckIfInstallVjoy()) {
+    global MyvJoy := SuperCvJoyInterface().GetMyvJoy()
+}
 global MyJoyMacro := JoyMacro()
 global MyWinClip := WinClip()
 global IniFile := A_WorkingDir "\..\Setting\MainSettings.ini"

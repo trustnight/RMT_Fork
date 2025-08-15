@@ -172,7 +172,7 @@ AddMacroHotkeyUI(index) {
 
     MyGui.Add("Text", Format("x{} y{} w80", MySoftData.TabPosX + 120 + offsetPosx, tableItem.underPosY), "循环次数")
     MyGui.Add("Text", Format("x{} y{} w550", MySoftData.TabPosX + 205 + offsetPosx, tableItem.underPosY), "宏指令")
-    MyGui.Add("Text", Format("x{} y{} w550", MySoftData.TabPosX + 520, tableItem.underPosY), "按键类型")
+    MyGui.Add("Text", Format("x{} y{} w550", MySoftData.TabPosX + 515, tableItem.underPosY), "宏按键类型")
     MyGui.Add("Text", Format("x{} y{}", MySoftData.TabPosX + 690, tableItem.underPosY), "前台进程触发（填写进程名）")
 
     UpdateUnderPosY(index, 20)

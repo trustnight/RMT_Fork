@@ -170,7 +170,6 @@ class RunGui {
         tableItem.KilledArr[1] := false
         tableItem.PauseArr[1] := 0
         tableItem.ActionCount[1] := 0
-        tableItem.SuccessClearActionArr[1] := Map()
         tableItem.VariableMapArr[1] := Map()
 
         OnRunFile(tableItem, this.GetCommandStr(), 1)

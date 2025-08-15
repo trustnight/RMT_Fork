@@ -68,7 +68,8 @@ class SubMacroGui {
         MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 70, 20), "调用方式:")
 
         PosX += 70
-        this.CallTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX, PosY - 5, 100), ["插入", "触发", "暂停", "取消暂停", "终止"])
+        this.CallTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX, PosY - 5, 100), ["插入", "触发", "暂停",
+            "取消暂停", "终止"])
         this.CallTypeCon.Value := 1
 
         PosX := 10
@@ -105,10 +106,14 @@ class SubMacroGui {
             }
             this.DropDownIndexCon.Delete()
             this.DropDownIndexCon.Add(DropDownArr)
-            if (this.Data.Index >= DropDownArr.Length)
+            if (DropDownArr.Length >= this.Data.Index)
                 this.DropDownIndexCon.Value := this.Data.Index
         }
+        else {
+            this.DropDownIndexCon.Delete()
+        }
 
+        ;尝试修正序号
         if (this.Data.MacroType != 1) {
             SerialArr := MySoftData.TableInfo[tableIndex].SerialArr
             if (SerialArr.Length < this.Data.Index || SerialArr[this.Data.Index] != this.Data.MacroSerial) {
@@ -136,6 +141,7 @@ class SubMacroGui {
         EnableIndex := this.TypeCon.Value != 1  ;类型是1的时候，不能选择序号
         this.DropDownIndexCon.Enabled := EnableIndex
         if (EnableIndex) {
+            lastIndex := Max(1, this.DropDownIndexCon.Value)
             tableIndex := this.TypeCon.Value - 1
             DropDownArr := []
             for index, Con in MySoftData.TableInfo[tableIndex].RemarkConArr {
@@ -143,9 +149,16 @@ class SubMacroGui {
             }
             this.DropDownIndexCon.Delete()
             this.DropDownIndexCon.Add(DropDownArr)
-            if (DropDownArr.Length >= 1)
+
+            if (DropDownArr.Length >= lastIndex)
+                this.DropDownIndexCon.Value := lastIndex
+            else if (DropDownArr.Length >= 1)
                 this.DropDownIndexCon.Value := 1
         }
+        else {
+            this.DropDownIndexCon.Delete()
+        }
+
     }
 
     OnClickSureBtn() {
@@ -183,7 +196,6 @@ class SubMacroGui {
         tableItem.KilledArr[1] := false
         tableItem.PauseArr[1] := 0
         tableItem.ActionCount[1] := 0
-        tableItem.SuccessClearActionArr[1] := Map()
         tableItem.VariableMapArr[1] := Map()
 
         OnSubMacro(tableItem, CommandStr, 1)

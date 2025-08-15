@@ -55,19 +55,19 @@ class FreePasteGui {
             ; 添加透明覆盖控件（覆盖整个窗口）
             this.overlay := this.curGui.Add("Text", "x0 y0 w" width " h" height " BackgroundTrans +E0x200")
             ; 将事件绑定到覆盖控件
-            this.overlay.OnEvent("Click", this.GuiDrag.Bind(this))
-            this.overlay.OnEvent("DoubleClick", this.DoubleClick.Bind(this))
+            this.overlay.OnEvent("Click", this.GuiDrag.Bind(this, this.curGui))
+            this.overlay.OnEvent("DoubleClick", this.DoubleClick.Bind(this, this.curGui))
             this.curGui.Show("w" width " h" height)
         }
     }
 
-    DoubleClick(*) {
-        this.curGui.Destroy()
-        this.curGui := ""
+    DoubleClick(gui, *) {
+        gui.Destroy()
+        gui := ""
     }
 
     ; 拖动函数
-    GuiDrag(*) {
-        PostMessage(0xA1, 2, , , this.curGui)
+    GuiDrag(gui, *) {
+        PostMessage(0xA1, 2, , , gui)
     }
 }

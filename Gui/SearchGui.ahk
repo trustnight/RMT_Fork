@@ -163,7 +163,7 @@ class SearchGui {
         PosX := 330
         this.TextTipCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "搜索文本:")
         PosX += 80
-        this.TextCon := MyGui.Add("Edit", Format("x{} y{} w{} h{} Center", PosX, PosY - 3, 80, 20), "检索文本")
+        this.TextCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 3, 80), "检索文本")
         PosY += 35
         TempPosY := PosY
         PosX := 10
@@ -434,7 +434,6 @@ class SearchGui {
         tableItem.KilledArr[1] := false
         tableItem.PauseArr[1] := 0
         tableItem.ActionCount[1] := 0
-        tableItem.SuccessClearActionArr[1] := Map()
         tableItem.VariableMapArr[1] := Map()
 
         OnSearch(tableItem, this.GetCommandStr(), 1)

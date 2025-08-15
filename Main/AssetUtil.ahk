@@ -399,12 +399,14 @@ SetIntArr(str, symbol, Arr) {
 GetGetTableItemDefaultMacro(index) {
     symbol := GetTableSymbol(index)
     if (symbol == "Normal") {
-        return "按键_a_30_1_30_50,间隔_3000"
+        return "按键_a_3_100_10_200,间隔_3000"
     }
     else if (symbol == "String")
-        return "按键_LButton_50,间隔_50,移动_100_100_90"
+        return "按键_a_3_100_10_200,间隔_3000"
+    else if (symbol == "Timing")
+        return "按键_a_3_100_10_200,间隔_3000"
     else if (symbol == "SubMacro")
-        return "按键_a_30_1_30_50,间隔_3000"
+        return "按键_a_3_100_10_200,间隔_3000"
     else if (symbol == "Replace")
         return "Left,a"
     return ""
@@ -428,7 +430,7 @@ GetTableItemDefaultInfo(index) {
         savedModeArrStr := "1"
         savedForbidArrStr := "1"
         savedProcessNameStr := ""
-        savedRemarkArrStr := "取消禁止配置才能生效"
+        savedRemarkArrStr := "取消禁用配置才能生效"
         savedLoopCountStr := "1"
         savedTriggerTypeStr := "1"
         savedSerialeArrStr := "000001"
@@ -444,16 +446,27 @@ GetTableItemDefaultInfo(index) {
         savedTriggerTypeStr := "1"
         savedSerialeArrStr := "000002"
     }
+    else if (symbol == "Timing") {
+        savedTKArrStr := ""
+        savedHoldTimeArrStr := "500"
+        savedModeArrStr := "1"
+        savedForbidArrStr := "1"
+        savedProcessNameStr := ""
+        savedRemarkArrStr := "定时触发"
+        savedLoopCountStr := "1"
+        savedTriggerTypeStr := "1"
+        savedSerialeArrStr := "000003"
+    }
     else if (symbol == "SubMacro") {
         savedTKArrStr := ""
         savedHoldTimeArrStr := "500"
         savedModeArrStr := "1"
         savedForbidArrStr := "1"
         savedProcessNameStr := ""
-        savedRemarkArrStr := "插入时循环无效"
+        savedRemarkArrStr := "只能通过宏操作调用"
         savedLoopCountStr := "1"
         savedTriggerTypeStr := "1"
-        savedSerialeArrStr := "000003"
+        savedSerialeArrStr := "000004"
     }
     else if (symbol == "Replace") {
         savedTKArrStr := "l"
@@ -461,8 +474,9 @@ GetTableItemDefaultInfo(index) {
         savedModeArrStr := "1"
         savedForbidArrStr := "1"
         savedProcessNameStr := ""
+        savedRemarkArrStr := "将l按键替换成其他按键"
         savedTriggerTypeStr := "1"
-        savedSerialeArrStr := "000004"
+        savedSerialeArrStr := "000005"
     }
     return [savedTKArrStr, savedHoldTimeArrStr, savedModeArrStr, savedForbidArrStr,
         savedProcessNameStr, savedRemarkArrStr,
@@ -576,7 +590,6 @@ InitSingleTableState(tableItem) {
     tableItem.CmdActionArr := []
     tableItem.KilledArr := []
     tableItem.ActionCount := []
-    tableItem.SuccessClearActionArr := []
     tableItem.HoldKeyArr := []
     tableItem.ToggleStateArr := []
     tableItem.ToggleActionArr := []
@@ -588,7 +601,6 @@ InitSingleTableState(tableItem) {
         tableItem.PauseArr.Push(false)
         tableItem.CmdActionArr.Push([])
         tableItem.ActionCount.Push(0)
-        tableItem.SuccessClearActionArr.Push(Map())
         tableItem.HoldKeyArr.Push(Map())
         tableItem.ToggleStateArr.Push(false)
         tableItem.ToggleActionArr.Push("")
@@ -634,14 +646,6 @@ KillTableItemMacro(tableItem, index) {
         SetTimer action, 0
     }
     tableItem.CmdActionArr[index] := []
-
-    for key, value in tableItem.SuccessClearActionArr[index] {
-        loop value.Length {
-            action := value[A_Index]
-            SetTimer action, 0
-        }
-    }
-    tableItem.SuccessClearActionArr[index] := Map()
 
     ; 如果是开关型按键宏，重置其开关状态
     if (tableItem.TriggerTypeArr.Length >= index && tableItem.TriggerTypeArr[index] == 4) {

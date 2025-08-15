@@ -249,6 +249,7 @@ class MacroEditGui {
         PosY += 20
         this.MacroTreeViewCon := MyGui.Add("TreeView", Format("x{} y{} w{} h{}", PosX + 5, PosY, 605, 335), "")
         this.MacroTreeViewCon.OnEvent("ContextMenu", this.ShowContextMenu.Bind(this))  ; 右键菜单事件
+        this.MacroTreeViewCon.OnEvent("DoubleClick", this.OnDoubleClick.Bind(this))  ; 双击编辑指令
 
         PosX := 190
         PosY := 400
@@ -320,22 +321,29 @@ class MacroEditGui {
     }
 
     ShowContextMenu(ctrl, item, isRightClick, x, y) {
+        if (item == 0)
+            return
+
         if (this.ContextMenu == "") {
             this.ContextMenu := Menu()
             this.ContextMenu.Add("编辑", (*) => this.MenuHandler("编辑"))
-            this.ContextMenu.Add()  ; 分隔线
 
+            this.ContextMenu.Add()  ; 分隔线
             subMenu := Menu()
             for value in this.CMDStrArr {
                 subMenu.Add(value, this.MenuHandler.Bind(this, "Pre_" value))
             }
-            this.ContextMenu.Add("上方插入指令", subMenu)  ; 将子菜单添加到主菜单
-
+            this.ContextMenu.Add("上方插入", subMenu)  ; 将子菜单添加到主菜单
             subMenu := Menu()
             for value in this.CMDStrArr {
                 subMenu.Add(value, this.MenuHandler.Bind(this, "Next_" value))
             }
-            this.ContextMenu.Add("下方插入指令", subMenu)  ; 将子菜单添加到主菜单
+            this.ContextMenu.Add("下方插入", subMenu)  ; 将子菜单添加到主菜单
+
+            this.ContextMenu.Add()  ; 分隔线
+            this.ContextMenu.Add("复制指令", (*) => this.MenuHandler("复制指令"))
+            this.ContextMenu.Add("上方粘贴", (*) => this.MenuHandler("上方粘贴"))
+            this.ContextMenu.Add("下方粘贴", (*) => this.MenuHandler("下方粘贴"))
 
             this.ContextMenu.Add()  ; 分隔线
             this.ContextMenu.Add("删除", (*) => this.MenuHandler("删除"))
@@ -357,6 +365,20 @@ class MacroEditGui {
         }
     }
 
+    OnDoubleClick(ctrl, info) {
+        if (info == 0)
+            return
+
+        itemText := this.MacroTreeViewCon.GetText(info)
+        if (itemText == "真" || itemText == "假")
+            return
+
+        this.CurItemID := info
+        paramsArr := StrSplit(itemText, "_")
+        subGui := this.SubGuiMap[paramsArr[1]]
+        this.OnOpenSubGui(subGui, 2)
+    }
+
     MenuHandler(cmdStr, *) {
         itemText := this.MacroTreeViewCon.GetText(this.CurItemID)
         paramsArr := StrSplit(cmdStr, "_")
@@ -375,10 +397,23 @@ class MacroEditGui {
                 subGui := this.SubGuiMap[paramsArr[1]]
                 this.OnOpenSubGui(subGui, 2)
             }
+            case "复制指令":
+            {
+                A_Clipboard := itemText
+            }
+            case "上方粘贴":
+            {
+                this.OnPreInsertCmd(A_Clipboard)
+            }
+            case "下方粘贴":
+            {
+                this.OnNextInsertCmd(A_Clipboard)
+            }
             case "删除":
             {
                 this.OnDeleteCmd()
             }
+
         }
     }
 
@@ -398,12 +433,11 @@ class MacroEditGui {
         paramsArr := StrSplit(CommandStr, "_")
         if (this.TreeBranchMap.Has(paramsArr[2])) {
             this.TreeBranchMap.Delete(paramsArr[2])
-
+        }
+        subItem := this.MacroTreeViewCon.GetChild(this.CurItemID)
+        while (subItem) {
+            this.MacroTreeViewCon.Delete(subItem)
             subItem := this.MacroTreeViewCon.GetChild(this.CurItemID)
-            while (subItem) {
-                this.MacroTreeViewCon.Delete(subItem)
-                subItem := this.MacroTreeViewCon.GetChild(this.CurItemID)
-            }
         }
         this.TreeAddBranch(this.CurItemID, CommandStr)
         this.TreeExpand(this.CurItemID, 2)

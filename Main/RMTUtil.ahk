@@ -167,6 +167,7 @@ SwapTableContent(tableItem, indexA, indexB) {
     SwapArrValue(tableItem.SerialArr, indexA, indexB)
     SwapArrValue(tableItem.LoopCountConArr, indexA, indexB, 3)
     SwapArrValue(tableItem.RemarkConArr, indexA, indexB, 2)
+    SwapArrValue(tableItem.ProcessNameConArr, indexA, indexB, 2)
 }
 
 SwapArrValue(Arr, indexA, indexB, valueType := 1) {
@@ -198,6 +199,9 @@ PluginInit() {
     global MyChineseOcr := RapidOcr(A_ScriptDir)
     global MyEnglishOcr := RapidOcr(A_ScriptDir, 2)
     global MyPToken := Gdip_Startup()
+    if (CheckIfInstallVjoy()) {
+        global MyvJoy := SuperCvJoyInterface().GetMyvJoy()
+    }
 
     dllpath := A_ScriptDir "\Plugins\OpenCV\x64\ImageFinder.dll"
     ; 构建包含 DLL 文件的目录路径

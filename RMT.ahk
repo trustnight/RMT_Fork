@@ -36,7 +36,6 @@ Persistent
 
 global MySoftData := SoftData()
 global ToolCheckInfo := ToolCheck()
-global MyvJoy := SuperCvJoyInterface().GetMyvJoy()
 global MyJoyMacro := JoyMacro()
 global MyWinClip := WinClip()
 global MyTriggerKeyGui := TriggerKeyGui()

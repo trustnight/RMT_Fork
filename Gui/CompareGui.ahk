@@ -64,7 +64,7 @@ class CompareGui {
         MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "开关")
         PosX += 50
         MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "选择/输入")
-        PosX += 150
+        PosX += 230
         MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "选择/输入")
 
         PosY += 25
@@ -329,7 +329,6 @@ class CompareGui {
         tableItem.KilledArr[1] := false
         tableItem.PauseArr[1] := 0
         tableItem.ActionCount[1] := 0
-        tableItem.SuccessClearActionArr[1] := Map()
         tableItem.VariableMapArr[1] := Map()
 
         OnCompare(tableItem, this.GetCommandStr(), 1)
