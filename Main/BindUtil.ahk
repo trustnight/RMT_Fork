@@ -259,6 +259,7 @@ OnRecordAddMacroStr(keyName, isDown) {
     IsKeyboard := !IsMouse && !IsJoy
 
     if (IsJoy || (IsKeyboard && ToolCheckInfo.RecordKeyboard)) {
+        keyName := keyName == "," ? "逗号" : keyName
         ToolCheckInfo.RecordMacroStr .= "间隔_" span ","
         ToolCheckInfo.RecordMacroStr .= "按键_" keyName "_" keySymbol ","
     }
@@ -288,7 +289,8 @@ OnRecordAddMacroStr(keyName, isDown) {
 OnFinishRecordMacro() {
     if (ToolCheckInfo.RecordAutoLoosen) {
         for Key, Value in ToolCheckInfo.RecordHoldKeyMap {
-            ToolCheckInfo.RecordMacroStr .= "按键_" Key "_2,"
+            keyName := Key == "," ? "逗号" : Key
+            ToolCheckInfo.RecordMacroStr .= "按键_" keyName "_2,"
         }
     }
 
