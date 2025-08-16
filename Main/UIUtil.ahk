@@ -108,7 +108,7 @@ AddOperBtnUI() {
     ; 暂停
     MySoftData.PauseToggleCtrl := MyGui.Add("CheckBox", Format("x{} y{} w{} h{}", 15, posY, 100, 20), "暂停")
     MySoftData.PauseToggleCtrl.Value := MySoftData.IsPause
-    MySoftData.PauseToggleCtrl.OnEvent("Click", OnSuspendHotkey)
+    MySoftData.PauseToggleCtrl.OnEvent("Click", OnPauseHotKey)
     MySoftData.FixedCons.Push(MySoftData.PauseToggleCtrl)
     posY += 20
     CtrlType := GetHotKeyCtrlType(MySoftData.PauseHotkey)

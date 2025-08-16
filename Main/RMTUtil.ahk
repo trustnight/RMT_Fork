@@ -199,9 +199,6 @@ PluginInit() {
     global MyChineseOcr := RapidOcr(A_ScriptDir)
     global MyEnglishOcr := RapidOcr(A_ScriptDir, 2)
     global MyPToken := Gdip_Startup()
-    if (CheckIfInstallVjoy()) {
-        global MyvJoy := SuperCvJoyInterface().GetMyvJoy()
-    }
 
     dllpath := A_ScriptDir "\Plugins\OpenCV\x64\ImageFinder.dll"
     ; 构建包含 DLL 文件的目录路径
@@ -322,7 +319,7 @@ DelGlobalVariable(Name) {
         loop MyWorkPool.maxSize {
             workPath := A_ScriptDir "\Thread\Work" A_Index ".exe"
             str := Format("DelVari_{}", Name)
-            MyWorkPool.PostMessage(WM_COPYDATA, workPath, str)
+            MyWorkPool.SendMessage(WM_COPYDATA, workPath, str)
         }
     }
 }
@@ -333,7 +330,7 @@ SetCMDTipValue(value) {
         loop MyWorkPool.maxSize {
             workPath := A_ScriptDir "\Thread\Work" A_Index ".exe"
             str := Format("CMDTip_{}", value)
-            MyWorkPool.PostMessage(WM_COPYDATA, workPath, str)
+            MyWorkPool.SendMessage(WM_COPYDATA, workPath, str)
         }
     }
 }
@@ -386,18 +383,18 @@ SetItemPauseState(tableIndex, itemIndex, state) {
     tableItem := MySoftData.TableInfo[tableIndex]
     tableItem.PauseArr[itemIndex] := state
     isWork := tableItem.IsWorkArr[itemIndex]
-    if (isWork) {
-        workPath := MyWorkPool.GetWorkPath(tableItem.IsWorkArr[itemIndex])
-        str := Format("PauseState_{}_{}_{}", tableIndex, itemIndex, state)
-        MyWorkPool.PostMessage(WM_COPYDATA, workPath, str)
-        return
-    }
 
     LastColorState := tableItem.ColorStateArr[itemIndex]
     if (LastColorState == 1 && state == 1)
         SetTableItemState(tableIndex, itemIndex, 2)
     else if (LastColorState == 2 && state == 0)
         SetTableItemState(tableIndex, itemIndex, 1)
+
+    if (isWork) {
+        workPath := MyWorkPool.GetWorkPath(tableItem.IsWorkArr[itemIndex])
+        str := Format("PauseState_{}_{}_{}", tableIndex, itemIndex, state)
+        MyWorkPool.SendMessage(WM_COPYDATA, workPath, str)
+    }
 }
 
 MsgBoxContent(content) {

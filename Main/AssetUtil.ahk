@@ -284,7 +284,7 @@ LoadMainSetting() {
     MySoftData.CMDPosX := IniRead(IniFile, IniSection, "CMDPosX", A_ScreenWidth - 225)
     MySoftData.CMDPosY := IniRead(IniFile, IniSection, "CMDPosY", 0)
     MySoftData.CMDWidth := IniRead(IniFile, IniSection, "CMDWidth", 225)
-    MySoftData.CMDHeight := IniRead(IniFile, IniSection, "CMDHeight", 100)
+    MySoftData.CMDHeight := IniRead(IniFile, IniSection, "CMDHeight", 110)
     MySoftData.CMDLineNum := IniRead(IniFile, IniSection, "CMDLineNum", 5)
     MySoftData.CMDBGColor := IniRead(IniFile, IniSection, "CMDBGColor", "FFFFFF")
     MySoftData.CMDTransparency := IniRead(IniFile, IniSection, "CMDTransparency", 50)

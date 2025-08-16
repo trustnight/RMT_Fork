@@ -28,6 +28,42 @@ XboxJosAxisMap := Map("JoyXMin", -32768, "JoyXMax", 32767, "JoyYMin", -32768, "J
     255, "JoyZMax", 255, "JoyRMin", -32768, "JoyRMax", 32767, "JoyUMin", -32768, "JoyUMax", 32767, "JoyVMin", -
     32768, "JoyVMax", 32767)
 XInputStateCache := ""
+
+RecordJoyTimer() {
+    global XInputStateCache
+
+    if (!ToolCheckInfo.ToolCheckRecordMacroCtrl.Value)
+        return
+
+    XInputStateCache := XInputState(0)
+    for key, value in RecordAllJoyMap {
+        isJoyAxis := RecordJoyAxises.Has(key)
+        isJoyPOV := RecordJoyPOVMap.Has(key)
+        isJoyBtn := !isJoyAxis && !isJoyPOV
+        isHold := false
+        if (isJoyBtn) {
+            isHold := RecordJoyCheckBtnDown(key)
+        }
+        else if (isJoyPOV) {
+            isHold := RecordCheckPOVMacro(key)
+        }
+        else {
+            isHold := RecordCheckAxisMacro(key)
+        }
+
+        realKey := key
+        if (RecordKeyMap.Has(key))
+            realKey := RecordKeyMap.Get(key)
+
+        if (isHold)
+            OnRecordAddMacroStr(realKey, true)
+
+        if (ToolCheckInfo.RecordHoldKeyMap.Has(realKey) && !isHold)
+            OnRecordAddMacroStr(realKey, false)
+    }
+    SetTimer(RecordJoyTimer, -ToolCheckInfo.RecordJoyInterval)
+}
+
 RecordJoy() {
     global XInputStateCache, RecordJoyIndexArr
     RecordJoyIndexArr := []
@@ -37,39 +73,7 @@ RecordJoy() {
             RecordJoyIndexArr.Push(A_Index)
         }
     }
-
-    loop {
-        if (!ToolCheckInfo.ToolCheckRecordMacroCtrl.Value)
-            return
-
-        XInputStateCache := XInputState(0)
-        for key, value in RecordAllJoyMap {
-            isJoyAxis := RecordJoyAxises.Has(key)
-            isJoyPOV := RecordJoyPOVMap.Has(key)
-            isJoyBtn := !isJoyAxis && !isJoyPOV
-            isHold := false
-            if (isJoyBtn) {
-                isHold := RecordJoyCheckBtnDown(key)
-            }
-            else if (isJoyPOV) {
-                isHold := RecordCheckPOVMacro(key)
-            }
-            else {
-                isHold := RecordCheckAxisMacro(key)
-            }
-
-            realKey := key
-            if (RecordKeyMap.Has(key))
-                realKey := RecordKeyMap.Get(key)
-
-            if (isHold)
-                OnRecordAddMacroStr(realKey, true)
-
-            if (ToolCheckInfo.RecordHoldKeyMap.Has(realKey) && !isHold)
-                OnRecordAddMacroStr(realKey, false)
-        }
-        Sleep(ToolCheckInfo.RecordJoyInterval)
-    }
+    SetTimer(RecordJoyTimer, -10)
 }
 
 RecordJoyCheckBtnDown(key) {

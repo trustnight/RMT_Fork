@@ -212,7 +212,7 @@ class SoftData {
         this.CMDPosX := A_ScreenWidth - 225
         this.CMDPosY := 0
         this.CMDWidth := 225
-        this.CMDHeight := 100
+        this.CMDHeight := 120
         this.CMDLineNum := 5
         this.CMDBGColor := "FFFFFF"
         this.CMDTransparency := 50

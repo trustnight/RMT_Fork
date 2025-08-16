@@ -182,7 +182,7 @@ class CMDTipSettingGui {
         this.PosXCon.Value := A_ScreenWidth - 225
         this.PosYCon.Value := 0
         this.WidthCon.Value := 225
-        this.HeightCon.Value := 100
+        this.HeightCon.Value := 120
         this.BGColorCon.Value := "FFFFFF"
         this.TransparencyCon.Value := 50
         this.FontSizeCon.Value := 12

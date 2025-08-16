@@ -149,12 +149,6 @@ OnToolRecordMacro(isHotkey, *) {
         ToolCheckInfo.RecordMacroStr := ""
         ToolCheckInfo.RecordLastTime := GetCurMSec()
         ToolCheckInfo.RecordLastMousePos := [mouseX, mouseY]
-
-        if (ToolCheckInfo.RecordJoy)
-            SetTimer(RecordJoy, -1)
-
-        if (ToolCheckInfo.RecordMouse && ToolCheckInfo.RecordMouseTrail)
-            SetTimer(RecordMouseTrail, -1)
     }
 
     StateSymbol := state ? "On" : "Off"
@@ -180,45 +174,50 @@ OnToolRecordMacro(isHotkey, *) {
         Hotkey(key " Up", OnRecordMacroKeyUp, StateSymbol)
     }
 
-    if (!state) {
+    if (state) {
+        if (ToolCheckInfo.RecordJoy)
+            RecordJoy()
+
+        if (ToolCheckInfo.RecordMouse && ToolCheckInfo.RecordMouseTrail)
+            RecordMouseTrail
+    }
+    else {
         OnFinishRecordMacro()
     }
 }
 
 RecordMouseTrail() {
-    loop {
-        if (!ToolCheckInfo.ToolCheckRecordMacroCtrl.Value)
+    if (!ToolCheckInfo.ToolCheckRecordMacroCtrl.Value)
+        return
+    CoordMode("Mouse", "Screen")
+    MouseGetPos &mouseX, &mouseY
+    if (ToolCheckInfo.RecordLastMousePos[1] != mouseX || ToolCheckInfo.RecordLastMousePos[2] != mouseY) {   ;鼠标位置发生改变
+        len := Abs(ToolCheckInfo.RecordLastMousePos[1] - mouseX)
+        len += Abs(ToolCheckInfo.RecordLastMousePos[2] - mouseY)
+        if (len <= ToolCheckInfo.RecordMouseTrailLen) {
+            SetTimer(RecordMouseTrail, -ToolCheckInfo.RecordMouseTrailInterval)
             return
-        CoordMode("Mouse", "Screen")
-        MouseGetPos &mouseX, &mouseY
-        if (ToolCheckInfo.RecordLastMousePos[1] != mouseX || ToolCheckInfo.RecordLastMousePos[2] != mouseY) {   ;鼠标位置发生改变
-            len := Abs(ToolCheckInfo.RecordLastMousePos[1] - mouseX)
-            len += Abs(ToolCheckInfo.RecordLastMousePos[2] - mouseY)
-            if (len <= ToolCheckInfo.RecordMouseTrailLen) {
-                Sleep(ToolCheckInfo.RecordMouseTrailInterval)
-                continue
-            }
-
-            speed := ToolCheckInfo.RecordMouseTrailSpeed
-            IsRelative := ToolCheckInfo.RecordMouseRelative
-            symbol := IsRelative ? "_" speed "_1" : "_" speed
-            targetX := mouseX
-            targetY := mouseY
-            if (IsRelative) {   ;相对位移，坐标变化
-                targetX := mouseX - ToolCheckInfo.RecordLastMousePos[1]
-                targetY := mouseY - ToolCheckInfo.RecordLastMousePos[2]
-            }
-            ToolCheckInfo.RecordMacroStr .= "移动_" targetX "_" targetY symbol ","
-            ToolCheckInfo.RecordLastMousePos := [mouseX, mouseY]
-
-            span := GetCurMSec() - ToolCheckInfo.RecordLastTime
-            ToolCheckInfo.RecordLastTime := GetCurMSec()
-            ToolCheckInfo.RecordMacroStr .= "间隔_" span ","
         }
-        Sleep(ToolCheckInfo.RecordMouseTrailInterval)
-    }
 
+        speed := ToolCheckInfo.RecordMouseTrailSpeed
+        IsRelative := ToolCheckInfo.RecordMouseRelative
+        symbol := IsRelative ? "_" speed "_1" : "_" speed
+        targetX := mouseX
+        targetY := mouseY
+        if (IsRelative) {   ;相对位移，坐标变化
+            targetX := mouseX - ToolCheckInfo.RecordLastMousePos[1]
+            targetY := mouseY - ToolCheckInfo.RecordLastMousePos[2]
+        }
+        ToolCheckInfo.RecordMacroStr .= "移动_" targetX "_" targetY symbol ","
+        ToolCheckInfo.RecordLastMousePos := [mouseX, mouseY]
+
+        span := GetCurMSec() - ToolCheckInfo.RecordLastTime
+        ToolCheckInfo.RecordLastTime := GetCurMSec()
+        ToolCheckInfo.RecordMacroStr .= "间隔_" span ","
+    }
+    SetTimer(RecordMouseTrail, -ToolCheckInfo.RecordMouseTrailInterval)
 }
+
 OnRecordMacroKeyDown(*) {
 
     key := StrReplace(A_ThisHotkey, "$", "")
