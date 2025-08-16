@@ -123,7 +123,10 @@ OnTriggerMacroOnce(tableItem, macro, index) {
             OnPressKey(tableItem, cmdArr[A_Index], index)
         }
         else if (IsSearch || IsSearchPro) {
-            OnSearch(tableItem, cmdArr[A_Index], index)
+            isLoopFound := OnSearch(tableItem, cmdArr[A_Index], index)
+            if (isLoopFound != "" && isLoopFound == false) {
+                cmdArr.InsertAt(A_Index + 1, cmdArr[A_Index])
+            }
         }
         else if (IsMouseMove) {
             OnMouseMove(tableItem, cmdArr[A_Index], index)
@@ -144,7 +147,10 @@ OnTriggerMacroOnce(tableItem, macro, index) {
             OnVariable(tableItem, cmdArr[A_Index], index)
         }
         else if (IsExVariable) {
-            OnExVariable(tableItem, cmdArr[A_Index], index)
+            isLoopFound := OnExVariable(tableItem, cmdArr[A_Index], index)
+            if (isLoopFound != "" && isLoopFound == false) {
+                cmdArr.InsertAt(A_Index + 1, cmdArr[A_Index])
+            }
         }
         else if (IsSubMacro) {
             newCmdArr := OnSubMacro(tableItem, cmdArr[A_Index], index)
@@ -165,10 +171,43 @@ OnTriggerMacroOnce(tableItem, macro, index) {
 }
 
 OnSearch(tableItem, cmd, index) {
+
     paramArr := StrSplit(cmd, "_")
     dataFile := StrCompare(paramArr[1], "搜索", false) == 0 ? SearchFile : SearchProFile
     Data := GetMacroCMDData(dataFile, paramArr[2])
-    OnSearchOnce(tableItem, Data, index, 1)
+    if (Data.SearchCount == -1) {
+        isLoopFound := OnSearchOnce(tableItem, Data, index)
+        if (!isLoopFound) {
+            FloatInterval := GetFloatTime(Data.SearchInterval, MySoftData.PreIntervalFloat)
+            Sleep(FloatInterval)
+        }
+        return isLoopFound
+    }
+    else {
+        loop Data.SearchCount {
+
+            WaitIfPaused(tableItem.index, index)
+
+            if (tableItem.KilledArr[index])
+                return
+
+            isFound := OnSearchOnce(tableItem, Data, index)
+            if (isFound)
+                return
+
+            FloatInterval := GetFloatTime(Data.SearchInterval, MySoftData.PreIntervalFloat)
+            Sleep(FloatInterval)
+        }
+
+        if (Data.ResultToggle) {
+            VariableMap := tableItem.VariableMapArr[index]
+            VariableMap[Data.ResultSaveName] := Data.FalseValue
+        }
+
+        if (Data.FalseMacro == "")
+            return
+        OnTriggerMacroOnce(tableItem, Data.FalseMacro, index)
+    }
 }
 
 ; 定义OpenCV图片搜索函数原型
@@ -178,17 +217,11 @@ FindImage(targetPath, searchX, searchY, searchW, searchH, matchThreshold, x, y) 
         "Int", matchThreshold, "Int*", x, "Int*", y, "Cdecl Int")
 }
 
-OnSearchOnce(tableItem, Data, index, curCount) {
-    WaitIfPaused(tableItem.index, index)
-
-    if (tableItem.KilledArr[index])
-        return
-
+OnSearchOnce(tableItem, Data, index) {
     X1 := Integer(Data.StartPosX)
     Y1 := Integer(Data.StartPosY)
     X2 := Integer(Data.EndPosX)
     Y2 := Integer(Data.EndPosY)
-    isFinally := curCount == Data.searchCount
     VariableMap := tableItem.VariableMapArr[index]
 
     CoordMode("Pixel", "Screen")
@@ -251,26 +284,13 @@ OnSearchOnce(tableItem, Data, index, curCount) {
         }
 
         if (Data.TrueMacro == "")
-            return
+            return true
 
         OnTriggerMacroOnce(tableItem, Data.TrueMacro, index)
+        return true
     }
-    else if (isFinally) {
-        if (Data.ResultToggle) {
-            VariableMap[Data.ResultSaveName] := Data.FalseValue
-        }
 
-        if (Data.FalseMacro == "")
-            return
-
-        OnTriggerMacroOnce(tableItem, Data.FalseMacro, index)
-    }
-    else {
-        FloatInterval := GetFloatTime(Data.SearchInterval, MySoftData.PreIntervalFloat)
-        curCount++
-        Sleep(FloatInterval)
-        OnSearchOnce(tableItem, Data, index, curCount)
-    }
+    return false
 }
 
 OnRunFile(tableItem, cmd, index) {
@@ -539,20 +559,32 @@ OnExVariable(tableItem, cmd, index) {
     count := Data.SearchCount
     interval := Data.SearchInterval
 
-    OnExVariableOnce(tableItem, index, Data, 1)
+    if (Data.SearchCount == -1) {
+        return OnExVariableOnce(tableItem, index, Data)
+    }
+    else {
+        loop Data.SearchCount {
+            WaitIfPaused(tableItem.index, index)
+
+            if (tableItem.KilledArr[index])
+                return
+
+            isFound := OnExVariableOnce(tableItem, index, Data)
+            if (isFound)
+                return
+
+            FloatTime := GetFloatTime(Data.SearchInterval, MySoftData.PreIntervalFloat)
+            Sleep(FloatTime)
+        }
+    }
 }
 
-OnExVariableOnce(tableItem, index, Data, curCount) {
-    WaitIfPaused(tableItem.index, index)
-
-    if (tableItem.KilledArr[index])
-        return
-
+OnExVariableOnce(tableItem, index, Data) {
     X1 := Data.StartPosX
     Y1 := Data.StartPosY
     X2 := Data.EndPosX
     Y2 := Data.EndPosY
-    isFinally := Data.SearchCount == curCount
+
     if (Data.ExtractType == 1) {
         TextObjs := GetScreenTextObjArr(X1, Y1, X2, Y2, Data.OCRType)
         TextObjs := TextObjs == "" ? [] : TextObjs
@@ -591,13 +623,7 @@ OnExVariableOnce(tableItem, index, Data, curCount) {
         break
     }
 
-    if (isOk || isFinally) {
-        return
-    }
-    FloatTime := GetFloatTime(Data.SearchInterval, MySoftData.PreIntervalFloat)
-    curCount++
-    Sleep(FloatTime)
-    OnExVariableOnce(tableItem, index, Data, curCount)
+    return isOk
 }
 
 OnOperation(tableItem, cmd, index) {

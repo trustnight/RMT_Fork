@@ -196,12 +196,18 @@ GetGuiVariableObjArr(curMacroStr, VariableObjArr) {
     for index, Value in VariableObjArr {
         ResultMap[Value] := true
     }
-    for Key, Value in MySoftData.GlobalVariMap {
-        ResultMap[Key] := Value
-    }
 
     for Key, Value in ResultMap {
         ResultArr.Push(Key)
     }
+    ResultArr.Push("当前循环次数")
+    ResultArr.Push("当前鼠标坐标X")
+    ResultArr.Push("当前鼠标坐标Y")
+
+    for Key, Value in MySoftData.GlobalVariMap {
+        if (!ResultMap.Has(Key))
+            ResultArr.Push(Key)
+    }
+
     return ResultArr
 }

@@ -125,6 +125,17 @@ class SubMacroGui {
                 }
             }
         }
+
+        if (this.TypeCon.Value == 1 && this.RemarkCon.Value == "当前宏")
+            this.RemarkCon.Value := ""
+        else if (this.TypeCon.Value == 2 && this.RemarkCon.Value == "按键宏" this.DropDownIndexCon.Text)
+            this.RemarkCon.Value := ""
+        else if (this.TypeCon.Value == 3 && this.RemarkCon.Value == "字串宏" this.DropDownIndexCon.Text)
+            this.RemarkCon.Value := ""
+        else if (this.TypeCon.Value == 4 && this.RemarkCon.Value == "定时宏" this.DropDownIndexCon.Text)
+            this.RemarkCon.Value := ""
+        else if (this.TypeCon.Value == 5 && this.RemarkCon.Value == "宏" this.DropDownIndexCon.Text)
+            this.RemarkCon.Value := ""
     }
 
     ToggleFunc(state) {
@@ -206,6 +217,18 @@ class SubMacroGui {
         CommandStr := "宏操作_" this.Data.SerialStr
         if (hasRemark) {
             CommandStr .= "_" this.RemarkCon.Value
+        }
+        else {
+            if (this.TypeCon.Value == 1)
+                CommandStr .= "_当前宏"
+            else if (this.TypeCon.Value == 2)
+                CommandStr .= "_按键宏" this.DropDownIndexCon.Text
+            else if (this.TypeCon.Value == 3)
+                CommandStr .= "_字串宏" this.DropDownIndexCon.Text
+            else if (this.TypeCon.Value == 4)
+                CommandStr .= "_定时宏" this.DropDownIndexCon.Text
+            else if (this.TypeCon.Value == 5)
+                CommandStr .= "_宏" this.DropDownIndexCon.Text
         }
         return CommandStr
     }

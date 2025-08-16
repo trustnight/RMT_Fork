@@ -163,7 +163,7 @@ class ExVariableGui {
         PosX := 350
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "搜索次数:")
         PosX += 75
-        this.SearchCountCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50))
+        this.SearchCountCon := MyGui.Add("ComboBox", Format("x{} y{} w{} Center", PosX, PosY - 5, 55))
 
         PosY += 30
         PosX := 20
@@ -178,7 +178,7 @@ class ExVariableGui {
 
         PosX := 350
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "每次间隔:")
-        this.SearchIntervalCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX + 75, PosY - 5, 50))
+        this.SearchIntervalCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX + 75, PosY - 5, 55))
 
         PosY += 40
         PosX := 250
@@ -210,7 +210,9 @@ class ExVariableGui {
         this.StartPosYCon.Value := this.Data.StartPosY
         this.EndPosXCon.Value := this.Data.EndPosX
         this.EndPosYCon.Value := this.Data.EndPosY
-        this.SearchCountCon.Value := this.Data.SearchCount
+        this.SearchCountCon.Delete()
+        this.SearchCountCon.Add(["无限"])
+        this.SearchCountCon.Text := this.Data.SearchCount == -1 ? "无限" : this.Data.SearchCount
         this.SearchIntervalCon.Value := this.Data.SearchInterval
     }
 
@@ -356,7 +358,7 @@ class ExVariableGui {
         this.Data.StartPosY := this.StartPosYCon.Value
         this.Data.EndPosX := this.EndPosXCon.Value
         this.Data.EndPosY := this.EndPosYCon.Value
-        this.Data.SearchCount := this.SearchCountCon.Value
+        this.Data.SearchCount := this.SearchCountCon.Text == "无限" ? -1 : this.SearchCountCon.Text
         this.Data.SearchInterval := this.SearchIntervalCon.Value
         this.Data.IsGlobal := this.IsGlobalCon.Value
         this.Data.IsIgnoreExist := this.IsIgnoreExistCon.Value
