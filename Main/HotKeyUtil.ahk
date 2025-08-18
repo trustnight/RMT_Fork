@@ -1015,13 +1015,16 @@ SendJoyBtnClick(key, holdTime, tableItem, index, keyType) {
         return
     }
 
-    if (keyType == 1) {
+    if (keyType == 1 || keyType == 3) {
         SendJoyBtnKey(key, 1, tableItem, index)
-        SetTimer(() => SendJoyBtnKey(key, 0, tableItem, index), -holdTime)
     }
-    else {
-        state := keyType == 2 ? 1 : 0
-        SendJoyBtnKey(key, state, tableItem, index)
+
+    if (keyType == 3) {
+        Sleep(holdTime)
+    }
+
+    if (keyType == 2 || keyType == 3) {
+        SendJoyBtnKey(key, 0, tableItem, index)
     }
 }
 
@@ -1045,13 +1048,16 @@ SendJoyAxisClick(key, holdTime, tableItem, index, keyType) {
         return
     }
 
-    if (keyType == 1) {
+    if (keyType == 1 || keyType == 3) {
         SendJoyAxisKey(key, 1, tableItem, index)
-        SetTimer(() => SendJoyAxisKey(key, 0, tableItem, index), -holdTime)
     }
-    else {
-        state := keyType == 2 ? 1 : 0
-        SendJoyAxisKey(key, state, tableItem, index)
+
+    if (keyType == 3) {
+        Sleep(holdTime)
+    }
+
+    if (keyType == 2 || keyType == 3) {
+        SendJoyAxisKey(key, 0, tableItem, index)
     }
 }
 

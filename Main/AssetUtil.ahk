@@ -266,7 +266,7 @@ InitJoyAxis() {
     tableItem := MySoftData.SpecialTableItem
     tableItem.HoldKeyArr[1] := Map()
     loop joyAxisNum {
-        SendJoyAxisClick("JoyAxis" A_Index "Max", 30, tableItem, 1, 1)
+        SendJoyAxisClick("JoyAxis" A_Index "Max", 30, tableItem, 1, 2)
     }
 }
 
