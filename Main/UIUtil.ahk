@@ -706,7 +706,7 @@ AddHelpUI(index) {
     "软件反馈表格：")
     con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
     con := MyGui.Add("Link", Format("x{} y{} w{} h{}", posX + 140, posY, 700, 30),
-    '<a href="https://docs.qq.com/sheet/DVWJIdEVMV1pHUVJj">bug文档</a>、<a href="https://docs.qq.com/sheet/DVWRQaXBFUVV5bERo">需求文档</a>、<a href="https://docs.qq.com/sheet/DVXpxQWtQcnFWWU1m">使用备注</a>(问题反馈，提出优化方案)'
+    '<a href="https://docs.qq.com/sheet/DVWJIdEVMV1pHUVJj">bug文档</a>、<a href="https://docs.qq.com/sheet/DVWRQaXBFUVV5bERo">需求文档</a>、<a href="https://docs.qq.com/sheet/DVVNwWHJEd3NOWXhR?tab=BB08J2">使用备注</a>(问题反馈，提出优化方案)'
     )
     con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
 

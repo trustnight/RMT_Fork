@@ -385,6 +385,8 @@ ReadTableItemInfo(index) {
             savedTriggerTypeArrStr := defaultInfo[8]
         if (savedSerialStr == "")
             savedSerialStr := defaultInfo[9]
+        if (savedTimingSerialStr == "")
+            savedTimingSerialStr := GetSerialStr("Timing")
     }
 
     tableItem := MySoftData.TableInfo[index]

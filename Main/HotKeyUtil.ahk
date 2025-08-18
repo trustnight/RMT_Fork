@@ -185,7 +185,6 @@ OnSearch(tableItem, cmd, index) {
     }
     else {
         loop Data.SearchCount {
-
             WaitIfPaused(tableItem.index, index)
 
             if (tableItem.KilledArr[index])
@@ -195,8 +194,10 @@ OnSearch(tableItem, cmd, index) {
             if (isFound)
                 return
 
-            FloatInterval := GetFloatTime(Data.SearchInterval, MySoftData.PreIntervalFloat)
-            Sleep(FloatInterval)
+            if (Data.SearchCount > A_Index) {
+                FloatInterval := GetFloatTime(Data.SearchInterval, MySoftData.PreIntervalFloat)
+                Sleep(FloatInterval)
+            }
         }
 
         if (Data.ResultToggle) {
@@ -573,8 +574,10 @@ OnExVariable(tableItem, cmd, index) {
             if (isFound)
                 return
 
-            FloatTime := GetFloatTime(Data.SearchInterval, MySoftData.PreIntervalFloat)
-            Sleep(FloatTime)
+            if (Data.SearchCount > A_Index) {
+                FloatInterval := GetFloatTime(Data.SearchInterval, MySoftData.PreIntervalFloat)
+                Sleep(FloatInterval)
+            }
         }
     }
 }

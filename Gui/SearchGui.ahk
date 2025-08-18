@@ -435,6 +435,7 @@ class SearchGui {
         tableItem.PauseArr[1] := 0
         tableItem.ActionCount[1] := 0
         tableItem.VariableMapArr[1] := Map()
+        tableItem.index := 1
 
         OnSearch(tableItem, this.GetCommandStr(), 1)
     }

@@ -330,6 +330,7 @@ class CompareGui {
         tableItem.PauseArr[1] := 0
         tableItem.ActionCount[1] := 0
         tableItem.VariableMapArr[1] := Map()
+        tableItem.index := 1
 
         OnCompare(tableItem, this.GetCommandStr(), 1)
     }
