@@ -140,6 +140,10 @@ OnEditCMDTipGui() {
     MyCMDTipSettingGui.ShowGui()
 }
 
+OnItemEditFrontInfo(tableItem, index, *) {
+    MyFrontInfoGui.ShowGui(tableItem, index)
+}
+
 OnTableMoveUp(tableItem, index, *) {
     if (index == 1) {
         MsgBox("上面没有元素，无法上移！！！")
@@ -446,10 +450,10 @@ ExcuteRMTCMDAction(cmdStr) {
             MyCMDTipGui.Gui.Hide()
     }
     else if (cmdStr == "启用键鼠") {
-        DllCall("user32\BlockInput", "int", 0)  ; 恢复键鼠
+        BlockInput false
     }
     else if (cmdStr == "禁用键鼠") {
-        DllCall("user32\BlockInput", "int", 2)  ; 禁用键鼠
+        BlockInput true
     }
     else if (cmdStr == "休眠") {
         OnSuspendHotkey()

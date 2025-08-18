@@ -32,6 +32,42 @@ GetCurMSec() {
     return A_Hour * 3600 * 1000 + A_Min * 60 * 1000 + A_Sec * 1000 + A_mSec
 }
 
+GetParamsWinInfoStr(infoStr) {
+    if (infoStr == "")
+        return ""
+    
+    infoArr := StrSplit(infoStr, "⎖")
+    if (infoArr.Length != 3)
+        return ""
+    
+    title := infoArr[1]
+    className := infoArr[2]
+    process := infoArr[3]
+    
+    ; 构建条件字符串
+    condition := ""
+    
+    ; 添加标题（如果非空）
+    if (title != "")
+        condition .= title
+    
+    ; 添加窗口类（如果非空）
+    if (className != "") {
+        if (condition != "")
+            condition .= " "
+        condition .= "ahk_class " className
+    }
+    
+    ; 添加进程名（如果非空）
+    if (process != "") {
+        if (condition != "")
+            condition .= " "
+        condition .= "ahk_exe " process
+    }
+    
+    return condition
+}
+
 GetProcessName() {
     MouseGetPos &mouseX, &mouseY, &winId
     name := WinGetProcessName(winId)

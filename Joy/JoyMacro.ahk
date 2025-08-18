@@ -10,9 +10,8 @@ class JoyMacro {
 
         Action() {
             if (this.processName != "") {
-                MouseGetPos &mouseX, &mouseY, &winId
-                curProcessName := WinGetProcessName(winId)
-                if (curProcessName != this.processName)
+                infoStr := GetParamsWinInfoStr(this.processName)
+                if (!WinActivate(infoStr))
                     return
             }
 

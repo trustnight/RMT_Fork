@@ -15,6 +15,7 @@
 #Include Gui\ReplaceKeyGui.ahk
 #Include Gui\ToolRecordSettingGui.ahk
 #Include Gui\CMDTipGui.ahk
+#Include Gui\FrontInfoGui.ahk
 #Include Gui\CMDTipSettingGui.ahk
 #Include Gui\ScrollBar.ahk
 #Include Main\Gdip_All.ahk
@@ -48,6 +49,7 @@ global MyMacroGui := MacroEditGui()
 global MyReplaceKeyGui := ReplaceKeyGui()
 global MyFreePasteGui := FreePasteGui()
 global MySettingMgrGui := SettingMgrGui()
+global MyFrontInfoGui := FrontInfoGui()
 global MyCMDTipGui := CMDTipGui()
 global MyTimingGui := TimingGui()
 global MyCMDTipSettingGui := CMDTipSettingGui()

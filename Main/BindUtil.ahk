@@ -337,8 +337,7 @@ BindTabHotKey() {
             curProcessName := tableItem.ProcessNameArr.Length >= index ? tableItem.ProcessNameArr[index] : ""
 
             if (curProcessName != "") {
-                processInfo := Format("ahk_exe {}", curProcessName)
-                HotIfWinActive(processInfo)
+                HotIfWinActive(GetParamsWinInfoStr(curProcessName))
             }
 
             if (isJoyKey) {
