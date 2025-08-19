@@ -81,7 +81,7 @@ class SearchProGui {
         con.Enabled := false
 
         PosX += 90
-        btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY - 10, 80, 30), "执行指令")
+        btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY - 5, 80, 30), "执行指令")
         btnCon.OnEvent("Click", (*) => this.TriggerMacro())
 
         PosX += 90

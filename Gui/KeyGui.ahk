@@ -188,7 +188,7 @@ class KeyGui {
         btnCon.OnEvent("Click", (*) => this.TriggerMacro())
 
         PosX += 250
-        MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "键盘触发键检测：")
+        MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "键盘按键检测：")
 
         PosX += 120
         this.HotkeyCon := MyGui.Add("Hotkey", Format("x{} y{} w140", PosX, PosY - 3))
