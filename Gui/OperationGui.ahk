@@ -185,6 +185,12 @@ class OperationGui {
             MsgBox("选择/输入1不可为空")
             return
         }
+
+        this.SaveOperationData()
+        macroStr := this.GetCommandStr()
+        VariableObjArr := GetGuiVariableObjArr(macroStr, this.VariableObjArr)
+        this.OperationSubGui.VariableObjArr := VariableObjArr
+
         SymbolArr := this.Data.SymbolGroups[index]
         ValueArr := this.Data.ValueGroups[index]
         this.OperationSubGui.SureBtnAction := (index, command, SymbolArr, ValueArr) => this.OnSureOperationBtnClick(

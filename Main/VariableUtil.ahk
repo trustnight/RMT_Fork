@@ -152,7 +152,7 @@ GetMacroStrVar(macroStr, VariableMap, visitMap) {
 
             if (Data.CoordToogle) {
                 VariableMap[Data.CoordXName] := true
-                VariableMap[Data.CoordXName] := true
+                VariableMap[Data.CoordYName] := true
             }
         }
         else if (IsOpera) {
@@ -193,20 +193,30 @@ GetMacroStrVar(macroStr, VariableMap, visitMap) {
 GetGuiVariableObjArr(curMacroStr, VariableObjArr) {
     ResultArr := []
     ResultMap := GetLocalVar(curMacroStr)
-    for index, Value in VariableObjArr {
+    
+    ; 将VariableObjArr中的变量添加到映射中
+    for Value in VariableObjArr {
         ResultMap[Value] := true
     }
 
-    for Key, Value in ResultMap {
+    ; 将映射的键收集到数组中
+    for Key in ResultMap {
         ResultArr.Push(Key)
     }
-    ResultArr.Push("当前循环次数")
-    ResultArr.Push("当前鼠标坐标X")
-    ResultArr.Push("当前鼠标坐标Y")
+    
+    ; 添加特殊键（如果不存在）
+    SpecialKeyArr := ["当前循环次数", "当前鼠标坐标X", "当前鼠标坐标Y"]
+    for curKey in SpecialKeyArr {
+        if !ResultMap.Has(curKey) {
+            ResultArr.Push(curKey)
+        }
+    }
 
-    for Key, Value in MySoftData.GlobalVariMap {
-        if (!ResultMap.Has(Key))
+    ; 添加全局变量（如果不存在）
+    for Key in MySoftData.GlobalVariMap {
+        if !ResultMap.Has(Key) {
             ResultArr.Push(Key)
+        }
     }
 
     return ResultArr
