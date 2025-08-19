@@ -287,6 +287,9 @@ TriggerSubMacro(tableIndex, itemIndex) {
     macro := tableItem.MacroArr[itemIndex]
     hasWork := MyWorkPool.CheckHasWork()
 
+    if (tableItem.IsWorkArr[itemIndex])     ;正在执行不能再次触发
+        return
+
     if (hasWork) {
         workPath := MyWorkPool.Get()
         workIndex := MyWorkPool.GetWorkIndex(workPath)
