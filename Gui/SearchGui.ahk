@@ -130,7 +130,7 @@ class SearchGui {
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "鼠标动作:")
         PosX += 75
-        this.MouseActionTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} Center", PosX, PosY - 5, 130), ["无动作",
+        this.MouseActionTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} Center", PosX, PosY - 5, 150), ["无动作",
             "移动至目标", "移动至目标点击1次", "移动至目标点击2次"])
         this.MouseActionTypeCon.Value := 1
 

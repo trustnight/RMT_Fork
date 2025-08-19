@@ -620,7 +620,7 @@ InitTableItemState() {
     }
 
     tableItem := MySoftData.SpecialTableItem
-    tableItem.ModeArr := [1]
+    tableItem.ModeArr := [0]
     InitSingleTableState(tableItem)
 }
 
