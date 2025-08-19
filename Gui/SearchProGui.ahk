@@ -111,7 +111,7 @@ class SearchProGui {
         MyGui.Add("Text", Format("x{} y{} h{} Center", PosX, PosY + 3, 25), "截图")
 
         PosX := 10
-        PosY += 25
+        PosY += 30
         this.MousePosCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 230, 20), "当前鼠标坐标:0,0")
         PosX += 330
         this.MouseColorCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 150, 20), "当前鼠标颜色:FFFFFF")
@@ -305,7 +305,7 @@ class SearchProGui {
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 100, 40), "确定")
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 640, 540))
+        MyGui.Show(Format("w{} h{}", 640, 545))
     }
 
     Init(cmd) {
