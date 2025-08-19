@@ -660,8 +660,8 @@ KillTableItemMacro(tableItem, index) {
     if (tableItem.KilledArr.Length < index)
         return
     tableItem.KilledArr[index] := true
-
-    for key, value in tableItem.HoldKeyArr[index] {
+    HoldKeyMap := tableItem.HoldKeyArr[index].Clone()
+    for key, value in HoldKeyMap {
         if (value == "Game") {
             SendGameModeKey(key, 0, tableItem, index)
         }
