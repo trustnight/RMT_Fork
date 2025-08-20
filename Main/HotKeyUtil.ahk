@@ -465,8 +465,8 @@ OnSubMacro(tableItem, cmd, index) {
     macroTableIndex := Data.MacroType == 1 ? tableItem.Index : Data.MacroType - 1
     macroItem := Data.MacroType == 1 ? tableItem : MySoftData.TableInfo[macroTableIndex]
 
-    redirect := macroItem.SerialArr.Length < Data.Index || macroItem.SerialArr[Data.Index] != Data.MacroSerial
-    if (Data.MacroType != 1 && redirect) {
+    redirect := Data.MacroType != 1 && (macroItem.SerialArr.Length < Data.Index || macroItem.SerialArr[Data.Index] != Data.MacroSerial)
+    if (redirect) {
         loop macroItem.ModeArr.Length {
             if (Data.MacroSerial == macroItem.SerialArr[A_Index]) {
                 macroIndex := A_Index
