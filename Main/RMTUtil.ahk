@@ -461,6 +461,12 @@ ExcuteRMTCMDAction(cmdStr) {
     else if (cmdStr == "休眠") {
         OnSuspendHotkey()
     }
+    else if (cmdStr == "暂停所有宏") {
+        SetPauseState(true)
+    }
+    else if (cmdStr == "恢复所有宏") {
+        SetPauseState(false)
+    }
     else if (cmdStr == "终止所有宏") {
         OnKillAllMacro()
     }

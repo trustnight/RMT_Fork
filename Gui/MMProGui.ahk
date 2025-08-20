@@ -88,11 +88,11 @@ class MMProGui {
 
         PosY += 30
         PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 120), "移动速度(0~100):")
-        PosX += 120
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "移动速度:")
+        PosX += 80
         this.SpeedCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50), "90")
 
-        PosX += 110
+        PosX += 150
         this.IsRelativeCon := MyGui.Add("Checkbox", Format("x{} y{} w{} h{}", PosX, PosY, 100, 20), "相对位移")
 
         PosX += 100

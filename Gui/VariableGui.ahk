@@ -199,9 +199,6 @@ class VariableGui {
         this.RemarkCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : ""
         this.Data := this.GetVariableData(this.SerialStr)
 
-        this.VariableObjArr.Push("当前鼠标坐标X")
-        this.VariableObjArr.Push("当前鼠标坐标Y")
-
         this.IsGlobalCon.Value := this.Data.IsGlobal
         this.IsIgnoreExistCon.Value := this.Data.IsIgnoreExist
         loop 4 {

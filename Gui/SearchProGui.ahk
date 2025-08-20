@@ -251,7 +251,7 @@ class SearchProGui {
         TempPosY := PosY
         PosY += 90
         PosX := 10
-        MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", PosX, PosY, 310, 75), "结果保存到变量中")
+        MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", PosX, PosY, 310, 75), "结果保存")
 
         PosY += 20
         PosX := 15
@@ -279,7 +279,7 @@ class SearchProGui {
         PosY := TempPosY
         PosY += 90
         PosX := 330
-        MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", PosX, PosY, 290, 75), "找到后目标点保存到变量中")
+        MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", PosX, PosY, 290, 75), "目标点保存")
 
         PosY += 20
         PosX := 335

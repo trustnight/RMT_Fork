@@ -57,6 +57,20 @@ OnPauseHotKey(*) {
     MySoftData.SpecialTableItem.PauseArr[1] := MySoftData.IsPause
 }
 
+SetPauseState(state) {
+    MySoftData.PauseToggleCtrl.Value := state
+    MySoftData.IsPause := state
+
+    loop MySoftData.TableInfo.Length {
+        tableItem := MySoftData.TableInfo[A_Index]
+        for index, value in tableItem.ModeArr {
+            SetItemPauseState(tableItem.index, index, state)
+        }
+    }
+
+    MySoftData.SpecialTableItem.PauseArr[1] := state
+}
+
 OnKillAllMacro(*) {
     global MySoftData ; 访问全局变量
 

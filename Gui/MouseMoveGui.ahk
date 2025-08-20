@@ -64,14 +64,18 @@ class MouseMoveGui {
 
         PosY += 40
         PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 120), "移动速度(0~100):")
-        PosX += 120
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "移动速度:")
+        PosX += 80
         this.SpeedCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50), "90")
         this.SpeedCon.OnEvent("Change", (*) => this.OnChangeEditValue())
 
-        PosX += 80
+        PosX += 120
         this.IsRelativeCon := MyGui.Add("Checkbox", Format("x{} y{} w{} h{}", PosX, PosY, 100, 20), "相对位移")
         this.IsRelativeCon.OnEvent("Click", (*) => this.OnChangeEditValue())
+    
+        PosY += 25
+        PosX := 10
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 350), "移动速度0~100，100为瞬移")
 
         PosY += 40
         PosX := 10
@@ -83,7 +87,7 @@ class MouseMoveGui {
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
 
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 400, 240))
+        MyGui.Show(Format("w{} h{}", 400, 270))
     }
 
     Init(cmd) {

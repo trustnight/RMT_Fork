@@ -57,8 +57,8 @@ class OperationGui {
         MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "选择/输入")
         PosX += 150
         MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "运算表达式")
-        PosX += 230
-        MyGui.Add("Text", Format("x{} y{}", PosX, PosY), " 创建/更新")
+        PosX += 240
+        MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "保存结果变量")
 
         PosY += 25
         PosX := 15
