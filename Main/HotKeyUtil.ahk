@@ -201,8 +201,7 @@ OnSearch(tableItem, cmd, index) {
         }
 
         if (Data.ResultToggle) {
-            VariableMap := tableItem.VariableMapArr[index]
-            VariableMap[Data.ResultSaveName] := Data.FalseValue
+            MySetGlobalVariable(Data.ResultSaveName, Data.FalseValue, false)
         }
 
         if (Data.FalseMacro == "")
@@ -262,12 +261,12 @@ OnSearchOnce(tableItem, Data, index) {
         }
 
         if (Data.ResultToggle) {
-            VariableMap[Data.ResultSaveName] := Data.TrueValue
+            MySetGlobalVariable(Data.ResultSaveName, Data.TrueValue, false)
         }
 
         if (Data.CoordToogle) {
-            VariableMap[Data.CoordXName] := Pos[1]
-            VariableMap[Data.CoordYName] := Pos[2]
+            MySetGlobalVariable(Data.CoordXName, Pos[1], false)
+            MySetGlobalVariable(Data.CoordYName, Pos[2], false)
         }
 
         Pos[1] := GetFloatValue(Pos[1], MySoftData.CoordXFloat)
@@ -352,14 +351,7 @@ OnCompare(tableItem, cmd, index) {
 
     if (Data.SaveToggle) {
         SaveValue := result ? Data.TrueValue : Data.FalseValue
-        if (Data.IsGlobal) {
-            MySetGlobalVariable(Data.SaveName, SaveValue, Data.IsIgnoreExist)
-        }
-        else {
-            LocalVariableMap := tableItem.VariableMapArr[index]
-            if (!Data.IsIgnoreExist || !LocalVariableMap.Has(Data.SaveName))
-                LocalVariableMap[Data.SaveName] := SaveValue
-        }
+        MySetGlobalVariable(Data.SaveName, SaveValue, Data.IsIgnoreExist)
     }
 
     macro := ""
@@ -545,13 +537,7 @@ OnVariable(tableItem, cmd, index) {
             Value := Data.CopyVariableArr[A_Index]
         }
 
-        if (Data.IsGlobal) {
-            MySetGlobalVariable(VariableName, Value, Data.IsIgnoreExist)
-        }
-        else {
-            if (!Data.IsIgnoreExist || !LocalVariableMap.Has(VariableName))
-                LocalVariableMap[VariableName] := Value
-        }
+        MySetGlobalVariable(VariableName, Value, Data.IsIgnoreExist)
     }
 }
 
@@ -612,14 +598,7 @@ OnExVariableOnce(tableItem, index, Data) {
             if (Data.ToggleArr[A_Index]) {
                 name := Data.VariableArr[A_Index]
                 value := baseVariableArr[A_Index]
-                if (Data.IsGlobal) {
-                    MySetGlobalVariable(name, Value, Data.IsIgnoreExist)
-                }
-                else {
-                    LocalVariableMap := tableItem.VariableMapArr[index]
-                    if (!Data.IsIgnoreExist || !LocalVariableMap.Has(name))
-                        LocalVariableMap[name] := Value
-                }
+                MySetGlobalVariable(name, Value, Data.IsIgnoreExist)
             }
         }
 
@@ -641,14 +620,7 @@ OnOperation(tableItem, cmd, index) {
         ValueArr := Data.ValueGroups[A_Index]
         Value := GetVariableOperationResult(tableItem, index, Name, SymbolArr, ValueArr)
 
-        if (Data.IsGlobal) {
-            MySetGlobalVariable(Data.UpdateNameArr[A_Index], Value, Data.IsIgnoreExist)
-        }
-        else {
-            LocalVariableMap := tableItem.VariableMapArr[index]
-            if (!Data.IsIgnoreExist || !LocalVariableMap.Has(Data.UpdateNameArr[A_Index]))
-                LocalVariableMap[Data.UpdateNameArr[A_Index]] := Value
-        }
+        MySetGlobalVariable(Data.UpdateNameArr[A_Index], Value, Data.IsIgnoreExist)
     }
 }
 
