@@ -676,6 +676,15 @@ class SearchProGui {
         data.CoordToogle := this.CoordToogleCon.Value
         data.CoordXName := this.CoordXNameCon.Text
         data.CoordYName := this.CoordYNameCon.Text
+
+        if (data.ResultToggle)
+            MySoftData.GlobalVariMap[data.ResultSaveName] := true
+
+        if (data.CoordToogle) {
+            MySoftData.GlobalVariMap[data.CoordXName] := true
+            MySoftData.GlobalVariMap[data.CoordYName] := true
+        }
+
         saveStr := JSON.stringify(data, 0)
         IniWrite(saveStr, SearchProFile, IniSection, data.SerialStr)
         if (MySoftData.DataCacheMap.Has(this.Data.SerialStr)) {

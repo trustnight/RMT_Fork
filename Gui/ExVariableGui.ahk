@@ -10,7 +10,6 @@ class ExVariableGui {
         this.RemarkCon := ""
         this.SetAreaAction := (x1, y1, x2, y2) => this.OnSetSearchArea(x1, y1, x2, y2)
 
-        this.IsGlobalCon := ""
         this.IsIgnoreExistCon := ""
         this.ToggleConArr := []
         this.VariableConArr := []
@@ -127,9 +126,6 @@ class ExVariableGui {
 
         PosX := 20
         PosY += 30
-        this.IsGlobalCon := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 90), "全局变量")
-
-        PosX += 120
         this.IsIgnoreExistCon := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 150), "变量存在忽略操作")
 
         PosX := 20
@@ -201,7 +197,6 @@ class ExVariableGui {
             this.VariableConArr[A_Index].Add(this.VariableObjArr)
             this.VariableConArr[A_Index].Text := this.Data.VariableArr[A_Index]
         }
-        this.IsGlobalCon.Value := this.Data.IsGlobal
         this.IsIgnoreExistCon.Value := this.Data.IsIgnoreExist
         this.ExtractStrCon.Value := this.Data.ExtractStr
         this.ExtractTypeCon.Value := this.Data.ExtractType
@@ -361,7 +356,6 @@ class ExVariableGui {
         this.Data.EndPosY := this.EndPosYCon.Value
         this.Data.SearchCount := this.SearchCountCon.Text == "无限" ? -1 : this.SearchCountCon.Text
         this.Data.SearchInterval := this.SearchIntervalCon.Value
-        this.Data.IsGlobal := this.IsGlobalCon.Value
         this.Data.IsIgnoreExist := this.IsIgnoreExistCon.Value
         loop 4 {
             this.Data.ToggleArr[A_Index] := this.ToggleConArr[A_Index].Value
@@ -369,11 +363,9 @@ class ExVariableGui {
         }
 
         ; 添加全局变量，方便下拉选取
-        if (this.Data.IsGlobal) {
-            loop 4 {
-                if (this.Data.ToggleArr[A_Index])
-                    MySoftData.GlobalVariMap[this.Data.VariableArr[A_Index]] := true
-            }
+        loop 4 {
+            if (this.Data.ToggleArr[A_Index])
+                MySoftData.GlobalVariMap[this.Data.VariableArr[A_Index]] := true
         }
 
         saveStr := JSON.stringify(this.Data, 0)

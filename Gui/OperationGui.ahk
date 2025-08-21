@@ -10,7 +10,6 @@ class OperationGui {
         this.Data := ""
         this.OperationSubGui := ""
 
-        this.IsGlobalCon := ""
         this.IsIgnoreExistCon := ""
         this.ToggleConArr := []
         this.NameConArr := []
@@ -42,12 +41,9 @@ class OperationGui {
 
         PosX := 10
         PosY += 30
-        this.IsGlobalCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 110), "创建/更新选项：")
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 110), "创建/更新选项：")
 
         PosX += 115
-        this.IsGlobalCon := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 90), "全局变量")
-
-        PosX += 120
         this.IsIgnoreExistCon := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 150), "变量存在忽略操作")
 
         PosX := 10
@@ -146,7 +142,6 @@ class OperationGui {
         this.RemarkCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : ""
         this.Data := this.GetOperationData(this.SerialStr)
 
-        this.IsGlobalCon.Value := this.Data.IsGlobal
         this.IsIgnoreExistCon.Value := this.Data.IsIgnoreExist
         loop 4 {
             this.ToggleConArr[A_Index].Value := this.Data.ToggleArr[A_Index]
@@ -231,15 +226,14 @@ class OperationGui {
             this.Data.OperationArr[A_Index] := this.OperationConArr[A_Index].Value
             this.Data.UpdateNameArr[A_Index] := this.UpdateNameConArr[A_Index].Text
         }
-        this.Data.IsGlobal := this.IsGlobalCon.Value
+
         this.Data.IsIgnoreExist := this.IsIgnoreExistCon.Value
 
         ; 添加全局变量，方便下拉选取
-        if (this.Data.IsGlobal)
-            loop 4 {
-                if (this.Data.ToggleArr[A_Index])
-                    MySoftData.GlobalVariMap[this.Data.UpdateNameArr[A_Index]] := true
-            }
+        loop 4 {
+            if (this.Data.ToggleArr[A_Index])
+                MySoftData.GlobalVariMap[this.Data.UpdateNameArr[A_Index]] := true
+        }
 
         saveStr := JSON.stringify(this.Data, 0)
         IniWrite(saveStr, OperationFile, IniSection, this.Data.SerialStr)

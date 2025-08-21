@@ -11,7 +11,6 @@ class CompareGui {
         this.MacroGui := ""
 
         this.Data := ""
-        this.IsGlobalCon := ""
         this.IsIgnoreExistCon := ""
         this.ToggleConArr := []
         this.NameConArr := []
@@ -172,11 +171,8 @@ class CompareGui {
         PosX := 10
         MyGui.Add("GroupBox", Format("x{} y{} w{} h{}", PosX, PosY, 320, 110), "结果保存到变量中")
 
-        PosX := 50
+        PosX := 20
         PosY += 25
-        this.IsGlobalCon := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 90), "全局变量")
-
-        PosX += 120
         this.IsIgnoreExistCon := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 150), "变量存在忽略操作")
 
         PosX := 15
@@ -221,7 +217,6 @@ class CompareGui {
         this.TrueValueCon.Value := this.Data.TrueValue
         this.FalseValueCon.Value := this.Data.FalseValue
         this.LogicalTypeCon.Value := this.Data.LogicalType
-        this.IsGlobalCon.Value := this.Data.IsGlobal
         this.IsIgnoreExistCon.Value := this.Data.IsIgnoreExist
         loop 4 {
             this.ToggleConArr[A_Index].Value := this.Data.ToggleArr[A_Index]
@@ -355,7 +350,6 @@ class CompareGui {
         this.Data.TrueValue := this.TrueValueCon.Value
         this.Data.FalseValue := this.FalseValueCon.Value
         this.Data.LogicalType := this.LogicalTypeCon.Value
-        this.Data.IsGlobal := this.IsGlobalCon.Value
         this.Data.IsIgnoreExist := this.IsIgnoreExistCon.Value
         loop 4 {
             this.Data.ToggleArr[A_Index] := this.ToggleConArr[A_Index].Value
@@ -365,10 +359,8 @@ class CompareGui {
         }
 
         ; 添加全局变量，方便下拉选取
-        if (this.Data.IsGlobal) {
-            if (this.Data.SaveToggle) {
-                MySoftData.GlobalVariMap[this.Data.SaveName] := true
-            }
+        if (this.Data.SaveToggle) {
+            MySoftData.GlobalVariMap[this.Data.SaveName] := true
         }
 
         saveStr := JSON.stringify(this.Data, 0)

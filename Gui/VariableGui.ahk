@@ -7,7 +7,6 @@ class VariableGui {
         this.VariableObjArr := []
         this.RemarkCon := ""
 
-        this.IsGlobalCon := ""
         this.IsIgnoreExistCon := ""
         this.ToggleConArr := []
         this.VariableConArr := []
@@ -43,9 +42,6 @@ class VariableGui {
 
         PosX := 20
         PosY += 30
-        this.IsGlobalCon := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 90), "全局变量")
-
-        PosX += 120
         this.IsIgnoreExistCon := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 150), "变量存在忽略操作")
 
         {
@@ -199,7 +195,6 @@ class VariableGui {
         this.RemarkCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : ""
         this.Data := this.GetVariableData(this.SerialStr)
 
-        this.IsGlobalCon.Value := this.Data.IsGlobal
         this.IsIgnoreExistCon.Value := this.Data.IsIgnoreExist
         loop 4 {
             this.ToggleConArr[A_Index].Value := this.Data.ToggleArr[A_Index]
@@ -275,7 +270,6 @@ class VariableGui {
     }
 
     SaveVariableData() {
-        this.Data.IsGlobal := this.IsGlobalCon.Value
         this.Data.IsIgnoreExist := this.IsIgnoreExistCon.Value
         loop 4 {
             this.Data.ToggleArr[A_Index] := this.ToggleConArr[A_Index].Value
@@ -287,11 +281,9 @@ class VariableGui {
         }
 
         ; 添加全局变量，方便下拉选取
-        if (this.Data.IsGlobal) {
-            loop 4 {
-                if (this.Data.ToggleArr[A_Index])
-                    MySoftData.GlobalVariMap[this.Data.VariableArr[A_Index]] := true
-            }
+        loop 4 {
+            if (this.Data.ToggleArr[A_Index])
+                MySoftData.GlobalVariMap[this.Data.VariableArr[A_Index]] := true
         }
 
         saveStr := JSON.stringify(this.Data, 0)

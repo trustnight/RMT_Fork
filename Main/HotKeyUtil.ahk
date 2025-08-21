@@ -511,12 +511,7 @@ OnVariable(tableItem, cmd, index) {
             continue
         VariableName := Data.VariableArr[A_Index]
         if (Data.OperaTypeArr[A_Index] == 4) {  ;删除
-            if (Data.IsGlobal) {
-                MyDelGlobalVariable(VariableName)
-            }
-            else if (!Data.IsGlobal && LocalVariableMap.Has(VariableName))
-                LocalVariableMap.Delete(VariableName)
-
+            MyDelGlobalVariable(VariableName)
             continue
         }
 

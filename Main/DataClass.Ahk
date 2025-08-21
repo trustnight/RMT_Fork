@@ -289,7 +289,6 @@ class SearchData {
 
 class CompareData {
     __New() {
-        this.IsGlobal := 0
         this.IsIgnoreExist := 0
         this.ToggleArr := [1, 0, 0, 0]
         this.NameArr := ["Num1", "Num2", "Num3", "Num4"]
@@ -349,7 +348,6 @@ class SubMacroData {
 class VariableData {
     __New() {
         this.SerialStr := ""
-        this.IsGlobal := 0
         this.IsIgnoreExist := 0
         this.ToggleArr := [1, 0, 0, 0]
         this.OperaTypeArr := [1, 1, 1, 1]   ;1赋值 2随机 3字符 4删除
@@ -363,7 +361,6 @@ class VariableData {
 class ExVariableData {
     __New() {
         this.SerialStr := ""
-        this.IsGlobal := 0
         this.IsIgnoreExist := 0
         this.ToggleArr := [1, 0, 0, 0]
         this.VariableArr := ["Num1", "Num2", "Num3", "Num4"]
@@ -382,7 +379,6 @@ class ExVariableData {
 class OperationData {
     __New() {
         this.SerialStr := ""
-        this.IsGlobal := 0
         this.IsIgnoreExist := 0
         this.ToggleArr := [1, 0, 0, 0]
         this.NameArr := ["Num1", "Num2", "Num3", "Num4"]
