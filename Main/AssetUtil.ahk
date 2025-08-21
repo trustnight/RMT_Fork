@@ -262,6 +262,10 @@ InitData() {
 InitJoyAxis() {
     if (!CheckIfInstallVjoy())
         return
+    
+    if (Type(MyvJoy) == "String")
+        return
+
     joyAxisNum := 8
     tableItem := MySoftData.SpecialTableItem
     tableItem.HoldKeyArr[1] := Map()

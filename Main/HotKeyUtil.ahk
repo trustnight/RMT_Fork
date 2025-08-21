@@ -465,7 +465,8 @@ OnSubMacro(tableItem, cmd, index) {
     macroTableIndex := Data.MacroType == 1 ? tableItem.Index : Data.MacroType - 1
     macroItem := Data.MacroType == 1 ? tableItem : MySoftData.TableInfo[macroTableIndex]
 
-    redirect := Data.MacroType != 1 && (macroItem.SerialArr.Length < Data.Index || macroItem.SerialArr[Data.Index] != Data.MacroSerial)
+    redirect := Data.MacroType != 1 && (macroItem.SerialArr.Length < Data.Index || macroItem.SerialArr[Data.Index] !=
+        Data.MacroSerial)
     if (redirect) {
         loop macroItem.ModeArr.Length {
             if (Data.MacroSerial == macroItem.SerialArr[A_Index]) {
@@ -1015,6 +1016,11 @@ SendJoyBtnClick(key, holdTime, tableItem, index, keyType) {
         return
     }
 
+    if (Type(MyvJoy) == "String") {
+        MsgBox("vjoy加载失败，请安装或卸载后重新安装vjoy，然后尝试使用手柄功能")
+        return
+    }
+
     if (keyType == 1 || keyType == 3) {
         SendJoyBtnKey(key, 1, tableItem, index)
     }
@@ -1045,6 +1051,11 @@ SendJoyBtnKey(key, state, tableItem, index) {
 SendJoyAxisClick(key, holdTime, tableItem, index, keyType) {
     if (!CheckIfInstallVjoy()) {
         MsgBox("使用手柄功能前,请先安装Joy目录下的vJoy驱动!")
+        return
+    }
+
+    if (Type(MyvJoy) == "String") {
+        MsgBox("vjoy加载失败，请安装或卸载后重新安装vjoy，然后尝试使用手柄功能")
         return
     }
 

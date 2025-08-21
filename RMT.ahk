@@ -35,9 +35,7 @@ SetWorkingDir A_ScriptDir
 DetectHiddenWindows true
 Persistent
 
-if (CheckIfInstallVjoy()) {
-    global MyvJoy := SuperCvJoyInterface().GetMyvJoy()
-}
+global MyvJoy := SuperCvJoyInterface().GetMyvJoy()
 global MySoftData := SoftData()
 global ToolCheckInfo := ToolCheck()
 global MyJoyMacro := JoyMacro()
