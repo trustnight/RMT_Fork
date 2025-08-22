@@ -49,7 +49,7 @@ SetTimingNextTime(tableItem) {
         CurTime := FormatTime(A_Now, "yyyyMMddHHmm")
         if (Data == "" || ObjOwnPropCount(Data) == 0)
             continue
-        if (Data.EndTime != "" && Data.EndTime >= CurTime)
+        if (Data.EndTime != "" && CurTime >= Data.EndTime)
             continue
 
         span := DateDiff(CurTime, Data.StartTime, "Minutes")
