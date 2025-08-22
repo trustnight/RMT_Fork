@@ -109,9 +109,8 @@ TimingChecker() {
 
         ProcessName := tableItem.ProcessNameArr.Length >= index ? tableItem.ProcessNameArr[index] : ""
         if (ProcessName != "") {
-            MouseGetPos &mouseX, &mouseY, &winId
-            curProcessName := WinGetProcessName(winId)
-            if (ProcessName != curProcessName)
+            infoStr := GetParamsWinInfoStr(ProcessName)
+            if (!WinActivate(infoStr))
                 return
         }
 

@@ -860,17 +860,20 @@ SetToolCheckInfo() {
     global ToolCheckInfo
     CoordMode("Mouse", "Screen")
     MouseGetPos &mouseX, &mouseY, &winId
-    ToolCheckInfo.PosStr := mouseX . "," . mouseY
-    ToolCheckInfo.ProcessName := WinGetProcessName(winId)
-    ToolCheckInfo.ProcessTile := WinGetTitle(winId)
-    ToolCheckInfo.ProcessPid := WinGetPID(winId)
-    ToolCheckInfo.ProcessClass := WinGetClass(winId)
-    ToolCheckInfo.ProcessId := winId
-    ToolCheckInfo.Color := StrReplace(PixelGetColor(mouseX, mouseY, "Slow"), "0x", "")
+    try {
+        ToolCheckInfo.PosStr := mouseX . "," . mouseY
+        ToolTip(winId)
+        ToolCheckInfo.ProcessName := WinGetProcessName(winId)
+        ToolCheckInfo.ProcessTile := WinGetTitle(winId)
+        ToolCheckInfo.ProcessPid := WinGetPID(winId)
+        ToolCheckInfo.ProcessClass := WinGetClass(winId)
+        ToolCheckInfo.ProcessId := winId
+        ToolCheckInfo.Color := StrReplace(PixelGetColor(mouseX, mouseY, "Slow"), "0x", "")
 
-    WinPosArr := GetWinPos()
-    ToolCheckInfo.WinPosStr := WinPosArr[1] . "," . WinPosArr[2]
-    RefreshToolUI()
+        WinPosArr := GetWinPos()
+        ToolCheckInfo.WinPosStr := WinPosArr[1] . "," . WinPosArr[2]
+        RefreshToolUI()
+    }
 }
 
 ; 系统托盘优化

@@ -57,14 +57,14 @@ class RunGui {
         PosX := 10
         PosY += 30
         MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "路径：")
-        
+
         PosX += 40
         this.PathTextCon := MyGui.Add("Edit", Format("x{} y{} w{}", PosX, PosY - 3, 350))
 
         PosX += 355
         btnCon := MyGui.Add("Button", Format("x{} y{}", PosX, PosY - 5), "选择文件")
         btnCon.OnEvent("Click", (*) => this.OnClickFileSelectBtn())
-        
+
         PosY += 25
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} h{}", PosX, PosY, 20), "支持类别：进程、网址、文件等等")
@@ -126,14 +126,20 @@ class RunGui {
     RefreshProcessName() {
         CoordMode("Mouse", "Screen")
         MouseGetPos &mouseX, &mouseY, &winId
-        processName := WinGetProcessName(winId)
-        this.MouseProNameCon.Value := Format("当前鼠标下进程名:{}", processName)
+        try {
+            processName := WinGetProcessName(winId)
+            this.MouseProNameCon.Value := Format("当前鼠标下进程名:{}", processName)
+        }
     }
 
     SureProcessName() {
         CoordMode("Mouse", "Screen")
         MouseGetPos &mouseX, &mouseY, &winId
-        processName := WinGetProcessName(winId)
+        try {
+            processName := WinGetProcessName(winId)
+            this.PathTextCon.Value := processName
+        }
+        
     }
 
     OnClickFileSelectBtn() {

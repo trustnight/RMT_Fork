@@ -175,7 +175,9 @@ class BGMouseGui {
     OnF1() {
         CoordMode("Mouse", "Window")
         MouseGetPos &mouseX, &mouseY, &winId
-        this.TargetTitleCon.Value := WinGetTitle(winId)
+        try {
+            this.TargetTitleCon.Value := WinGetTitle(winId)
+        }
     }
 
     OnF2() {
@@ -193,10 +195,10 @@ class BGMouseGui {
         CoordMode("Mouse", "Screen")
         MouseGetPos &mouseX, &mouseY, &oriId
         PosArr := GetWinPos()
-
-        this.CurPosCon.Value := "当前窗口坐标: " PosArr[1] "," PosArr[2]
-        this.CurTitleCon.Value := "当前窗口标题: " WinGetTitle(oriId)
-
+        try {
+            this.CurPosCon.Value := "当前窗口坐标: " PosArr[1] "," PosArr[2]
+            this.CurTitleCon.Value := "当前窗口标题: " WinGetTitle(oriId)
+        }
     }
 
     OnClickSureBtn() {

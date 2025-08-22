@@ -120,7 +120,7 @@ class FrontInfoGui {
         PosX := 95
         con := MyGui.Add("Edit", Format("x{} y{} w300", PosX, PosY - 3), "")
         this.InfoTextArrCon.Push(con)
-    
+
         PosY += 30
         PosX := 20
         MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "提示：宏仅当鼠标悬停窗口符合上述条件时触发")
@@ -136,11 +136,13 @@ class FrontInfoGui {
     RefreshMouseInfo() {
         CoordMode("Mouse", "Screen")
         MouseGetPos &mouseX, &mouseY, &winId
-        title := WinGetTitle(winId)
-        className := WinGetClass(winId)
-        process := WinGetProcessName(winId)
-        tipStr := "标题：" title "`n窗口类：" className "`n进程名：" process
-        this.WinInfoCon.Value := tipStr
+        try {
+            title := WinGetTitle(winId)
+            className := WinGetClass(winId)
+            process := WinGetProcessName(winId)
+            tipStr := "标题：" title "`n窗口类：" className "`n进程名：" process
+            this.WinInfoCon.Value := tipStr
+        }
     }
 
     ToggleFunc(state) {
@@ -240,42 +242,51 @@ class FrontInfoGui {
     OnF2() {
         CoordMode("Mouse", "Screen")
         MouseGetPos &mouseX, &mouseY, &winId
-        title := WinGetTitle(winId)
-        className := WinGetClass(winId)
-        process := WinGetProcessName(winId)
-        this.InfoTextArrCon[1].Value := title
-        this.InfoTextArrCon[2].Value := className
-        this.InfoTextArrCon[3].Value := process
-        loop 3 {
-            this.InfoTogArrCon[A_Index].Value := true
+        try {
+            title := WinGetTitle(winId)
+            className := WinGetClass(winId)
+            process := WinGetProcessName(winId)
+            this.InfoTextArrCon[1].Value := title
+            this.InfoTextArrCon[2].Value := className
+            this.InfoTextArrCon[3].Value := process
+            loop 3 {
+                this.InfoTogArrCon[A_Index].Value := true
+            }
+            this.OnTogClick()
         }
-        this.OnTogClick()
     }
 
     OnF3() {
         CoordMode("Mouse", "Screen")
         MouseGetPos &mouseX, &mouseY, &winId
-        title := WinGetTitle(winId)
-        this.InfoTextArrCon[1].Value := title
-        this.InfoTogArrCon[1].Value := true
-        this.OnTogClick()
+        try {
+            title := WinGetTitle(winId)
+            this.InfoTextArrCon[1].Value := title
+            this.InfoTogArrCon[1].Value := true
+            this.OnTogClick()
+        }
     }
 
     OnF4() {
         CoordMode("Mouse", "Screen")
         MouseGetPos &mouseX, &mouseY, &winId
-        className := WinGetClass(winId)
-        this.InfoTextArrCon[2].Value := className
-        this.InfoTogArrCon[2].Value := true
-        this.OnTogClick()
+        try {
+            className := WinGetClass(winId)
+            this.InfoTextArrCon[2].Value := className
+            this.InfoTogArrCon[2].Value := true
+            this.OnTogClick()
+        }
     }
 
     OnF5() {
         CoordMode("Mouse", "Screen")
         MouseGetPos &mouseX, &mouseY, &winId
-        process := WinGetProcessName(winId)
-        this.InfoTextArrCon[3].Value := process
-        this.InfoTogArrCon[3].Value := true
-        this.OnTogClick()
+        try {
+            process := WinGetProcessName(winId)
+            this.InfoTextArrCon[3].Value := process
+            this.InfoTogArrCon[3].Value := true
+            this.OnTogClick()
+        }
+
     }
 }
