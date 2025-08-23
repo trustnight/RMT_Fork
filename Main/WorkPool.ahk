@@ -88,10 +88,10 @@ class WorkPool {
         tableIndex := wParam
         itemIndex := lParam
         tableItem := MySoftData.TableInfo[tableIndex]
-        workIndex := tableItem.IsWorkArr[itemIndex]
+        workIndex := tableItem.IsWorkIndexArr[itemIndex]
         workPath := A_ScriptDir "\Thread\Work" workIndex ".exe"
         this.pool.Push(workPath)
-        tableItem.IsWorkArr[itemIndex] := false
+        tableItem.IsWorkIndexArr[itemIndex] := false
     }
 
     OnFinishLoad(wParam, lParam, msg, hwnd) {
@@ -103,9 +103,9 @@ class WorkPool {
         tableIndex := wParam
         itemIndex := lParam
         tableItem := MySoftData.TableInfo[tableIndex]
-        isWork := tableItem.IsWorkArr[itemIndex]
+        isWork := tableItem.IsWorkIndexArr[itemIndex]
         if (isWork) {
-            workPath := MyWorkPool.GetWorkPath(tableItem.IsWorkArr[itemIndex])
+            workPath := MyWorkPool.GetWorkPath(tableItem.IsWorkIndexArr[itemIndex])
             MyWorkPool.PostMessage(WM_STOP_MACRO, workPath, 0, 0)
             return
         }

@@ -277,8 +277,8 @@ InitFilePath() {
 
 SubMacroStopAction(tableIndex, itemIndex) {
     tableItem := MySoftData.TableInfo[tableIndex]
-    workPath := MyWorkPool.GetWorkPath(tableItem.IsWorkArr[itemIndex])
-    tableItem.IsWorkArr[itemIndex] := false
+    workPath := MyWorkPool.GetWorkPath(tableItem.IsWorkIndexArr[itemIndex])
+    ; tableItem.IsWorkIndexArr[itemIndex] := false
     MyWorkPool.PostMessage(WM_STOP_MACRO, workPath, 0, 0)
 }
 
@@ -287,13 +287,13 @@ TriggerSubMacro(tableIndex, itemIndex) {
     macro := tableItem.MacroArr[itemIndex]
     hasWork := MyWorkPool.CheckHasWork()
 
-    if (tableItem.IsWorkArr[itemIndex])     ;正在执行不能再次触发
+    if (tableItem.IsWorkIndexArr[itemIndex])     ;正在执行不能再次触发
         return
 
     if (hasWork) {
         workPath := MyWorkPool.Get()
         workIndex := MyWorkPool.GetWorkIndex(workPath)
-        tableItem.IsWorkArr[itemIndex] := workIndex
+        tableItem.IsWorkIndexArr[itemIndex] := workIndex
         MyWorkPool.PostMessage(WM_TR_MACRO, workPath, tableIndex, itemIndex)
     }
     else {
@@ -389,7 +389,7 @@ CancelTableItemStopState(tableIndex, itemIndex) {
 SetItemPauseState(tableIndex, itemIndex, state) {
     tableItem := MySoftData.TableInfo[tableIndex]
     tableItem.PauseArr[itemIndex] := state
-    isWork := tableItem.IsWorkArr[itemIndex]
+    isWork := tableItem.IsWorkIndexArr[itemIndex]
 
     LastColorState := tableItem.ColorStateArr[itemIndex]
     if (LastColorState == 1 && state == 1)
@@ -398,7 +398,7 @@ SetItemPauseState(tableIndex, itemIndex, state) {
         SetTableItemState(tableIndex, itemIndex, 1)
 
     if (isWork) {
-        workPath := MyWorkPool.GetWorkPath(tableItem.IsWorkArr[itemIndex])
+        workPath := MyWorkPool.GetWorkPath(tableItem.IsWorkIndexArr[itemIndex])
         str := Format("PauseState_{}_{}_{}", tableIndex, itemIndex, state)
         MyWorkPool.SendMessage(WM_COPYDATA, workPath, str)
     }

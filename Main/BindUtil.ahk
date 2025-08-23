@@ -78,9 +78,9 @@ OnKillAllMacro(*) {
         tableItem := MySoftData.TableInfo[A_Index]
         KillSingleTableMacro(tableItem)
         for index, value in tableItem.ModeArr {
-            isWork := tableItem.IsWorkArr[index]
+            isWork := tableItem.IsWorkIndexArr[index]
             if (isWork) {
-                workPath := MyWorkPool.GetWorkPath(tableItem.IsWorkArr[index])
+                workPath := MyWorkPool.GetWorkPath(tableItem.IsWorkIndexArr[index])
                 MyWorkPool.PostMessage(WM_STOP_MACRO, workPath, 0, 0)
                 return
             }
@@ -409,7 +409,7 @@ OnTriggerKeyDown(tableIndex, itemIndex) {
         TriggerMacroHandler(tableIndex, itemIndex)
     }
     else if (tableItem.TriggerTypeArr[itemIndex] == 4) {  ;开关
-        if (tableItem.IsWorkArr[itemIndex]) {       ;关闭开关
+        if (tableItem.IsWorkIndexArr[itemIndex]) {       ;关闭开关
             MySubMacroStopAction(tableIndex, itemIndex)
             return
         }
@@ -427,13 +427,13 @@ OnTriggerKeyDown(tableIndex, itemIndex) {
 ;松开停止
 OnTriggerKeyUp(tableIndex, itemIndex) {
     tableItem := MySoftData.TableInfo[tableIndex]
-    isWork := tableItem.IsWorkArr[itemIndex]
+    isWork := tableItem.IsWorkIndexArr[itemIndex]
     if (tableItem.TriggerTypeArr[itemIndex] == 2 && !isWork) { ;松开触发
         TriggerMacroHandler(tableIndex, itemIndex)
     }
     else if (tableItem.TriggerTypeArr[itemIndex] == 3) {  ;松开停止
         if (isWork) {
-            workPath := MyWorkPool.GetWorkPath(tableItem.IsWorkArr[itemIndex])
+            workPath := MyWorkPool.GetWorkPath(tableItem.IsWorkIndexArr[itemIndex])
             MyWorkPool.PostMessage(WM_STOP_MACRO, workPath, 0, 0)
             return
         }
@@ -450,7 +450,7 @@ OnToggleTriggerMacro(tableIndex, itemIndex) {
     if (hasWork) {
         workPath := MyWorkPool.Get()
         workIndex := MyWorkPool.GetWorkIndex(workPath)
-        tableItem.IsWorkArr[itemIndex] := workIndex
+        tableItem.IsWorkIndexArr[itemIndex] := workIndex
         MyWorkPool.PostMessage(WM_TR_MACRO, workPath, tableIndex, itemIndex)
         return
     }
@@ -475,7 +475,7 @@ OnToggleTriggerMacro(tableIndex, itemIndex) {
 TriggerMacroHandler(tableIndex, itemIndex) {
     tableItem := MySoftData.TableInfo[tableIndex]
     macro := tableItem.MacroArr[itemIndex]
-    isWork := tableItem.IsWorkArr[itemIndex]
+    isWork := tableItem.IsWorkIndexArr[itemIndex]
     hasWork := MyWorkPool.CheckHasWork()
     if (isWork)
         return
@@ -483,7 +483,7 @@ TriggerMacroHandler(tableIndex, itemIndex) {
     if (hasWork) {
         workPath := MyWorkPool.Get()
         workIndex := MyWorkPool.GetWorkIndex(workPath)
-        tableItem.IsWorkArr[itemIndex] := workIndex
+        tableItem.IsWorkIndexArr[itemIndex] := workIndex
         MyWorkPool.PostMessage(WM_TR_MACRO, workPath, tableIndex, itemIndex)
     }
     else {

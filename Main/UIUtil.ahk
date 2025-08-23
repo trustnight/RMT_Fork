@@ -317,7 +317,7 @@ OnAddSetting(*) {
     tableItem.HoldTimeArr.Push(500)
     tableItem.SerialArr.Push(FormatTime(, "HHmmss"))
     tableItem.TimingSerialArr.Push(GetSerialStr("Timing"))
-    tableItem.IsWorkArr.Push(0)
+    tableItem.IsWorkIndexArr.Push(0)
 
     heightValue := 70
     TKPosY := tableItem.underPosY + 10

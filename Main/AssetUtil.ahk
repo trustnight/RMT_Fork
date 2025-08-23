@@ -639,7 +639,7 @@ InitSingleTableState(tableItem) {
     tableItem.ToggleStateArr := []
     tableItem.ToggleActionArr := []
     tableItem.VariableMapArr := []
-    tableItem.IsWorkArr := []
+    tableItem.IsWorkIndexArr := []
     tableItem.PauseArr := []
     for index, value in tableItem.ModeArr {
         tableItem.KilledArr.Push(false)
@@ -649,7 +649,7 @@ InitSingleTableState(tableItem) {
         tableItem.HoldKeyArr.Push(Map())
         tableItem.ToggleStateArr.Push(false)
         tableItem.ToggleActionArr.Push("")
-        tableItem.IsWorkArr.Push(false)
+        tableItem.IsWorkIndexArr.Push(false)
 
         VariableMap := Map()
         VariableMap["当前循环次数"] := 0
