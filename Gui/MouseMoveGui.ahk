@@ -125,7 +125,7 @@ class MouseMoveGui {
 
     UpdateCommandStr() {
         showRelative := this.IsRelativeCon.Value == 1
-        showSpeed := showRelative || this.SpeedCon.Value != 100
+        showSpeed := true
 
         CommandStr := "移动"
         CommandStr .= "_" this.PosXCon.Value
