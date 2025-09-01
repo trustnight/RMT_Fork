@@ -26,6 +26,7 @@
 #Include Main\HotkeyUtil.ahk
 #Include Main\RMTUtil.ahk
 #Include Main\WorkPool.ahk
+#Include Main\TabItemUIUtil.ahk
 #Include Main\UIUtil.ahk
 #Include Main\JsonUtil.ahk
 #Include Main\CompareUtil.ahk

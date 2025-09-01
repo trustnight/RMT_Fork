@@ -144,6 +144,11 @@ OnItemEditFrontInfo(tableItem, index, *) {
     MyFrontInfoGui.ShowGui(tableItem, index)
 }
 
+OnTabValueChanged(*) {
+    tableItem := MySoftData.TableInfo[MySoftData.TabCtrl.Value]
+    MySlider.SwitchTab(tableItem)
+}
+
 OnTableMoveUp(tableItem, index, *) {
     if (index == 1) {
         MsgBox("上面没有元素，无法上移！！！")

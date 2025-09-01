@@ -38,7 +38,21 @@ class TableItem {
         this.Index := 0             ;   tableIndex
         this.SliderValue := 0       ;   滑动值
         this.OffSetPosY := 0        ;   偏移值
+        this.AllConArr := []
         this.IsWorkIndexArr := []        ;work正在执行中
+    }
+}
+
+class ItemConInfo {
+    __New(Con) {
+        this.Con := Con
+        this.Con.GetPos(&PosX, &PosY)
+        this.OriPosX := PosX
+        this.OriPosY := PosY
+    }
+
+    UpdatePos(offsetPosY) {
+        this.Con.Move(this.OriPosX, this.OriPosY + offsetPosY)
     }
 }
 
@@ -365,7 +379,7 @@ class ExVariableData {
         this.IsIgnoreExist := 0
         this.ToggleArr := [1, 0, 0, 0]
         this.VariableArr := ["Num1", "Num2", "Num3", "Num4"]
-        this.ExtractStr := "HP:&x"
+        this.ExtractStr := ""
         this.ExtractType := 1
         this.OCRType := 1
         this.StartPosX := 0

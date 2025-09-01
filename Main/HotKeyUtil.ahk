@@ -574,24 +574,31 @@ OnExVariableOnce(tableItem, index, Data) {
         TextObjs := TextObjs == "" ? [] : TextObjs
     }
     else {
+        TextObjs := []
         if (!IsClipboardText())
             return
-        TextObjs := []
         obj := Object()
         obj.Text := A_Clipboard
         TextObjs.Push(obj)
     }
 
     isOk := false
+    allText := ""
     for _, value in TextObjs {
-        baseVariableArr := ExtractNumbers(value.Text, Data.ExtractStr)
-        if (baseVariableArr == "")
+        allText .= value.text "`n"
+    }
+    allText := Trim(allText)
+
+    for _, value in TextObjs {
+        VariableValueArr := ExtractNumbers(value.Text, Data.ExtractStr)
+        VariableValueArr := Data.ExtractStr == "" && allText != "" ? [allText] : VariableValueArr
+        if (VariableValueArr == "")
             continue
 
-        loop baseVariableArr.Length {
+        loop VariableValueArr.Length {
             if (Data.ToggleArr[A_Index]) {
                 name := Data.VariableArr[A_Index]
-                value := baseVariableArr[A_Index]
+                value := VariableValueArr[A_Index]
                 MySetGlobalVariable(name, Value, Data.IsIgnoreExist)
             }
         }

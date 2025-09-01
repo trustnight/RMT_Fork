@@ -3,84 +3,116 @@
 class VerticalSlider {
     __new() {
         this.tableItem := ""
-        this.AreaCon := ""
-        this.BarCon := ""
-        this.AreaOverlay := ""
-        this.BarOverlay := ""
-
         this.BaseOffsetY := 45      ;基础偏移值
         this.GuiHeight := 500       ;区域高度
         this.ContentHeight := ""    ;内容高度
         this.BarHeight := 500       ;滑动棒的高度
         this.BarMaxPosY := ""       ;滑动棒最大移动位置y
-        this.CurBarPosY := ""       ;当前棒位置
+        this.CurBarOffsetPosY := ""       ;当前棒位置
         this.ShowSlider := false
 
         this.IsDragging := false
         this.DragOffsetPosY := 0      ;拖拽偏移位置Y
+        this.DragAction := this.DragHandler.Bind(this)
     }
 
-    SetSliderCon(AreaCon, AreaOverlay, BarCon, BarOverlay) {
+    ;内凹像素， 左边偏移（text左边点击不灵敏）
+    SetStyleParams(Hindent, Vindent) {
+        this.Hindent := Hindent
+        this.Vindent := Vindent
+        this.AreaCon.GetPos(&Ax, &Ay, &Aw, &Ah)
+        this.GuiHeight := Ah - 2 * this.Vindent
+    }
+
+    SetSliderCon(AreaCon, BarCon) {
         this.AreaCon := AreaCon
-        this.AreaOverlay := AreaOverlay
         this.BarCon := BarCon
-        this.BarOverlay := BarOverlay
-        this.BarOverlay.OnEvent("Click", this.OnDragBar.Bind(this))
+        this.BarCon.OnEvent("Click", this.OnDragBar.Bind(this))
+        this.BindScrollHotkey("~WheelUp", this.OnScrollWheel.Bind(this))
+        this.BindScrollHotkey("~WheelDown", this.OnScrollWheel.Bind(this))
+        this.BindScrollHotkey("~+WheelUp", this.OnScrollWheel.Bind(this))
+        this.BindScrollHotkey("~+WheelDown", this.OnScrollWheel.Bind(this))
     }
 
     SwitchTab(tableItem) {
         this.tableItem := tableItem
         this.ContentHeight := tableItem.UnderPosY - this.BaseOffsetY
-        this.ContentHeight := 800
+        this.BarHeight := (this.GuiHeight / this.ContentHeight) * this.GuiHeight
+        this.BarMaxPosY := this.GuiHeight - this.BarHeight
+        this.CurBarOffsetPosY := this.tableItem.SliderValue * this.BarMaxPosY
         this.ShowSlider := this.ContentHeight > this.GuiHeight
         this.AreaCon.Visible := this.ShowSlider
         this.BarCon.Visible := this.ShowSlider
-        this.BarHeight := (this.GuiHeight / this.ContentHeight) * this.GuiHeight
-        this.BarMaxPosY := this.GuiHeight - this.BarHeight
-        this.CurBarPosY := this.tableItem.SliderValue * this.BarMaxPosY
-
         if (!this.ShowSlider)
             return
 
         this.AreaCon.GetPos(&Ax, &Ay, &Aw, &Ah)
         this.BarCon.GetPos(&Bx, &By, &Bw, &Bh)
-        PosY := Ay + this.CurBarPosY
-        this.BarCon.Move(Ax, PosY, , this.BarHeight)
-        this.BarOverlay.Move(Ax - 2, PosY, , this.BarHeight)
+        PosY := Ay + this.CurBarOffsetPosY + this.Vindent
+        this.BarCon.Move(Ax + this.Hindent, PosY, Aw - this.Hindent * 2, this.BarHeight)
     }
 
     OnValueChange() {
-        ; ToolTip("fjei")
+        RefreshTabContent(this.tableItem)
+    }
+
+    BindScrollHotkey(key, action) {
+        HotIfWinActive("RMTv")
+        Hotkey(key, action)
+        HotIfWinActive
+    }
+
+    OnScrollWheel(*) {
+        ;主界面评论范围不能滑动
+        WinPosArr := GetWinPos()
+        if (WinPosArr[1] >= 300 && WinPosArr[1] <= 600)
+            if (WinPosArr[2] >= 35 && WinPosArr[2] <= 525)
+                return
+    
+        isDown := InStr(A_ThisHotkey, "Down") ? true : false
+        scrollValue := isDown ? 30 : -30
+        this.AreaCon.GetPos(&Ax, &Ay, &Aw, &Ah)
+        this.BarCon.GetPos(&Bx, &By, &Bw, &Bh)
+        NewY := By + scrollValue
+        NewY := Max(NewY, Ay + this.Vindent)
+        NewY := Min(NewY, Ay + this.Vindent + this.BarMaxPosY)
+        if (By == NewY)
+            return
+        this.BarCon.Move(Bx, NewY)
+        this.CurBarOffsetPosY := NewY - Ay - this.Vindent
+        this.tableItem.SliderValue := this.CurBarOffsetPosY / this.BarMaxPosY
+        this.tableItem.OffSetPosY := this.ContentHeight * this.tableItem.SliderValue + this.BaseOffsetY
+        this.OnValueChange()
     }
 
     OnDragBar(*) {
-        ToolTip("Clck")
+        ToolTip("Clck" A_TickCount)
         this.IsDragging := true
         MouseGetPos(&StartX, &StartY)
-        this.BarOverlay.GetPos(&Bx, &By, &Bw, &Bh)
+        this.BarCon.GetPos(&Bx, &By, &Bw, &Bh)
         this.DragOffsetPosY := StartY - By
+        SetTimer(this.DragAction, 16)
+    }
 
-        loop {
-            Sleep(30)
-            ; 如果鼠标左键释放，停止拖拽
-            if (!GetKeyState("LButton")) {
-                break
-            }
-
-            MouseGetPos(&CurrentX, &CurrentY)
-            this.AreaCon.GetPos(&Ax, &Ay, &Aw, &Ah)
-            this.BarOverlay.GetPos(&Bx, &By, &Bw, &Bh)
-            NewY := CurrentY - this.DragOffsetPosY
-            if (By != NewY) {
-                ToolTip("123")
-                ; 更新文本位置
-                this.BarOverlay.Move(Ax - 2, NewY)
-                this.BarCon.Move(Ax, NewY)
-                this.CurBarPosY := NewY - Ay
-                this.tableItem.SliderValue := this.CurBarPosY / this.BarMaxPosY
-                this.tableItem.OffSetPosY := this.ContentHeight * this.tableItem.SliderValue + this.BaseOffsetY
-                this.OnValueChange()
-            }
+    DragHandler() {
+        if (!GetKeyState("LButton") || !this.IsDragging) {
+            this.IsDragging := false
+            SetTimer(this.DragAction, 0)
+            return
         }
+
+        MouseGetPos(&CurrentX, &CurrentY)
+        this.AreaCon.GetPos(&Ax, &Ay, &Aw, &Ah)
+        this.BarCon.GetPos(&Bx, &By, &Bw, &Bh)
+        NewY := CurrentY - this.DragOffsetPosY
+        NewY := Max(NewY, Ay + this.Vindent)
+        NewY := Min(NewY, Ay + this.Vindent + this.BarMaxPosY)
+        if (By == NewY)
+            return
+        this.BarCon.Move(Bx, NewY)
+        this.CurBarOffsetPosY := NewY - Ay - this.Vindent
+        this.tableItem.SliderValue := this.CurBarOffsetPosY / this.BarMaxPosY
+        this.tableItem.OffSetPosY := this.ContentHeight * this.tableItem.SliderValue + this.BaseOffsetY
+        this.OnValueChange()
     }
 }

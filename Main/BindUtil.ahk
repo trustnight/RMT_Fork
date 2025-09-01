@@ -9,10 +9,10 @@ BindKey() {
     BindShortcut(ToolCheckInfo.ScreenShotHotKey, OnToolScreenShot)
     BindShortcut(ToolCheckInfo.FreePasteHotKey, OnToolFreePaste)
     BindShortcut(ToolCheckInfo.ToolRecordMacroHotKey, OnHotToolRecordMacro)
-    BindScrollHotkey("~WheelUp", OnChangeSrollValue)
-    BindScrollHotkey("~WheelDown", OnChangeSrollValue)
-    BindScrollHotkey("~+WheelUp", OnChangeSrollValue)
-    BindScrollHotkey("~+WheelDown", OnChangeSrollValue)
+    ; BindScrollHotkey("~WheelUp", OnChangeSrollValue)
+    ; BindScrollHotkey("~WheelDown", OnChangeSrollValue)
+    ; BindScrollHotkey("~+WheelUp", OnChangeSrollValue)
+    ; BindScrollHotkey("~+WheelDown", OnChangeSrollValue)
     BindTabHotKey()
     BindSave()
     OnExit(OnExitSoft)
@@ -101,6 +101,25 @@ OnToolCheckHotkey(*) {
     }
     else
         ToolCheckInfo.MouseInfoTimer := ""
+}
+
+SetToolCheckInfo() {
+    global ToolCheckInfo
+    CoordMode("Mouse", "Screen")
+    MouseGetPos &mouseX, &mouseY, &winId
+    try {
+        ToolCheckInfo.PosStr := mouseX . "," . mouseY
+        ToolCheckInfo.ProcessName := WinGetProcessName(winId)
+        ToolCheckInfo.ProcessTile := WinGetTitle(winId)
+        ToolCheckInfo.ProcessPid := WinGetPID(winId)
+        ToolCheckInfo.ProcessClass := WinGetClass(winId)
+        ToolCheckInfo.ProcessId := winId
+        ToolCheckInfo.Color := StrReplace(PixelGetColor(mouseX, mouseY, "Slow"), "0x", "")
+
+        WinPosArr := GetWinPos()
+        ToolCheckInfo.WinPosStr := WinPosArr[1] . "," . WinPosArr[2]
+        RefreshToolUI()
+    }
 }
 
 OnClickToolRecordSettingBtn(*) {

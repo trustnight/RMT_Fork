@@ -114,9 +114,9 @@ class ExVariableGui {
         PosY += 35
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 550),
-        "使用&&x代替数字变量位置，使用&&c代替文本变量位置`n形如：`"坐标(&&x,&&x)`"可以提取`"坐标(10.5,8.6)`"中的10.5和8.6到变量1和变量2")
+        "提取文本：空内容时，屏幕/剪切板所有文本信息保存到变量中`n提取文本：&&x表示数字变量，&&c表示文本变量`n提取文本：形如`"坐标(&&x,&&x)`"可以提取`"坐标(10.5,8.6)`"中的10.5和8.6到变量1和变量2")
 
-        PosY += 45
+        PosY += 65
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "提取文本：")
         this.ExtractStrCon := MyGui.Add("Edit", Format("x{} y{} w{}", PosX + 75, PosY - 5, 250), "")
@@ -182,7 +182,7 @@ class ExVariableGui {
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
 
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 600, 405))
+        MyGui.Show(Format("w{} h{}", 600, 425))
     }
 
     Init(cmd) {
@@ -288,25 +288,33 @@ class ExVariableGui {
             TextObjs := TextObjs == "" ? [] : TextObjs
         }
         else {
+            TextObjs := []
             if (!IsClipboardText())
                 return
-            TextObjs := []
+
             obj := Object()
             obj.Text := A_Clipboard
             TextObjs.Push(obj)
         }
 
+        allText := ""
+        for _, value in TextObjs {
+            allText .= value.text "`n"
+        }
+        allText := Trim(allText)
+
         NameArr := []
         ValueArr := []
         for _, value in TextObjs {
-            baseVariableArr := ExtractNumbers(value.Text, Data.ExtractStr)
-            if (baseVariableArr == "")
+            VariableValueArr := ExtractNumbers(value.Text, Data.ExtractStr)
+            VariableValueArr := Data.ExtractStr == "" && allText != "" ? [allText] : VariableValueArr
+            if (VariableValueArr == "")
                 continue
 
-            loop baseVariableArr.Length {
+            loop VariableValueArr.Length {
                 if (Data.ToggleArr[A_Index]) {
                     NameArr.Push(Data.VariableArr[A_Index])
-                    ValueArr.Push(baseVariableArr[A_Index])
+                    ValueArr.Push(VariableValueArr[A_Index])
                 }
             }
             break
