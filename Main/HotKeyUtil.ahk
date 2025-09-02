@@ -312,12 +312,19 @@ OnCompare(tableItem, cmd, index) {
         }
         else {
             hasValue := TryGetVariableValue(&Value, tableItem, index, Data.NameArr[A_Index])
-            hasOtherValue := TryGetVariableValue(&OtherValue, tableItem, index, Data.VariableArr[A_Index])
+            if (Data.CompareTypeArr[A_Index] == 6) {  ;字符包含的时候可以直接使用字符
+                hasOtherValue := TryGetVariableValue(&OtherValue, tableItem, index, Data.VariableArr[A_Index], false)
+                OtherValue := hasOtherValue ? OtherValue : Data.VariableArr[A_Index]
+                hasOtherValue := true
+            }
+            else {
+                hasOtherValue := TryGetVariableValue(&OtherValue, tableItem, index, Data.VariableArr[A_Index])
+            }
+
             if (!hasValue || !hasOtherValue) {
                 return
             }
 
-            currentComparison := false
             switch Data.CompareTypeArr[A_Index] {
                 case 1: currentComparison := Value > OtherValue
                 case 2: currentComparison := Value >= OtherValue
@@ -427,13 +434,16 @@ OnOutput(tableItem, cmd, index) {
     else if (Data.OutputType == 4) {    ;提示
         MyToolTipContent(Content)
     }
-    else if (Data.OutputType == 5) {    ;剪切板
+    else if (Data.OutputType == 5) {    ;指令窗口
+        MyCMDReportAciton(Content)
+    }
+    else if (Data.OutputType == 6) {    ;剪切板
         A_Clipboard := Content
     }
-    else if (Data.OutputType == 6) {    ;弹窗
+    else if (Data.OutputType == 7) {    ;弹窗
         MyMsgBoxContent(Content)
     }
-    else if (Data.OutputType == 7) {    ;语音
+    else if (Data.OutputType == 8) {    ;语音
         spovice := ComObject("sapi.spvoice")
         spovice.Speak(Content)
     }
@@ -531,6 +541,15 @@ OnExVariable(tableItem, cmd, index) {
     Data := GetMacroCMDData(ExVariableFile, paramArr[2])
     count := Data.SearchCount
     interval := Data.SearchInterval
+
+    ;变量初始化默认值0
+    loop 4 {
+        if (Data.ToggleArr[A_Index]) {
+            name := Data.VariableArr[A_Index]
+            value := 0
+            MySetGlobalVariable(name, Value, true)
+        }
+    }
 
     if (Data.SearchCount == -1) {
         return OnExVariableOnce(tableItem, index, Data)

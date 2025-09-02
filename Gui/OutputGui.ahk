@@ -54,7 +54,7 @@ class OutputGui {
         MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 80, 20), "输出类型:")
         PosX += 80
         this.OutputTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX, PosY - 5, 110), ["发送内容",
-            "粘贴", "Win粘贴", "临时提示", "复制到剪切板", "软件弹窗", "系统语音"])
+            "粘贴", "Win粘贴", "临时提示", "指令窗口", "复制到剪切板", "软件弹窗", "系统语音"])
         this.OutputTypeCon.Value := 1
         this.OutputTypeCon.OnEvent("Change", this.OnChangeType.Bind(this))
 
