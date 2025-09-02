@@ -52,7 +52,7 @@ class ItemConInfo {
     }
 
     UpdatePos(offsetPosY) {
-        this.Con.Move(this.OriPosX, this.OriPosY + offsetPosY)
+        this.Con.Move(this.OriPosX, this.OriPosY - offsetPosY)
     }
 }
 

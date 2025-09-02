@@ -4,7 +4,7 @@ class VerticalSlider {
     __new() {
         this.tableItem := ""
         this.BaseOffsetY := 45      ;基础偏移值
-        this.GuiHeight := 500       ;区域高度
+        this.AeraHeight := 500       ;区域高度
         this.ContentHeight := ""    ;内容高度
         this.BarHeight := 500       ;滑动棒的高度
         this.BarMaxPosY := ""       ;滑动棒最大移动位置y
@@ -21,7 +21,7 @@ class VerticalSlider {
         this.Hindent := Hindent
         this.Vindent := Vindent
         this.AreaCon.GetPos(&Ax, &Ay, &Aw, &Ah)
-        this.GuiHeight := Ah - 2 * this.Vindent
+        this.AeraHeight := Ah - 2 * this.Vindent
     }
 
     SetSliderCon(AreaCon, BarCon) {
@@ -37,10 +37,10 @@ class VerticalSlider {
     SwitchTab(tableItem) {
         this.tableItem := tableItem
         this.ContentHeight := tableItem.UnderPosY - this.BaseOffsetY
-        this.BarHeight := (this.GuiHeight / this.ContentHeight) * this.GuiHeight
-        this.BarMaxPosY := this.GuiHeight - this.BarHeight
+        this.BarHeight := ((this.AeraHeight + 2 * this.Vindent) / this.ContentHeight) * this.AeraHeight
+        this.BarMaxPosY := this.AeraHeight - this.BarHeight
         this.CurBarOffsetPosY := this.tableItem.SliderValue * this.BarMaxPosY
-        this.ShowSlider := this.ContentHeight > this.GuiHeight
+        this.ShowSlider := this.ContentHeight > this.AeraHeight
         this.AreaCon.Visible := this.ShowSlider
         this.BarCon.Visible := this.ShowSlider
         if (!this.ShowSlider)
@@ -52,8 +52,8 @@ class VerticalSlider {
         this.BarCon.Move(Ax + this.Hindent, PosY, Aw - this.Hindent * 2, this.BarHeight)
     }
 
-    OnValueChange() {
-        RefreshTabContent(this.tableItem)
+    OnValueChange(isDown) {
+        RefreshTabContent(this.tableItem, isDown)
     }
 
     BindScrollHotkey(key, action) {
@@ -68,25 +68,28 @@ class VerticalSlider {
         if (WinPosArr[1] >= 300 && WinPosArr[1] <= 600)
             if (WinPosArr[2] >= 35 && WinPosArr[2] <= 525)
                 return
-    
+
         isDown := InStr(A_ThisHotkey, "Down") ? true : false
-        scrollValue := isDown ? 30 : -30
+        value := 80
+        if ((value / this.BarMaxPosY) * (this.ContentHeight - this.AeraHeight - 2 * this.Vindent) >= 420) {
+            value := (420 / (this.ContentHeight - this.AeraHeight - 2 * this.Vindent)) * this.BarMaxPosY
+        }
+        scrollValue := isDown ? value : -value
         this.AreaCon.GetPos(&Ax, &Ay, &Aw, &Ah)
         this.BarCon.GetPos(&Bx, &By, &Bw, &Bh)
         NewY := By + scrollValue
         NewY := Max(NewY, Ay + this.Vindent)
         NewY := Min(NewY, Ay + this.Vindent + this.BarMaxPosY)
-        if (By == NewY)
+        if (Integer(By) == Ceil(NewY) || Integer(By) == Floor(NewY))
             return
         this.BarCon.Move(Bx, NewY)
         this.CurBarOffsetPosY := NewY - Ay - this.Vindent
         this.tableItem.SliderValue := this.CurBarOffsetPosY / this.BarMaxPosY
-        this.tableItem.OffSetPosY := this.ContentHeight * this.tableItem.SliderValue + this.BaseOffsetY
-        this.OnValueChange()
+        this.tableItem.OffSetPosY := (this.ContentHeight - this.AeraHeight - 2 * this.Vindent) * this.tableItem.SliderValue
+        this.OnValueChange(isDown)
     }
 
     OnDragBar(*) {
-        ToolTip("Clck" A_TickCount)
         this.IsDragging := true
         MouseGetPos(&StartX, &StartY)
         this.BarCon.GetPos(&Bx, &By, &Bw, &Bh)
@@ -107,12 +110,13 @@ class VerticalSlider {
         NewY := CurrentY - this.DragOffsetPosY
         NewY := Max(NewY, Ay + this.Vindent)
         NewY := Min(NewY, Ay + this.Vindent + this.BarMaxPosY)
-        if (By == NewY)
+        isDown := NewY > By ? true : false
+        if (Integer(By) == Ceil(NewY) || Integer(By) == Floor(NewY))
             return
         this.BarCon.Move(Bx, NewY)
         this.CurBarOffsetPosY := NewY - Ay - this.Vindent
         this.tableItem.SliderValue := this.CurBarOffsetPosY / this.BarMaxPosY
-        this.tableItem.OffSetPosY := this.ContentHeight * this.tableItem.SliderValue + this.BaseOffsetY
-        this.OnValueChange()
+        this.tableItem.OffSetPosY := (this.ContentHeight - this.AeraHeight - 2 * this.Vindent) * this.tableItem.SliderValue
+        this.OnValueChange(isDown)
     }
 }
