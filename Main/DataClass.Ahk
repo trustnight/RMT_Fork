@@ -39,6 +39,7 @@ class TableItem {
         this.SliderValue := 0       ;   滑动值
         this.OffSetPosY := 0        ;   偏移值
         this.AllConArr := []
+        this.AllGroup := []
         this.IsWorkIndexArr := []        ;work正在执行中
     
         this.FoldInfo := ""  ;折叠筐保存信息

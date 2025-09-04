@@ -68,11 +68,11 @@ class VerticalSlider {
         PosY := Ay + this.CurBarOffsetPosY + this.Vindent
         this.BarCon.Move(Ax + this.Hindent, PosY, Aw - this.Hindent * 2, this.BarHeight)
         this.tableItem.OffSetPosY := (this.ContentHeight - this.AeraHeight - 2 * this.Vindent) * this.tableItem.SliderValue
-        RefreshTabContent(this.tableItem, true)
+        UpdateItemConPos(this.tableItem, true)
     }
 
     OnValueChange(isDown) {
-        RefreshTabContent(this.tableItem, isDown)
+        UpdateItemConPos(this.tableItem, isDown)
     }
 
     BindScrollHotkey(key, action) {
@@ -82,6 +82,9 @@ class VerticalSlider {
     }
 
     OnScrollWheel(*) {
+        if (!this.ShowSlider)
+            return
+    
         ;主界面评论范围不能滑动
         WinPosArr := GetWinPos()
         if (WinPosArr[1] >= 300 && WinPosArr[1] <= 600)

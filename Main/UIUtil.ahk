@@ -31,7 +31,7 @@ OnOpen() {
 }
 
 RefreshGui() {
-    MySoftData.MyGui.Show(Format("w{} h{} center", 1060, 540))
+    MySoftData.MyGui.Show(Format("w{} h{} center", 1070, 540))
 }
 
 RefreshToolUI() {
@@ -71,8 +71,8 @@ AddUI() {
 
 AddSliderUI() {
     MyGui := MySoftData.MyGui
-    areaCon := MyGui.Add("Pic", Format("x{} y{} w{} h{} +Background0x{}", 1030, 37, 15, 491, "d1d1d1"), "")
-    barCon := MyGui.Add("Text", Format("x{} y{} w{} h{} +Background0x{}", 1030, 37, 15, 250, "9f9f9f"), "")
+    areaCon := MyGui.Add("Pic", Format("x{} y{} w{} h{} +Background0x{}", 1045, 37, 15, 491, "d1d1d1"), "")
+    barCon := MyGui.Add("Text", Format("x{} y{} w{} h{} +Background0x{}", 1045, 37, 15, 250, "9f9f9f"), "")
     tableItem := MySoftData.TableInfo[MySoftData.TableIndex]
     MySlider.SetSliderCon(areaCon, barCon)
     MySlider.SetStyleParams(2, 2)
@@ -143,7 +143,7 @@ AddOperBtnUI() {
 }
 
 GetUIAddFunc(index) {
-    UIAddFuncArr := [LoadTabConent, LoadTabConent, LoadTabConent, LoadTabConent, LoadTabConent,
+    UIAddFuncArr := [LoadItemFold, LoadItemFold, LoadItemFold, LoadItemFold, LoadItemFold,
         AddToolUI, AddSettingUI, AddHelpUI, AddRewardUI]
     return UIAddFuncArr[index]
 }
