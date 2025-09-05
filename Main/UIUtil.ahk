@@ -128,10 +128,6 @@ AddOperBtnUI() {
     ReloadBtnCtrl.OnEvent("Click", MenuReload)
     posY += 40
 
-    MySoftData.BtnAdd := MyGui.Add("Button", Format("x{} y{} w{} h{} center", 15, posY, 100, 30), "新增宏")
-    MySoftData.BtnAdd.OnEvent("Click", OnAddTabItem)
-    posY += 40
-
     posY := 490
     MySoftData.BtnSave := MyGui.Add("Button", Format("x{} y{} w{} h{} center", 15, posY, 100, 30), "应用并保存")
     MySoftData.BtnSave.OnEvent("Click", OnSaveSetting)

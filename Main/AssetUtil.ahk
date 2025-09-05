@@ -544,6 +544,7 @@ GetTableItemDefaultInfo(index) {
         savedProcessNameStr := ""
         savedRemarkArrStr := "将l按键替换成其他按键"
         savedTriggerTypeStr := "1"
+        savedLoopCountStr := "1"
         savedSerialeArrStr := "000005"
     }
     return [savedTKArrStr, savedHoldTimeArrStr, savedModeArrStr, savedForbidArrStr,
