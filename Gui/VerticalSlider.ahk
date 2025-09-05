@@ -36,7 +36,7 @@ class VerticalSlider {
 
     SwitchTab(tableItem) {
         this.tableItem := tableItem
-        this.ContentHeight := tableItem.UnderPosY - this.BaseOffsetY + 5
+        this.UpdateContentHeight()
         this.BarHeight := ((this.AeraHeight + 2 * this.Vindent) / this.ContentHeight) * this.AeraHeight
         this.BarMaxPosY := this.AeraHeight - this.BarHeight
         this.CurBarOffsetPosY := this.tableItem.SliderValue * this.BarMaxPosY
@@ -53,20 +53,7 @@ class VerticalSlider {
     }
 
     RefreshTab() {
-        this.ContentHeight := this.tableItem.UnderPosY - this.BaseOffsetY + 5
-        this.BarHeight := ((this.AeraHeight + 2 * this.Vindent) / this.ContentHeight) * this.AeraHeight
-        this.BarMaxPosY := this.AeraHeight - this.BarHeight
-        this.CurBarOffsetPosY := this.tableItem.SliderValue * this.BarMaxPosY
-        this.ShowSlider := this.ContentHeight > this.AeraHeight
-        this.AreaCon.Visible := this.ShowSlider
-        this.BarCon.Visible := this.ShowSlider
-        if (!this.ShowSlider)
-            return
-
-        this.AreaCon.GetPos(&Ax, &Ay, &Aw, &Ah)
-        this.BarCon.GetPos(&Bx, &By, &Bw, &Bh)
-        PosY := Ay + this.CurBarOffsetPosY + this.Vindent
-        this.BarCon.Move(Ax + this.Hindent, PosY, Aw - this.Hindent * 2, this.BarHeight)
+        this.SwitchTab(this.tableItem)
         this.tableItem.OffSetPosY := (this.ContentHeight - this.AeraHeight - 2 * this.Vindent) * this.tableItem.SliderValue
         UpdateItemConPos(this.tableItem, true)
     }
@@ -84,7 +71,7 @@ class VerticalSlider {
     OnScrollWheel(*) {
         if (!this.ShowSlider)
             return
-    
+
         ;主界面评论范围不能滑动
         WinPosArr := GetWinPos()
         if (WinPosArr[1] >= 300 && WinPosArr[1] <= 600)
@@ -140,5 +127,13 @@ class VerticalSlider {
         this.tableItem.SliderValue := this.CurBarOffsetPosY / this.BarMaxPosY
         this.tableItem.OffSetPosY := (this.ContentHeight - this.AeraHeight - 2 * this.Vindent) * this.tableItem.SliderValue
         this.OnValueChange(isDown)
+    }
+
+    UpdateContentHeight() {
+        height := this.tableItem.UnderPosY - this.BaseOffsetY + 5
+        for index, value in this.tableItem.FoldOffsetArr {
+            height += value
+        }
+        this.ContentHeight := height
     }
 }

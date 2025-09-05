@@ -5,91 +5,84 @@ LoadItemFold(index) {
     FoldInfo := tableItem.FoldInfo
     MyGui := MySoftData.MyGui
     tableItem.UnderPosY := MySoftData.TabPosY
+    tableItem.FoldOffsetArr := []
+    tableItem.FoldBtnArr := []
     UpdateUnderPosY(index, 30)
     for foldIndex, IndexSpanStr in FoldInfo.IndexSpanArr {
+        tableItem.FoldOffsetArr.Push(0)
         GroupHeight := GetFoldGroupHeight(FoldInfo, foldIndex)
         con := MyGui.Add("GroupBox", Format("x{} y{} w900 h{}", MySoftData.TabPosX + 10, tableItem.UnderPosY + 2,
             GroupHeight))
-        tableItem.AllConArr.Push(ItemConInfo(con))
+        tableItem.AllConArr.Push(ItemConInfo(con, tableItem, foldIndex, true))
         tableItem.AllGroup.Push(con)
         UpdateUnderPosY(index, 20)
 
         con := MyGui.Add("Text", Format("x{} y{}", MySoftData.TabPosX + 20, tableItem.UnderPosY + 2), "备注：")
-        tableItem.AllConArr.Push(ItemConInfo(con))
+        tableItem.AllConArr.Push(ItemConInfo(con, tableItem, foldIndex, true))
 
         con := MyGui.Add("Edit", Format("x{} y{} w150", MySoftData.TabPosX + 60, tableItem.UnderPosY), FoldInfo.RemarkArr[
             foldIndex])
-        tableItem.AllConArr.Push(ItemConInfo(con))
+        tableItem.AllConArr.Push(ItemConInfo(con, tableItem, foldIndex, true))
 
         con := MyGui.Add("Button", Format("x{} y{}", MySoftData.TabPosX + 230, tableItem.UnderPosY - 3), "新增宏")
-        tableItem.AllConArr.Push(ItemConInfo(con))
+        con.OnEvent("Click", OnItemAddMacroBtnClick.Bind(index, FoldInfo, foldIndex))
+        tableItem.AllConArr.Push(ItemConInfo(con, tableItem, foldIndex, true))
 
         con := MyGui.Add("Button", Format("x{} y{}", MySoftData.TabPosX + 300, tableItem.UnderPosY - 3), "新增模块")
         con.OnEvent("Click", OnItemAddFoldBtnClick.Bind(index, FoldInfo, foldIndex))
-        tableItem.AllConArr.Push(ItemConInfo(con))
+        tableItem.AllConArr.Push(ItemConInfo(con, tableItem, foldIndex, true))
 
         con := MyGui.Add("Button", Format("x{} y{}", MySoftData.TabPosX + 385, tableItem.UnderPosY - 3), "删除该模块")
         con.OnEvent("Click", OnItemDelFoldBtnClick.Bind(index, FoldInfo, foldIndex))
-        tableItem.AllConArr.Push(ItemConInfo(con))
+        tableItem.AllConArr.Push(ItemConInfo(con, tableItem, foldIndex, true))
 
         con := MyGui.Add("CheckBox", Format("x{} y{}", MySoftData.TabPosX + 490, tableItem.UnderPosY + 2), "禁用")
-        tableItem.AllConArr.Push(ItemConInfo(con))
+        tableItem.AllConArr.Push(ItemConInfo(con, tableItem, foldIndex, true))
 
         btnStr := FoldInfo.FoldStateArr[foldIndex] ? "🞃" : "❯"
         con := MyGui.Add("Button", Format("x{} y{} +BackgroundTrans", MySoftData.TabPosX + 840, tableItem.UnderPosY),
         btnStr)
         con.OnEvent("Click", OnFoldBtnClick.Bind(index, FoldInfo, foldIndex))
-        tableItem.AllConArr.Push(ItemConInfo(con))
+        tableItem.AllConArr.Push(ItemConInfo(con, tableItem, foldIndex, true))
+        tableItem.FoldBtnArr.Push(con)
 
-        UpdateUnderPosY(index, 40)
+        UpdateUnderPosY(index, 35)
         IndexSpan := StrSplit(IndexSpanStr, "-")
         if (!FoldInfo.FoldStateArr[foldIndex])
             continue
         if (!IsInteger(IndexSpan[1]) || !IsInteger(IndexSpan[2]))
             continue
 
-        LoadItemFoldTitle(index)
+        LoadItemFoldTitle(index, foldIndex, tableItem.UnderPosY)
+        UpdateUnderPosY(index, 25)
         loop IndexSpan[2] - IndexSpan[1] + 1 {
             curIndex := A_Index + IndexSpan[1] - 1
-            LoadTabItemUI(tableItem, curIndex, false)
+            LoadTabItemUI(tableItem, curIndex, foldIndex, tableItem.UnderPosY)
+            UpdateUnderPosY(index, 70)
         }
-        UpdateUnderPosY(index, 10)
+        UpdateUnderPosY(index, 5)
     }
 }
 
-LoadItemFoldTitle(index) {
+LoadItemFoldTitle(tableIndex, foldIndex, PosY) {
     global MySoftData
-    tableItem := MySoftData.TableInfo[index]
-    isNoTriggerKey := CheckIsNoTriggerKey(index)
+    tableItem := MySoftData.TableInfo[tableIndex]
+    isNoTriggerKey := CheckIsNoTriggerKey(tableIndex)
     offsetPosx := isNoTriggerKey ? -60 : 0
 
     MyGui := MySoftData.MyGui
-    con := MyGui.Add("Text", Format("x{} y{} w100", MySoftData.TabPosX + 30, tableItem.underPosY), "宏触发按键")
+    con := MyGui.Add("Text", Format("x{} y{} w100", MySoftData.TabPosX + 30, posY), "宏触发按键")
     con.Visible := !isNoTriggerKey
-    tableItem.AllConArr.Push(ItemConInfo(con))
+    tableItem.AllConArr.Push(ItemConInfo(con, tableItem, foldIndex))
 
-    con := MyGui.Add("Text", Format("x{} y{}", MySoftData.TabPosX + 130 + offsetPosx, tableItem.underPosY), "循环次数")
-    tableItem.AllConArr.Push(ItemConInfo(con))
-    con := MyGui.Add("Text", Format("x{} y{}", MySoftData.TabPosX + 215 + offsetPosx, tableItem.underPosY), "宏指令")
-    tableItem.AllConArr.Push(ItemConInfo(con))
-    con := MyGui.Add("Text", Format("x{} y{}", MySoftData.TabPosX + 525, tableItem.underPosY), "宏按键类型")
-    tableItem.AllConArr.Push(ItemConInfo(con))
-    con := MyGui.Add("Text", Format("x{} y{}", MySoftData.TabPosX + 700, tableItem.underPosY), "指定前台触发")
-    tableItem.AllConArr.Push(ItemConInfo(con))
-    UpdateUnderPosY(index, 25)
-}
-
-GetFoldGroupHeight(FoldInfo, index) {
-    height := 60
-    if (!FoldInfo.FoldStateArr[index])
-        return height
-    IndexSpan := StrSplit(FoldInfo.IndexSpanArr[index], "-")
-    if (!IsInteger(IndexSpan[1]) || !IsInteger(IndexSpan[2]))
-        return height
-
-    height := height + 30
-    height := height + (IndexSpan[2] - IndexSpan[1] + 1) * 70
-    return height
+    con := MyGui.Add("Text", Format("x{} y{}", MySoftData.TabPosX + 130 + offsetPosx, posY), "循环次数")
+    tableItem.AllConArr.Push(ItemConInfo(con, tableItem, foldIndex))
+    con := MyGui.Add("Text", Format("x{} y{}", MySoftData.TabPosX + 215 + offsetPosx, posY), "宏指令")
+    tableItem.AllConArr.Push(ItemConInfo(con, tableItem, foldIndex))
+    con := MyGui.Add("Text", Format("x{} y{}", MySoftData.TabPosX + 525, posY), "宏按键类型")
+    tableItem.AllConArr.Push(ItemConInfo(con, tableItem, foldIndex))
+    con := MyGui.Add("Text", Format("x{} y{}", MySoftData.TabPosX + 700, posY), "指定前台触发")
+    tableItem.AllConArr.Push(ItemConInfo(con, tableItem, foldIndex))
 }
 
 OnAddTabItem(*) {
@@ -115,13 +108,13 @@ OnAddTabItem(*) {
 
     MySoftData.TabCtrl.UseTab(TableIndex)
     itemIndex := tableItem.ModeArr.Length
-    LoadTabItemUI(tableItem, itemIndex, true)
+    ; LoadTabItemUI(tableItem, itemIndex, 1)  ;todo
     MySoftData.TabCtrl.UseTab()
     MySlider.RefreshTab()
     IniWrite(MySoftData.TabCtrl.Value, IniFile, IniSection, "TableIndex")
 }
 
-LoadTabItemUI(tableItem, itemIndex, isAdd) {
+LoadTabItemUI(tableItem, itemIndex, foldIndex, PosY) {
     MyGui := MySoftData.MyGui
     TabPosX := MySoftData.TabPosX
     tableIndex := tableItem.Index
@@ -135,98 +128,96 @@ LoadTabItemUI(tableItem, itemIndex, isAdd) {
     EditTriggerAction := isTriggerStr ? OnTableEditTriggerStr : OnTableEditTriggerKey
     EditTriggerAction := isTiming ? OnTableEditTiming : EditTriggerAction
     EditMacroAction := isMacro ? OnTableEditMacro : OnTableEditReplaceKey
-    HeightValue := 70
     InfoHeight := 60
 
-    colorCon := MyGui.Add("Pic", Format("x{} y{} w{} h27", TabPosX + 20, tableItem.underPosY, 29),
+    colorCon := MyGui.Add("Pic", Format("x{} y{} w{} h27", TabPosX + 20, posY, 29),
     "Images\Soft\GreenColor.png")
     colorCon.Visible := false
-    tableItem.AllConArr.Push(ItemConInfo(colorCon))
+    tableItem.AllConArr.Push(ItemConInfo(colorCon, tableItem, foldIndex))
 
-    IndexCon := MyGui.Add("Text", Format("x{} y{} w{} +BackgroundTrans", TabPosX + 20, tableItem.underPosY + 5,
+    IndexCon := MyGui.Add("Text", Format("x{} y{} w{} +BackgroundTrans", TabPosX + 20, posY + 5,
         30), ItemIndex ".")
-    tableItem.AllConArr.Push(ItemConInfo(IndexCon))
+    tableItem.AllConArr.Push(ItemConInfo(IndexCon, tableItem, foldIndex))
 
-    TriggerTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", TabPosX + 50, tableItem.underPosY, 70),
+    TriggerTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", TabPosX + 50, posY, 70),
     ["按下", "松开", "松止", "开关", "长按"])
-    TriggerTypeCon.Value := tableItem.TriggerTypeArr.Length >= ItemIndex ? tableItem.TriggerTypeArr[ItemIndex] : 1
+    TriggerTypeCon.Value := tableItem.TriggerTypeArr[ItemIndex]
     TriggerTypeCon.Enabled := isNormal
     TriggerTypeCon.Visible := isNoTriggerKey ? false : true
-    tableItem.AllConArr.Push(ItemConInfo(TriggerTypeCon))
+    tableItem.AllConArr.Push(ItemConInfo(TriggerTypeCon, tableItem, foldIndex))
 
-    TkCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", TabPosX + 20, tableItem.underPosY + 33, 100,),
+    TkCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", TabPosX + 20, posY + 33, 100,),
     "")
     TkCon.Visible := isNoTriggerKey ? false : true
-    TkCon.Value := tableItem.TKArr.Length >= ItemIndex ? tableItem.TKArr[ItemIndex] : ""
-    tableItem.AllConArr.Push(ItemConInfo(TkCon))
+    TkCon.Value := tableItem.TKArr[ItemIndex]
+    tableItem.AllConArr.Push(ItemConInfo(TkCon, tableItem, foldIndex))
 
     LoopCon := MyGui.Add("ComboBox", Format("x{} y{} w60 R5 center", TabPosX + 125 - subMacroWidth,
-        tableItem.underPosY),
+        posY),
     ["无限"])
-    conValue := tableItem.LoopCountArr.Length >= ItemIndex ? tableItem.LoopCountArr[ItemIndex] : "1"
+    conValue := tableItem.LoopCountArr[ItemIndex]
     conValue := conValue == "-1" ? "无限" : conValue
     LoopCon.Text := conValue
     LoopCon.Enabled := isMacro
-    tableItem.AllConArr.Push(ItemConInfo(LoopCon))
+    tableItem.AllConArr.Push(ItemConInfo(LoopCon, tableItem, foldIndex))
 
     btnStr := isTiming ? "定时" : "触发键"
-    TKBtnCon := MyGui.Add("Button", Format("x{} y{} w60", TabPosX + 125 - subMacroWidth, tableItem.underPosY +
+    TKBtnCon := MyGui.Add("Button", Format("x{} y{} w60", TabPosX + 125 - subMacroWidth, posY +
         30), btnStr)
     TKBtnCon.OnEvent("Click", GetTableClosureAction(EditTriggerAction, tableItem, ItemIndex))
     TKBtnCon.Enabled := !isSubMacro
-    tableItem.AllConArr.Push(ItemConInfo(TKBtnCon))
+    tableItem.AllConArr.Push(ItemConInfo(TKBtnCon, tableItem, foldIndex))
 
-    MacroCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", TabPosX + 190 - subMacroWidth, tableItem.underPosY,
+    MacroCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", TabPosX + 190 - subMacroWidth, posY,
         335 + subMacroWidth,
         InfoHeight), "")
-    MacroCon.Value := tableItem.MacroArr.Length >= ItemIndex ? tableItem.MacroArr[ItemIndex] : ""
-    tableItem.AllConArr.Push(ItemConInfo(MacroCon))
+    MacroCon.Value := tableItem.MacroArr[ItemIndex]
+    tableItem.AllConArr.Push(ItemConInfo(MacroCon, tableItem, foldIndex))
 
-    ModeCon := MyGui.Add("DropDownList", Format("x{} y{} w60 Center", TabPosX + 530, tableItem.underPosY), [
+    ModeCon := MyGui.Add("DropDownList", Format("x{} y{} w60 Center", TabPosX + 530, posY), [
         "虚拟", "拟真"])
     ModeCon.value := tableItem.ModeArr[ItemIndex]
-    tableItem.AllConArr.Push(ItemConInfo(ModeCon))
+    tableItem.AllConArr.Push(ItemConInfo(ModeCon, tableItem, foldIndex))
 
-    ForbidCon := MyGui.Add("Checkbox", Format("x{} y{}", TabPosX + 600, tableItem.underPosY + 4), "禁用")
+    ForbidCon := MyGui.Add("Checkbox", Format("x{} y{}", TabPosX + 600, posY + 4), "禁用")
     ForbidCon.value := tableItem.ForbidArr[ItemIndex]
-    tableItem.AllConArr.Push(ItemConInfo(ForbidCon))
+    tableItem.AllConArr.Push(ItemConInfo(ForbidCon, tableItem, foldIndex))
 
-    con := MyGui.Add("Text", Format("x{} y{} w60", TabPosX + 660, tableItem.underPosY + 4), "前台:")
-    tableItem.AllConArr.Push(ItemConInfo(con))
-    FrontCon := MyGui.Add("Edit", Format("x{} y{} w140", TabPosX + 700, tableItem.underPosY), "")
-    FrontCon.value := tableItem.FrontInfoArr.Length >= ItemIndex ? tableItem.FrontInfoArr[ItemIndex] :
-        ""
-    tableItem.AllConArr.Push(ItemConInfo(FrontCon))
+    con := MyGui.Add("Text", Format("x{} y{} w60", TabPosX + 660, posY + 4), "前台:")
+    tableItem.AllConArr.Push(ItemConInfo(con, tableItem, foldIndex))
+    FrontCon := MyGui.Add("Edit", Format("x{} y{} w140", TabPosX + 700, posY), "")
+    FrontCon.value := tableItem.FrontInfoArr[ItemIndex]
+    tableItem.AllConArr.Push(ItemConInfo(FrontCon, tableItem, foldIndex))
 
-    con := MyGui.Add("Button", Format("x{} y{} w40 h29", TabPosX + 842, tableItem.underPosY - 1), "编辑")
+    con := MyGui.Add("Button", Format("x{} y{} w40 h29", TabPosX + 842, posY - 1), "编辑")
     con.OnEvent("Click", OnItemEditFrontInfo.Bind(tableItem, ItemIndex))
-    tableItem.AllConArr.Push(ItemConInfo(con))
+    tableItem.AllConArr.Push(ItemConInfo(con, tableItem, foldIndex))
 
-    MacroBtnCon := MyGui.Add("Button", Format("x{} y{} w61", TabPosX + 530, tableItem.underPosY + 30),
+    MacroBtnCon := MyGui.Add("Button", Format("x{} y{} w61", TabPosX + 530, posY + 30),
     "宏指令")
     MacroBtnCon.OnEvent("Click", GetTableClosureAction(EditMacroAction, tableItem, ItemIndex))
-    tableItem.AllConArr.Push(ItemConInfo(MacroBtnCon))
+    tableItem.AllConArr.Push(ItemConInfo(MacroBtnCon, tableItem, foldIndex))
 
-    DelCon := MyGui.Add("Button", Format("x{} y{} w60", TabPosX + 595, tableItem.underPosY + 30),
+    DelCon := MyGui.Add("Button", Format("x{} y{} w60", TabPosX + 595, posY + 30),
     "删除")
     DelCon.OnEvent("Click", GetTableClosureAction(OnTableDelete, tableItem, ItemIndex))
-    tableItem.AllConArr.Push(ItemConInfo(DelCon))
+    tableItem.AllConArr.Push(ItemConInfo(DelCon, tableItem, foldIndex))
 
-    RemarkTipCon := MyGui.Add("Text", Format("x{} y{} w60", TabPosX + 660, tableItem.underPosY + 37), "备注:"
+    RemarkTipCon := MyGui.Add("Text", Format("x{} y{} w60", TabPosX + 660, posY + 37), "备注:"
     )
-    tableItem.AllConArr.Push(ItemConInfo(RemarkTipCon))
+    tableItem.AllConArr.Push(ItemConInfo(RemarkTipCon, tableItem, foldIndex))
 
-    RemarkCon := MyGui.Add("Edit", Format("x{} y{} w181", TabPosX + 700, tableItem.underPosY + 32), ""
+    RemarkCon := MyGui.Add("Edit", Format("x{} y{} w181", TabPosX + 700, posY + 32), ""
     )
-    RemarkCon.value := tableItem.RemarkArr.Length >= ItemIndex ? tableItem.RemarkArr[ItemIndex] : ""
-    tableItem.AllConArr.Push(ItemConInfo(RemarkCon))
+    RemarkCon.value := tableItem.RemarkArr[ItemIndex]
+    tableItem.AllConArr.Push(ItemConInfo(RemarkCon, tableItem, foldIndex))
 
-    con := MyGui.Add("Button", Format("x{} y{} w20 h28", TabPosX + 885, tableItem.underPosY), "↑")
+    con := MyGui.Add("Button", Format("x{} y{} w20 h28", TabPosX + 885, posY), "↑")
     con.OnEvent("Click", OnTableMoveUp.Bind(tableItem, ItemIndex))
-    tableItem.AllConArr.Push(ItemConInfo(con))
-    con := MyGui.Add("Button", Format("x{} y{} w20 h28", TabPosX + 885, tableItem.underPosY + 32), "↓")
+    tableItem.AllConArr.Push(ItemConInfo(con, tableItem, foldIndex))
+    con := MyGui.Add("Button", Format("x{} y{} w20 h28", TabPosX + 885, posY + 32), "↓")
     con.OnEvent("Click", OnTableMoveDown.Bind(tableItem, ItemIndex))
-    tableItem.AllConArr.Push(ItemConInfo(con))
+    tableItem.AllConArr.Push(ItemConInfo(con, tableItem, foldIndex))
 
     tableItem.MacroBtnConArr.Push(MacroBtnCon)
     tableItem.RemarkConArr.Push(RemarkCon)
@@ -243,25 +234,65 @@ LoadTabItemUI(tableItem, itemIndex, isAdd) {
     tableItem.ColorConArr.push(colorCon)
     tableItem.ColorStateArr.push(0)
     tableItem.TriggerTypeConArr.Push(TriggerTypeCon)
-    UpdateUnderPosY(tableIndex, HeightValue)
 }
 
 ;按钮事件
-OnItemAddMacroBtnClick(tableIndex, foldInfo, index, *) {
-    IndexSpanStr := foldInfo.IndexSpanArr[index]
-    IndexSpan := StrSplit(IndexSpanStr, "-")
-    if (!IsInteger(IndexSpan[1]) || !IsInteger(IndexSpan[2])) {
-        foldInfo.IndexSpanArr[index] :=
+OnItemAddMacroBtnClick(tableIndex, foldInfo, foldIndex, *) {
+    isFirst := foldInfo.IndexSpanArr[foldIndex] == "无-无"
+    curIndex := UpdateFoldInfo(foldInfo, foldIndex, true)
+    tableItem := MySoftData.TableInfo[TableIndex]
+    tableItem.TKArr.InsertAt(curIndex, "")
+    tableItem.TriggerTypeArr.InsertAt(curIndex, 1)
+    tableItem.MacroArr.InsertAt(curIndex, "")
+    tableItem.ModeArr.InsertAt(curIndex, 1)
+    tableItem.ForbidArr.InsertAt(curIndex, 0)
+    tableItem.FrontInfoArr.InsertAt(curIndex, "")
+    tableItem.RemarkArr.InsertAt(curIndex, "")
+    tableItem.LoopCountArr.InsertAt(curIndex, "1")
+    tableItem.HoldTimeArr.InsertAt(curIndex, 500)
+    tableItem.SerialArr.InsertAt(curIndex, FormatTime(, "HHmmss"))
+    tableItem.TimingSerialArr.InsertAt(curIndex, GetSerialStr("Timing"))
+    tableItem.IsWorkIndexArr.InsertAt(curIndex, 0)
+
+    PosY := 1000000
+    for index, value in tableItem.AllConArr {
+        if (foldIndex == value.FoldIndex && PosY > value.OriPosY)
+            PosY := value.OriPosY
     }
 
+    PosY += 55
+    if (isFirst) {
+
+        MySoftData.TabCtrl.UseTab(tableIndex)
+        LoadItemFoldTitle(tableIndex, foldIndex, PosY)
+        LoadTabItemUI(tableItem, curIndex, foldIndex, PosY + 25)
+        MySoftData.TabCtrl.UseTab()
+    }
+    else {
+        IndexSpan := StrSplit(foldInfo.IndexSpanArr[foldIndex], "-")
+        PosY += (IndexSpan[2] - IndexSpan[1]) * 70 + 25
+        MySoftData.TabCtrl.UseTab(tableIndex)
+        LoadTabItemUI(tableItem, curIndex, foldIndex, PosY)
+        MySoftData.TabCtrl.UseTab()
+    }
+
+    afterHei := GetFoldGroupHeight(foldInfo, foldIndex)
+    tableItem.AllGroup[foldIndex].Move(, , , afterHei)
+
+    addHei := isFirst ? 100 : 70
+    tableItem.FoldOffsetArr[foldIndex] += addHei
+    MySlider.RefreshTab()
 }
 
 OnItemAddFoldBtnClick(tableIndex, foldInfo, index, *) {
     foldInfo.RemarkArr.InsertAt(index + 1, "")
     foldInfo.IndexSpanArr.InsertAt(index + 1, "无-无")
     foldInfo.FoldStateArr.InsertAt(index + 1, true)
+    tableItem := MySoftData.TableInfo[tableIndex]
 
-    RefreshTabContent(tableIndex)
+    ; RefreshTabContent(tableIndex)
+    MySlider.SwitchTab(tableItem)
+    UpdateItemConPos(tableItem, true)
 }
 
 OnItemDelFoldBtnClick(tableIndex, foldInfo, index, *) {
@@ -271,16 +302,26 @@ OnItemDelFoldBtnClick(tableIndex, foldInfo, index, *) {
     foldInfo.RemarkArr.RemoveAt(index)
     foldInfo.IndexSpanArr.RemoveAt(index)
     foldInfo.FoldStateArr.RemoveAt(index)
+    tableItem := MySoftData.TableInfo[tableIndex]
 
-    RefreshTabContent(tableIndex)
+    ; RefreshTabContent(tableIndex)
+    MySlider.SwitchTab(tableItem)
+    UpdateItemConPos(tableItem, true)
 }
 
 OnFoldBtnClick(tableIndex, foldInfo, index, *) {
     tableItem := MySoftData.TableInfo[tableIndex]
+    beforeHei := GetFoldGroupHeight(foldInfo, index)
     state := !foldInfo.FoldStateArr[index]
     foldInfo.FoldStateArr[index] := state
+    afterHei := GetFoldGroupHeight(foldInfo, index)
+    tableItem.FoldOffsetArr[index] += afterHei - beforeHei
 
-    RefreshTabContent(tableIndex)
+    btnStr := FoldInfo.FoldStateArr[index] ? "🞃" : "❯"
+    tableItem.FoldBtnArr[index].Text := btnStr
+
+    tableItem.AllGroup[index].Move(, , , afterHei)
+
     MySlider.SwitchTab(tableItem)
     UpdateItemConPos(tableItem, true)
 }
@@ -303,44 +344,96 @@ UpdateItemConPos(tableItem, isDown) {
     }
 }
 
-RefreshTabContent(tableIndex) {
-    tableItem := MySoftData.TableInfo[tableIndex]
-    for index, value in tableItem.AllConArr {
-        value.Con.Visible := false
-    }
-    tableItem.MacroBtnConArr := []
-    tableItem.RemarkConArr := []
-    tableItem.RemarkTipConArr := []
-    tableItem.LoopCountConArr := []
-    tableItem.TKConArr := []
-    tableItem.MacroConArr := []
-    tableItem.KeyBtnConArr := []
-    tableItem.DeleteBtnConArr := []
-    tableItem.ModeConArr := []
-    tableItem.ForbidConArr := []
-    tableItem.ProcessNameConArr := []
-    tableItem.IndexConArr := []
-    tableItem.ColorConArr := []
-    tableItem.ColorStateArr := []
-    tableItem.TriggerTypeConArr := []
-    tableItem.AllConArr := []
-    tableItem.AllGroup := []
+; RefreshTabContent(tableIndex) {
+;     tableItem := MySoftData.TableInfo[tableIndex]
+;     for index, value in tableItem.AllConArr {
+;         ; DestroyCtrl(value.Con)
+;         value.Con.Visible := false
+;     }
+;     tableItem.MacroBtnConArr := []
+;     tableItem.RemarkConArr := []
+;     tableItem.RemarkTipConArr := []
+;     tableItem.LoopCountConArr := []
+;     tableItem.TKConArr := []
+;     tableItem.MacroConArr := []
+;     tableItem.KeyBtnConArr := []
+;     tableItem.DeleteBtnConArr := []
+;     tableItem.ModeConArr := []
+;     tableItem.ForbidConArr := []
+;     tableItem.ProcessNameConArr := []
+;     tableItem.IndexConArr := []
+;     tableItem.ColorConArr := []
+;     tableItem.ColorStateArr := []
+;     tableItem.TriggerTypeConArr := []
+;     tableItem.AllConArr := []
+;     tableItem.AllGroup := []
 
-    MySoftData.TabCtrl.UseTab(tableIndex)
-    LoadItemFold(tableIndex)
-    MySoftData.TabCtrl.UseTab()
-}
+;     MySoftData.TabCtrl.UseTab(tableIndex)
+;     LoadItemFold(tableIndex)
+;     MySoftData.TabCtrl.UseTab()
+; }
 
-UpdateFoldInfo(FoldInfo, index, isAdd, isEntire) {
+UpdateFoldInfo(FoldInfo, Index, IsAdd) {
     curMaxItemIndex := 0
+    CurIndex := 0
     for foldIndex, IndexSpanStr in FoldInfo.IndexSpanArr {
-        if (index > foldIndex) {
-
+        IndexSpan := StrSplit(IndexSpanStr, "-")
+        if (foldIndex < Index) {
+            if (IsInteger(IndexSpan[1]) && IsInteger(IndexSpan[2])) {
+                curMaxItemIndex := IndexSpan[2]
+            }
             continue
         }
-        
+        if (foldIndex == Index) {
+            if (IsAdd) {
+                ;已经存在后面数字加1
+                if (IsInteger(IndexSpan[1]) && IsInteger(IndexSpan[2])) {
+                    IndexSpan[2] := IndexSpan[2] + 1
+                }
+                else {  ;不存在直接初始化
+                    IndexSpan[1] := curMaxItemIndex + 1
+                    IndexSpan[2] := curMaxItemIndex + 1
+                }
+                FoldInfo.IndexSpanArr[foldIndex] := IndexSpan[1] "-" IndexSpan[2]
+            }
+            else {
+                IndexSpan[2] := IndexSpan[2] - 1
+                if (IndexSpan[2] < IndexSpan[1]) {
+                    IndexSpan[1] := "无"
+                    IndexSpan[2] := "无"
+                }
+                FoldInfo.IndexSpanArr[foldIndex] := IndexSpan[1] "-" IndexSpan[2]
+            }
+            CurIndex := IndexSpan[2]
+        }
+        if (foldIndex > Index) {
+            Value := IsAdd ? 1 : -1
+            if (IsInteger(IndexSpan[1]) && IsInteger(IndexSpan[2])) {
+                IndexSpan[1] := IndexSpan[1] + Value
+                IndexSpan[2] := IndexSpan[2] + Value
+            }
+        }
     }
+    return CurIndex
 }
 
 ;封装方法
-; Get
+GetFoldGroupHeight(FoldInfo, index) {
+    height := 55
+    if (!FoldInfo.FoldStateArr[index])
+        return height
+    IndexSpan := StrSplit(FoldInfo.IndexSpanArr[index], "-")
+    if (!IsInteger(IndexSpan[1]) || !IsInteger(IndexSpan[2]))
+        return height
+
+    height := height + 30
+    height := height + (IndexSpan[2] - IndexSpan[1] + 1) * 70
+    return height
+}
+
+DestroyCtrl(ctrl) {
+    if ctrl && ctrl.Hwnd
+        DllCall("User32\DestroyWindow", "ptr", ctrl.Hwnd)
+    ; 立刻丢弃引用，防止后续误用
+    ctrl := ""
+}

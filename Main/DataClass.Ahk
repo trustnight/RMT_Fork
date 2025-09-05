@@ -41,8 +41,10 @@ class TableItem {
         this.AllConArr := []
         this.AllGroup := []
         this.IsWorkIndexArr := []        ;work正在执行中
-    
+
         this.FoldInfo := ""  ;折叠筐保存信息
+        this.FoldOffsetArr := []    ;和初始状态的高度偏移值
+        this.FoldBtnArr := []       ;折叠筐按钮
     }
 }
 
@@ -55,15 +57,35 @@ class ItemFoldInfo {
 }
 
 class ItemConInfo {
-    __New(Con) {
+    __New(Con, tableItem, FoldIndex, forceShow := false) {
         this.Con := Con
+        this.tableItem := tableItem
+        this.FoldOffsetArr := tableItem.FoldOffsetArr
+        this.FoldInfo := tableItem.FoldInfo
+        this.FoldIndex := FoldIndex
+        this.ForceShow := ForceShow
         this.Con.GetPos(&PosX, &PosY)
         this.OriPosX := PosX
         this.OriPosY := PosY
     }
 
     UpdatePos(offsetPosY) {
-        this.Con.Move(this.OriPosX, this.OriPosY - offsetPosY)
+        try {
+            isHide := !this.FoldInfo.FoldStateArr[this.FoldIndex]
+            if (isHide && !this.ForceShow) {
+                this.Con.Move(this.OriPosX, -10000)
+                return
+            }
+            PosY := 0
+            for index, value in this.FoldOffsetArr {
+                if (index >= this.FoldIndex)
+                    break
+                PosY += value
+            }
+
+            PosY := PosY + this.OriPosY - offsetPosY
+            this.Con.Move(this.OriPosX, PosY)
+        }
     }
 }
 

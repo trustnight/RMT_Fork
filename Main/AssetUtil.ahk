@@ -368,7 +368,7 @@ ReadTableItemInfo(index) {
     savedTKArrStr := IniRead(MacroFile, IniSection, symbol "TKArr", "")
     savedModeArrStr := IniRead(MacroFile, IniSection, symbol "ModeArr", "")
     savedForbidArrStr := IniRead(MacroFile, IniSection, symbol "ForbidArr", "")
-    savedProcessNameStr := IniRead(MacroFile, IniSection, symbol "FrontInfoArr", "")
+    savedFrontInfoArrStr := IniRead(MacroFile, IniSection, symbol "FrontInfoArr", "")
     savedRemarkArrStr := IniRead(MacroFile, IniSection, symbol "RemarkArr", "")
     savedLoopCountStr := IniRead(MacroFile, IniSection, symbol "LoopCountArr", "")
     savedHoldTimeArrStr := IniRead(MacroFile, IniSection, symbol "HoldTimeArr", "")
@@ -386,8 +386,8 @@ ReadTableItemInfo(index) {
             savedModeArrStr := defaultInfo[3]
         if (savedForbidArrStr == "")
             savedForbidArrStr := defaultInfo[4]
-        if (savedProcessNameStr == "")
-            savedProcessNameStr := defaultInfo[5]
+        if (savedFrontInfoArrStr == "")
+            savedFrontInfoArrStr := defaultInfo[5]
         if (savedRemarkArrStr == "")
             savedRemarkArrStr := defaultInfo[6]
         if (savedLoopCountStr == "")
@@ -411,7 +411,7 @@ ReadTableItemInfo(index) {
     SetArr(savedTKArrStr, "π", tableItem.TKArr)
     SetArr(savedModeArrStr, "π", tableItem.ModeArr)
     SetArr(savedForbidArrStr, "π", tableItem.ForbidArr)
-    SetArr(savedProcessNameStr, "π", tableItem.FrontInfoArr)
+    SetArr(savedFrontInfoArrStr, "π", tableItem.FrontInfoArr)
     SetArr(savedRemarkArrStr, "π", tableItem.RemarkArr)
     SetIntArr(savedLoopCountStr, "π", tableItem.LoopCountArr)
     SetArr(savedHoldTimeArrStr, "π", tableItem.HoldTimeArr)
@@ -419,6 +419,14 @@ ReadTableItemInfo(index) {
     SetArr(savedSerialStr, "π", tableItem.SerialArr)
     SetArr(savedTimingSerialStr, "π", tableItem.TimingSerialArr)
     tableItem.FoldInfo := JSON.parse(savedFoldInfoStr, , false)
+
+    if (tableItem.ModeArr.Length == 1) {
+        if (tableItem.TKArr.Length == 0)
+            tableItem.TKArr := [""]
+
+        if (tableItem.FrontInfoArr.Length == 0)
+            tableItem.FrontInfoArr := [""]
+    }
 
     loop tableItem.ModeArr.length {
         str := IniRead(MacroFile, IniSection, symbol "MacroArr" A_Index, "")
