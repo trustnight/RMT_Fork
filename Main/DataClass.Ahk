@@ -45,6 +45,7 @@ class TableItem {
         this.FoldInfo := ""  ;折叠筐保存信息
         this.FoldOffsetArr := []    ;和初始状态的高度偏移值
         this.FoldBtnArr := []       ;折叠筐按钮
+        this.ConIndexMap := Map()
     }
 }
 
@@ -53,6 +54,13 @@ class ItemFoldInfo {
         this.RemarkArr := []    ;折叠框备注
         this.IndexSpanArr := []     ;范围索引
         this.FoldStateArr := []    ;折叠状态
+    }
+}
+
+class MacroItemInfo {
+    __New(index, itemConInfo) {
+        this.index := index
+        this.itemConInfo := ItemConInfo
     }
 }
 
@@ -67,6 +75,7 @@ class ItemConInfo {
         this.Con.GetPos(&PosX, &PosY)
         this.OriPosX := PosX
         this.OriPosY := PosY
+        this.SelfOffsetY := 0
     }
 
     UpdatePos(offsetPosY) {
@@ -88,12 +97,12 @@ class ItemConInfo {
                 PosY += value
             }
 
-            PosY := PosY + this.OriPosY - offsetPosY
+            PosY := PosY + this.OriPosY + this.SelfOffsetY - offsetPosY
             this.Con.Move(this.OriPosX, PosY)
         }
     }
 
-    UpdateIndex(operIndex, isAdd) {
+    UpdateFoldIndex(operIndex, isAdd) {
         if (isAdd) {
             if (this.FoldIndex <= operIndex)
                 return
@@ -105,11 +114,19 @@ class ItemConInfo {
                 return
 
             if (this.FoldIndex == operIndex)
-                this.FoldIndex := -1000
+                this.Hide()
 
             if (this.FoldIndex > operIndex)
                 this.FoldIndex -= 1
         }
+    }
+
+    DelAfterOffset(offsetY) {
+        this.SelfOffsetY += offsetY
+    }
+
+    Hide() {
+        this.FoldIndex := -1000
     }
 }
 
