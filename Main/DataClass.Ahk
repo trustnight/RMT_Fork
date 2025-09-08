@@ -71,8 +71,13 @@ class ItemConInfo {
 
     UpdatePos(offsetPosY) {
         try {
+            if (this.FoldIndex == -1000) {
+                this.Con.Move(this.OriPosX, -10000)
+                return
+            }
+
             isHide := !this.FoldInfo.FoldStateArr[this.FoldIndex]
-            if (isHide && !this.ForceShow) {
+            if ((isHide && !this.ForceShow)) {
                 this.Con.Move(this.OriPosX, -10000)
                 return
             }
@@ -85,6 +90,25 @@ class ItemConInfo {
 
             PosY := PosY + this.OriPosY - offsetPosY
             this.Con.Move(this.OriPosX, PosY)
+        }
+    }
+
+    UpdateIndex(operIndex, isAdd) {
+        if (isAdd) {
+            if (this.FoldIndex <= operIndex)
+                return
+
+            this.FoldIndex += 1
+        }
+        else {
+            if (this.FoldIndex < operIndex)
+                return
+
+            if (this.FoldIndex == operIndex)
+                this.FoldIndex := -1000
+
+            if (this.FoldIndex > operIndex)
+                this.FoldIndex -= 1
         }
     }
 }
