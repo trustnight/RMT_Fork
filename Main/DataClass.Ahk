@@ -65,13 +65,13 @@ class MacroItemInfo {
 }
 
 class ItemConInfo {
-    __New(Con, tableItem, FoldIndex, forceShow := false) {
+    __New(Con, tableItem, FoldIndex) {
         this.Con := Con
         this.tableItem := tableItem
         this.FoldOffsetArr := tableItem.FoldOffsetArr
         this.FoldInfo := tableItem.FoldInfo
         this.FoldIndex := FoldIndex
-        this.ForceShow := ForceShow
+        this.IsTitle := false
         this.Con.GetPos(&PosX, &PosY)
         this.OriPosX := PosX
         this.OriPosY := PosY
@@ -85,8 +85,8 @@ class ItemConInfo {
                 return
             }
 
-            isHide := !this.FoldInfo.FoldStateArr[this.FoldIndex]
-            if ((isHide && !this.ForceShow)) {
+            isFold := !this.FoldInfo.FoldStateArr[this.FoldIndex]
+            if ((isFold && !this.IsTitle)) {
                 this.Con.Move(this.OriPosX, -10000)
                 return
             }

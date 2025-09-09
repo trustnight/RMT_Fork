@@ -91,112 +91,13 @@ CheckFloatSettingValid() {
     return true
 }
 
-OnTableDelete(tableItem, index) {
-    if (tableItem.ModeArr.Length == 0) {
-        return
-    }
-    result := MsgBox("是否删除当前宏", "提示", 1)
-    if (result == "Cancel")
-        return
-
-    deleteMacro := tableItem.MacroArr.Length >= index ? tableItem.MacroArr[index] : ""
-
-    MySoftData.BtnAdd.Enabled := false
-    tableItem.ModeArr.RemoveAt(index)
-    tableItem.ForbidArr.RemoveAt(index)
-    tableItem.HoldTimeArr.RemoveAt(index)
-    if (tableItem.TKArr.Length >= index)
-        tableItem.TKArr.RemoveAt(index)
-    if (tableItem.MacroArr.Length >= index)
-        tableItem.MacroArr.RemoveAt(index)
-    if (tableItem.FrontInfoArr.Length >= index)
-        tableItem.FrontInfoArr.RemoveAt(index)
-    if (tableItem.LoopCountArr.Length >= index)
-        tableItem.LoopCountArr.RemoveAt(index)
-    if (tableItem.RemarkArr.Length >= index)
-        tableItem.RemarkArr.RemoveAt(index)
-    if (tableItem.SerialArr.Length >= index)
-        tableItem.SerialArr.RemoveAt(index)
-    if (tableItem.TimingSerialArr.Length >= index)
-        tableItem.TimingSerialArr.RemoveAt(index)
-    tableItem.IndexConArr.RemoveAt(index)
-    tableItem.ColorConArr.RemoveAt(index)
-    tableItem.ColorStateArr.RemoveAt(index)
-    tableItem.TriggerTypeConArr.RemoveAt(index)
-    tableItem.ModeConArr.RemoveAt(index)
-    tableItem.ForbidConArr.RemoveAt(index)
-    tableItem.TKConArr.RemoveAt(index)
-    tableItem.MacroConArr.RemoveAt(index)
-    tableItem.ProcessNameConArr.RemoveAt(index)
-    tableItem.LoopCountConArr.RemoveAt(index)
-    tableItem.RemarkConArr.RemoveAt(index)
-
-    OnSaveSetting()
-}
-
-OnTableEditMacro(tableItem, index) {
-    macro := tableItem.MacroConArr[index].Value
-    MyMacroGui.SureBtnAction := (sureMacro) => tableItem.MacroConArr[index].Value := sureMacro
-    MyMacroGui.ShowGui(macro, true)
-}
-
-OnTableEditReplaceKey(tableItem, index) {
-    replaceKey := tableItem.MacroConArr[index].Value
-    MyReplaceKeyGui.SureBtnAction := (sureReplaceKey) => tableItem.MacroConArr[index].Value := sureReplaceKey
-    MyReplaceKeyGui.ShowGui(replaceKey)
-}
-
-OnTableEditTriggerKey(tableItem, index) {
-    triggerKey := tableItem.TKConArr[index].Value
-    MyTriggerKeyGui.SureBtnAction := (sureTriggerKey) => tableItem.TKConArr[index].Value := sureTriggerKey
-    args := TriggerKeyGuiArgs()
-    args.IsToolEdit := false
-    args.tableItem := tableItem
-    args.tableIndex := index
-    MyTriggerKeyGui.ShowGui(triggerKey, args)
-}
-
-OnTableEditTiming(tableItem, index) {
-    SerialStr := tableItem.TimingSerialArr[index]
-    MyTimingGui.ShowGui(SerialStr)
-}
-
-OnTableEditTriggerStr(tableItem, index) {
-    triggerStr := tableItem.TKConArr[index].Value
-    MyTriggerStrGui.SureBtnAction := (sureTriggerStr) => tableItem.TKConArr[index].Value := sureTriggerStr
-    args := TriggerKeyGuiArgs()
-    args.IsToolEdit := false
-    MyTriggerStrGui.ShowGui(triggerStr, args)
-}
-
 OnEditCMDTipGui() {
     MyCMDTipSettingGui.ShowGui()
-}
-
-OnItemEditFrontInfo(tableItem, index, *) {
-    MyFrontInfoGui.ShowGui(tableItem, index)
 }
 
 OnTabValueChanged(*) {
     tableItem := MySoftData.TableInfo[MySoftData.TabCtrl.Value]
     MySlider.SwitchTab(tableItem)
-}
-
-OnTableMoveUp(tableItem, index, *) {
-    if (index == 1) {
-        MsgBox("上面没有元素，无法上移！！！")
-        return
-    }
-    SwapTableContent(tableItem, index, index - 1)
-}
-
-OnTableMoveDown(tableItem, index, *) {
-    lastIndex := tableItem.ModeArr.length
-    if (lastIndex == index) {
-        MsgBox("下面没有元素，无法下移！！！")
-        return
-    }
-    SwapTableContent(tableItem, index, index + 1)
 }
 
 SwapTableContent(tableItem, indexA, indexB) {
