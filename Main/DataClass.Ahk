@@ -53,6 +53,7 @@ class ItemFoldInfo {
     __New() {
         this.RemarkArr := []    ;折叠框备注
         this.IndexSpanArr := []     ;范围索引
+        this.ForbidStateArr := []   ;禁用状态
         this.FoldStateArr := []    ;折叠状态
     }
 }
@@ -72,6 +73,7 @@ class ItemConInfo {
         this.FoldInfo := tableItem.FoldInfo
         this.FoldIndex := FoldIndex
         this.IsTitle := false
+        this.IsDel := false
         this.Con.GetPos(&PosX, &PosY)
         this.OriPosX := PosX
         this.OriPosY := PosY
@@ -80,12 +82,12 @@ class ItemConInfo {
 
     UpdatePos(offsetPosY) {
         try {
-            if (this.FoldIndex == -1000) {
+            if (this.IsDel) {
                 this.Con.Move(this.OriPosX, -10000)
                 return
             }
 
-            isFold := !this.FoldInfo.FoldStateArr[this.FoldIndex]
+            isFold := this.FoldInfo.FoldStateArr[this.FoldIndex]
             if ((isFold && !this.IsTitle)) {
                 this.Con.Move(this.OriPosX, -10000)
                 return
@@ -102,31 +104,12 @@ class ItemConInfo {
         }
     }
 
-    UpdateFoldIndex(operIndex, isAdd) {
-        if (isAdd) {
-            if (this.FoldIndex <= operIndex)
-                return
-
-            this.FoldIndex += 1
-        }
-        else {
-            if (this.FoldIndex < operIndex)
-                return
-
-            if (this.FoldIndex == operIndex)
-                this.Hide()
-
-            if (this.FoldIndex > operIndex)
-                this.FoldIndex -= 1
-        }
-    }
-
     DelAfterOffset(offsetY) {
-        this.SelfOffsetY += offsetY
+        this.SelfOffsetY -= offsetY
     }
 
     Hide() {
-        this.FoldIndex := -1000
+        this.IsDel := true
     }
 }
 
@@ -304,6 +287,8 @@ class SoftData {
         this.CMDTransparency := 50
         this.CMDFontSize := "12"
         this.CMDFontColor := "000000"
+
+        this.TriggerKeyMap := Map()
     }
 }
 
@@ -504,5 +489,54 @@ class RMTCMDData {
     __New() {
         this.SerialStr := ""
         this.OperateType := 1 ; 1截图 2截图中提取文本 3自由贴 4开启指令显示 5关闭指令显示 6启用键鼠 7禁用键鼠 8休眠 9终止所有宏 10重载
+    }
+}
+
+class MouseWinData {
+    __New() {
+        this.WinTitle := ""
+        this.WinClass := ""
+        this.WinProcess := ""
+        this.HasError := false
+    }
+
+    UpdateInfo() {
+        this.HasError := false
+        MouseGetPos &mouseX, &mouseY, &winId
+        try {
+            this.WinTitle := WinGetTitle(winId)
+            this.WinClass := WinGetClass(winId)
+            this.WinProcess := WinGetProcessName(winId)
+        }
+        catch as e {
+            this.HasError := true
+        }
+    }
+
+    CheckIfMatch(FrontInfoStr, isUpdate) {
+        if (isUpdate)
+            this.UpdateInfo()
+
+        if (FrontInfoStr == "" || this.HasError)
+            return false
+
+        infoArr := StrSplit(FrontInfoStr, "⎖")
+        if (infoArr.Length != 3)
+            return false
+
+        title := infoArr[1]
+        className := infoArr[2]
+        process := infoArr[3]
+
+        if (title != "" && title != this.WinTitle)
+            return false
+
+        if (className != "" && className != this.WinClass)
+            return false
+
+        if (process != "" && process != this.WinProcess)
+            return false
+
+        return true
     }
 }

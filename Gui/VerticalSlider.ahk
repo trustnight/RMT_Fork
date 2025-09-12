@@ -73,10 +73,10 @@ class VerticalSlider {
             return
 
         ;主界面评论范围不能滑动
-        WinPosArr := GetWinPos()
-        if (WinPosArr[1] >= 300 && WinPosArr[1] <= 600)
-            if (WinPosArr[2] >= 35 && WinPosArr[2] <= 525)
-                return
+        ; WinPosArr := GetWinPos()
+        ; if (WinPosArr[1] >= 300 && WinPosArr[1] <= 600)
+        ;     if (WinPosArr[2] >= 35 && WinPosArr[2] <= 525)
+        ;         return
 
         isDown := InStr(A_ThisHotkey, "Down") ? true : false
         value := 80
@@ -130,7 +130,7 @@ class VerticalSlider {
     }
 
     UpdateContentHeight() {
-        height := this.tableItem.UnderPosY - this.BaseOffsetY + 5
+        height := this.tableItem.UnderPosY - this.BaseOffsetY + 20
         for index, value in this.tableItem.FoldOffsetArr {
             height += value
         }

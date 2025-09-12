@@ -109,11 +109,8 @@ TimingChecker() {
 
         ProcessName := tableItem.FrontInfoArr.Length >= index ? tableItem.FrontInfoArr[index] : ""
         if (ProcessName != "") {
-            infoStr := GetParamsWinInfoStr(ProcessName)
-            try {
-                if (!WinActivate(infoStr))
-                    return
-            }
+            if (!MyMouseInfo.CheckIfMatch(ProcessName, true))
+                return
         }
 
         UpdateTimingNextTime(Data)

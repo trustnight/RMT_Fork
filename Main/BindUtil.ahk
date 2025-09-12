@@ -344,21 +344,25 @@ OnExitSoft(*) {
 
 BindTabHotKey() {
     tableIndex := 0
+    InitTriggerKeyMap()
     loop MySoftData.TabNameArr.Length {
         tableItem := MySoftData.TableInfo[A_Index]
         tableIndex := A_Index
         for index, value in tableItem.ModeArr {
-            if (tableItem.TKArr.Length < index || tableItem.TKArr[index] == "" || (Integer)(tableItem.ForbidArr[index]))
+            if (GetItemFoldForbidState(tableItem, index))
                 continue
 
-            if (tableItem.MacroArr.Length < index || tableItem.MacroArr[index] == "")
+            if (tableItem.TKArr[index] == "" || tableItem.ForbidArr[index])
+                continue
+
+            if (tableItem.MacroArr[index] == "")
                 continue
 
             key := "$*" tableItem.TKArr[index]
             actionArr := GetMacroAction(tableIndex, index)
             isJoyKey := RegExMatch(tableItem.TKArr[index], "Joy")
             isHotstring := SubStr(tableItem.TKArr[index], 1, 1) == ":"
-            curProcessName := tableItem.FrontInfoArr.Length >= index ? tableItem.FrontInfoArr[index] : ""
+            curProcessName := tableItem.FrontInfoArr[index]
 
             if (curProcessName != "") {
                 HotIfWinActive(GetParamsWinInfoStr(curProcessName))
@@ -385,6 +389,28 @@ BindTabHotKey() {
     }
 }
 
+InitTriggerKeyMap() {
+    MySoftData.TriggerKeyMap := Map()
+    tableItem := MySoftData.TableInfo[1]
+    for index, value in tableItem.ModeArr {
+        if (GetItemFoldForbidState(tableItem, index))
+            continue
+
+        if (tableItem.TKArr[index] == "" || tableItem.ForbidArr[index])
+            continue
+
+        if (tableItem.MacroArr[index] == "")
+            continue
+
+        key := LTrim(tableItem.TKArr[index], "~")
+        key := StrLower(key)
+        if (!MySoftData.TriggerKeyMap.Has(key)) {
+            MySoftData.TriggerKeyMap[key] := TriggerKeyData(key)
+        }
+        MySoftData.TriggerKeyMap[key].AddData(index)
+    }
+}
+
 GetMacroAction(tableIndex, index) {
     tableItem := MySoftData.TableInfo[tableIndex]
     macro := tableItem.MacroArr[index]
@@ -408,48 +434,66 @@ GetMacroAction(tableIndex, index) {
 
 OnTriggerKeyDown(tableIndex, itemIndex) {
     tableItem := MySoftData.TableInfo[tableIndex]
-    macro := tableItem.MacroArr[itemIndex]
+    key := LTrim(tableItem.TKArr[itemIndex], "~")
+    key := StrLower(key)
+    if (!MySoftData.TriggerKeyMap.Has(key))
+        return
 
-    if (tableItem.TriggerTypeArr[itemIndex] == 1) { ;按下触发
-        if (SubStr(tableItem.TKArr[itemIndex], 1, 1) != "~")
-            LoosenModifyKey(tableItem.TKArr[itemIndex])
-        TriggerMacroHandler(tableIndex, itemIndex)
-    }
-    else if (tableItem.TriggerTypeArr[itemIndex] == 3) { ;松开停止
-        TriggerMacroHandler(tableIndex, itemIndex)
-    }
-    else if (tableItem.TriggerTypeArr[itemIndex] == 4) {  ;开关
-        if (tableItem.IsWorkIndexArr[itemIndex]) {       ;关闭开关
-            MySubMacroStopAction(tableIndex, itemIndex)
-            return
-        }
-        OnToggleTriggerMacro(tableIndex, itemIndex)
-    }
-    else if (tableItem.TriggerTypeArr[itemIndex] == 5) {    ;长按
-        Sleep(tableItem.HoldTimeArr[itemIndex])
+    Data := MySoftData.TriggerKeyMap[key]
+    Data.OnTriggerKeyDown()
 
-        keyCombo := LTrim(tableItem.TKArr[itemIndex], "~")
-        if (AreKeysPressed(keyCombo))
-            TriggerMacroHandler(tableIndex, itemIndex)
-    }
+    ; tableItem := MySoftData.TableInfo[tableIndex]
+    ; macro := tableItem.MacroArr[itemIndex]
+
+    ; if (tableItem.TriggerTypeArr[itemIndex] == 1) { ;按下触发
+    ;     if (SubStr(tableItem.TKArr[itemIndex], 1, 1) != "~")
+    ;         LoosenModifyKey(tableItem.TKArr[itemIndex])
+    ;     TriggerMacroHandler(tableIndex, itemIndex)
+    ; }
+    ; else if (tableItem.TriggerTypeArr[itemIndex] == 3) { ;松开停止
+    ;     TriggerMacroHandler(tableIndex, itemIndex)
+    ; }
+    ; else if (tableItem.TriggerTypeArr[itemIndex] == 4) {  ;开关
+    ;     if (tableItem.IsWorkIndexArr[itemIndex]) {       ;关闭开关
+    ;         MySubMacroStopAction(tableIndex, itemIndex)
+    ;         return
+    ;     }
+    ;     OnToggleTriggerMacro(tableIndex, itemIndex)
+    ; }
+    ; else if (tableItem.TriggerTypeArr[itemIndex] == 5) {    ;长按
+    ;     Sleep(tableItem.HoldTimeArr[itemIndex])
+
+    ;     keyCombo := LTrim(tableItem.TKArr[itemIndex], "~")
+    ;     if (AreKeysPressed(keyCombo))
+    ;         TriggerMacroHandler(tableIndex, itemIndex)
+    ; }
 }
 
 ;松开停止
 OnTriggerKeyUp(tableIndex, itemIndex) {
     tableItem := MySoftData.TableInfo[tableIndex]
-    isWork := tableItem.IsWorkIndexArr[itemIndex]
-    if (tableItem.TriggerTypeArr[itemIndex] == 2 && !isWork) { ;松开触发
-        TriggerMacroHandler(tableIndex, itemIndex)
-    }
-    else if (tableItem.TriggerTypeArr[itemIndex] == 3) {  ;松开停止
-        if (isWork) {
-            workPath := MyWorkPool.GetWorkPath(tableItem.IsWorkIndexArr[itemIndex])
-            MyWorkPool.PostMessage(WM_STOP_MACRO, workPath, 0, 0)
-            return
-        }
+    key := LTrim(tableItem.TKArr[itemIndex], "~")
+    key := StrLower(key)
+    if (!MySoftData.TriggerKeyMap.Has(key))
+        return
 
-        KillTableItemMacro(tableItem, itemIndex)
-    }
+    Data := MySoftData.TriggerKeyMap[key]
+    Data.OnTriggerKeyUp()
+
+    ; tableItem := MySoftData.TableInfo[tableIndex]
+    ; isWork := tableItem.IsWorkIndexArr[itemIndex]
+    ; if (tableItem.TriggerTypeArr[itemIndex] == 2 && !isWork) { ;松开触发
+    ;     TriggerMacroHandler(tableIndex, itemIndex)
+    ; }
+    ; else if (tableItem.TriggerTypeArr[itemIndex] == 3) {  ;松开停止
+    ;     if (isWork) {
+    ;         workPath := MyWorkPool.GetWorkPath(tableItem.IsWorkIndexArr[itemIndex])
+    ;         MyWorkPool.PostMessage(WM_STOP_MACRO, workPath, 0, 0)
+    ;         return
+    ;     }
+
+    ;     KillTableItemMacro(tableItem, itemIndex)
+    ; }
 }
 
 OnToggleTriggerMacro(tableIndex, itemIndex) {

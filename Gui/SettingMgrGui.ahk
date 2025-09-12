@@ -151,6 +151,8 @@ class SettingMgrGui {
         SourcePath := A_WorkingDir "\Setting\" MySoftData.CurSettingName
         DestPath := A_WorkingDir "\Setting\" this.OperNameEditCon.Value
         DirCopy(SourcePath, DestPath, 1)
+        RepairPath(SearchFile, 1)
+        RepairPath(SearchProFile, 1)
         MsgBox(Format("成功复制<{}>配置到<{}>中", MySoftData.CurSettingName, this.OperNameEditCon.Value))
         this.Refresh()
     }

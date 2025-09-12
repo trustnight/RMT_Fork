@@ -20,7 +20,6 @@ OnSaveSetting(*) {
     IniWrite(MySoftData.SuspendHotkeyCtrl.Value, IniFile, IniSection, "SuspendHotkey")
     IniWrite(MySoftData.PauseHotkeyCtrl.Value, IniFile, IniSection, "PauseHotkey")
     IniWrite(MySoftData.KillMacroHotkeyCtrl.Value, IniFile, IniSection, "KillMacroHotkey")
-    IniWrite(true, IniFile, IniSection, "LastSaved")
     IniWrite(MySoftData.ShowWinCtrl.Value, IniFile, IniSection, "IsExecuteShow")
     IniWrite(MySoftData.BootStartCtrl.Value, IniFile, IniSection, "IsBootStart")
     IniWrite(MySoftData.MutiThreadNumCtrl.Value, IniFile, IniSection, "MutiThreadNum")
@@ -48,6 +47,8 @@ OnSaveSetting(*) {
     IniWrite(MySoftData.FontTypeCtrl.Text, IniFile, IniSection, "FontType")
     IniWrite(MySoftData.TabCtrl.Value, IniFile, IniSection, "TableIndex")
     IniWrite(true, IniFile, IniSection, "HasSaved")
+    IniWrite(true, IniFile, IniSection, "LastSaved")
+    SaveCurWinPos()
 
     MySoftData.CMDPosX := IniWrite(MySoftData.CMDPosX, IniFile, IniSection, "CMDPosX")
     MySoftData.CMDPosY := IniWrite(MySoftData.CMDPosY, IniFile, IniSection, "CMDPosY")
@@ -89,6 +90,12 @@ CheckFloatSettingValid() {
     }
 
     return true
+}
+
+SaveCurWinPos() {
+    MyGui := MySoftData.MyGui
+    MyGui.GetPos(&x, &y, &w, &h)
+    IniWrite(Format("{}π{}", x, y), IniFile, IniSection, "LastWinPos")
 }
 
 OnEditCMDTipGui() {
@@ -346,7 +353,8 @@ SetItemPauseState(tableIndex, itemIndex, state) {
 MsgBoxContent(content) {
     MySoftData.MyGui.Flash()
     SoundPlay "*-1"
-    MsgBox(content)
+    MyMsgboxGui.ShowGui(content)
+    ; MsgBox(content)
 }
 
 ToolTipContent(content) {

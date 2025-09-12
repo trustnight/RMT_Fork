@@ -287,13 +287,13 @@ LoadMainSetting() {
     MySoftData.CurSettingName := IniRead(IniFile, IniSection, "CurSettingName", "RMT默认配置")
     MySoftData.SettingArrStr := IniRead(IniFile, IniSection, "SettingArrStr", "RMT默认配置")
     MySoftData.HasSaved := IniRead(IniFile, IniSection, "HasSaved", false)
+    MySoftData.IsLastSaved := IniRead(IniFile, IniSection, "LastSaved", false)
     MySoftData.NormalPeriod := IniRead(IniFile, IniSection, "NormalPeriod", 50)
     MySoftData.HoldFloat := IniRead(IniFile, IniSection, "HoldFloat", 0)
     MySoftData.PreIntervalFloat := IniRead(IniFile, IniSection, "PreIntervalFloat", 0)
     MySoftData.IntervalFloat := IniRead(IniFile, IniSection, "IntervalFloat", 0)
     MySoftData.CoordXFloat := IniRead(IniFile, IniSection, "CoordXFloat", 0)
     MySoftData.CoordYFloat := IniRead(IniFile, IniSection, "CoordYFloat", 0)
-    MySoftData.IsLastSaved := IniRead(IniFile, IniSection, "LastSaved", false)
     MySoftData.SuspendHotkey := IniRead(IniFile, IniSection, "SuspendHotkey", "!p")
     MySoftData.PauseHotkey := IniRead(IniFile, IniSection, "PauseHotkey", "!i")
     MySoftData.KillMacroHotkey := IniRead(IniFile, IniSection, "KillMacroHotkey", "!k")
@@ -326,7 +326,6 @@ LoadMainSetting() {
     MySoftData.WinPosY := IniRead(IniFile, IniSection, "WinPosY", 0)
     MySoftData.TableIndex := IniRead(IniFile, IniSection, "TableIndex", 1)
     MySoftData.FontType := IniRead(IniFile, IniSection, "FontType", "微软雅黑")
-
     MySoftData.CMDPosX := IniRead(IniFile, IniSection, "CMDPosX", A_ScreenWidth - 225)
     MySoftData.CMDPosY := IniRead(IniFile, IniSection, "CMDPosY", 0)
     MySoftData.CMDWidth := IniRead(IniFile, IniSection, "CMDWidth", 225)
@@ -402,7 +401,8 @@ ReadTableItemInfo(index) {
             defaultFoldInfo := ItemFoldInfo()
             defaultFoldInfo.RemarkArr := ["RMT默认初始化配置"]
             defaultFoldInfo.IndexSpanArr := ["1-1"]
-            defaultFoldInfo.FoldStateArr := [true]
+            defaultFoldInfo.FoldStateArr := [false]
+            defaultFoldInfo.ForbidStateArr := [false]
             savedFoldInfoStr := JSON.stringify(defaultFoldInfo, 0)
         }
     }
@@ -520,7 +520,7 @@ GetTableItemDefaultInfo(index) {
         savedModeArrStr := "1"
         savedForbidArrStr := "1"
         savedProcessNameStr := ""
-        savedRemarkArrStr := "定时触发"
+        savedRemarkArrStr := "通过定时或宏操作调用"
         savedLoopCountStr := "1"
         savedTriggerTypeStr := "1"
         savedSerialeArrStr := "000003"
@@ -1257,4 +1257,16 @@ WaitIfPaused(tableIndex, itemIndex) {
 
         Sleep(200)
     }
+}
+
+GetItemFoldForbidState(tableItem, itemIndex) {
+    FoldInfo := tableItem.FoldInfo
+    for Index, IndexSpanStr in FoldInfo.IndexSpanArr {
+        IndexSpan := StrSplit(IndexSpanStr, "-")
+        if (IsInteger(IndexSpan[1]) && IsInteger(IndexSpan[2])) {
+            if (IndexSpan[1] <= itemIndex && IndexSpan[2] >= itemIndex)
+                return FoldInfo.ForbidStateArr[Index]
+        }
+    }
+    return false
 }

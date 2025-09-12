@@ -13,20 +13,25 @@ LoadItemFold(index) {
         LoadItemFoldTitle(tableItem, foldIndex, tableItem.UnderPosY)
         UpdateUnderPosY(index, 55)
         IndexSpan := StrSplit(IndexSpanStr, "-")
-        if (!FoldInfo.FoldStateArr[foldIndex])
-            continue
         if (!IsInteger(IndexSpan[1]) || !IsInteger(IndexSpan[2]))
             continue
 
         LoadItemFoldTip(tableItem, foldIndex, tableItem.UnderPosY)
-        UpdateUnderPosY(index, 25)
+        CurUnderPosY := tableItem.UnderPosY + 25
+        if (!FoldInfo.FoldStateArr[foldIndex])
+            UpdateUnderPosY(index, 25)
+
         loop IndexSpan[2] - IndexSpan[1] + 1 {
             itemIndex := A_Index + IndexSpan[1] - 1
-            LoadTabItemUI(tableItem, itemIndex, foldIndex, tableItem.UnderPosY)
-            UpdateUnderPosY(index, 70)
+            LoadTabItemUI(tableItem, itemIndex, foldIndex, CurUnderPosY)
+            CurUnderPosY += 70
+            if (!FoldInfo.FoldStateArr[foldIndex])
+                UpdateUnderPosY(index, 70)
         }
         UpdateUnderPosY(index, 5)
     }
+
+    UpdateItemConPos(tableItem, true)
 }
 
 LoadItemFoldTitle(tableItem, foldIndex, PosY) {
@@ -40,6 +45,7 @@ LoadItemFoldTitle(tableItem, foldIndex, PosY) {
     conInfo.IsTitle := true
     tableItem.AllConArr.Push(conInfo)
     tableItem.AllGroup.InsertAt(foldIndex, con)
+    tableItem.ConIndexMap[con] := MacroItemInfo(-10000, conInfo)
     PosY += 20
 
     con := MyGui.Add("Text", Format("x{} y{}", MySoftData.TabPosX + 20, posY + 2), "备注：")
@@ -49,9 +55,11 @@ LoadItemFoldTitle(tableItem, foldIndex, PosY) {
 
     con := MyGui.Add("Edit", Format("x{} y{} w150", MySoftData.TabPosX + 60, posY), FoldInfo.RemarkArr[
         foldIndex])
+    con.OnEvent("Change", OnFoldRemarkChange.Bind(tableItem))
     conInfo := ItemConInfo(con, tableItem, foldIndex)
     conInfo.IsTitle := true
     tableItem.AllConArr.Push(conInfo)
+    tableItem.ConIndexMap[con] := MacroItemInfo(-10000, conInfo)
 
     con := MyGui.Add("Button", Format("x{} y{}", MySoftData.TabPosX + 230, posY - 3), "新增宏")
     con.OnEvent("Click", OnItemAddMacroBtnClick.Bind(tableItem))
@@ -75,11 +83,14 @@ LoadItemFoldTitle(tableItem, foldIndex, PosY) {
     tableItem.ConIndexMap[con] := MacroItemInfo(-10000, conInfo)
 
     con := MyGui.Add("CheckBox", Format("x{} y{}", MySoftData.TabPosX + 490, posY + 2), "禁用")
+    con.Value := FoldInfo.ForbidStateArr[foldIndex]
+    con.OnEvent("Click", OnFoldForbidChange.Bind(tableItem))
     conInfo := ItemConInfo(con, tableItem, foldIndex)
     conInfo.IsTitle := true
     tableItem.AllConArr.Push(conInfo)
+    tableItem.ConIndexMap[con] := MacroItemInfo(-10000, conInfo)
 
-    btnStr := FoldInfo.FoldStateArr[foldIndex] ? "🞃" : "❯"
+    btnStr := FoldInfo.FoldStateArr[foldIndex] ? "❯" : "🞃"
     con := MyGui.Add("Button", Format("x{} y{} +BackgroundTrans", MySoftData.TabPosX + 840, posY),
     btnStr)
     con.OnEvent("Click", OnFoldBtnClick.Bind(tableItem))
@@ -275,11 +286,12 @@ LoadTabItemUI(tableItem, itemIndex, foldIndex, PosY) {
 OnItemAddMacroBtnClick(tableItem, btn, *) {
     foldInfo := tableItem.FoldInfo
     foldIndex := tableItem.ConIndexMap[btn].itemConInfo.FoldIndex
-    if (!foldInfo.FoldStateArr[foldIndex])  ;没开打的话，自动打开
+    AddIndex := GetFoldAddItemIndex(foldInfo, foldIndex)
+    if (foldInfo.FoldStateArr[foldIndex])  ;没开打的话，自动打开
         OnFoldBtnClick(tableItem, btn)
 
     isFirst := foldInfo.IndexSpanArr[foldIndex] == "无-无"
-    AddIndex := UpdateFoldIndexInfo(foldInfo, foldIndex, true)
+    UpdateFoldIndexInfo(foldInfo, AddIndex, foldIndex, true)
     UpdateConItemIndex(tableItem, AddIndex, foldIndex, true)
     tableItem.TKArr.InsertAt(AddIndex, "")
     tableItem.TriggerTypeArr.InsertAt(AddIndex, 1)
@@ -337,7 +349,7 @@ OnItemDelMacroBtnClick(tableItem, btn, *) {
         return
 
     beforeHei := GetFoldGroupHeight(foldInfo, foldIndex)
-    UpdateFoldIndexInfo(foldInfo, foldIndex, false)
+    UpdateFoldIndexInfo(foldInfo, DelIndex, foldIndex, false)
     UpdateConItemIndex(tableItem, DelIndex, foldIndex, false)
     afterHei := GetFoldGroupHeight(foldInfo, foldIndex)
     tableItem.FoldOffsetArr[foldIndex] += afterHei - beforeHei
@@ -438,27 +450,33 @@ OnItemMoveDown(tableItem, btn, *) {
     SwapTableContent(tableItem, index, index + 1)
 }
 
+OnFoldRemarkChange(tableItem, con, *) {
+    foldInfo := tableItem.FoldInfo
+    foldIndex := tableItem.ConIndexMap[con].itemConInfo.FoldIndex
+    foldInfo.RemarkArr[foldIndex] := con.text
+}
+
+OnFoldForbidChange(tableItem, con, *) {
+    foldInfo := tableItem.FoldInfo
+    foldIndex := tableItem.ConIndexMap[con].itemConInfo.FoldIndex
+    foldInfo.ForbidStateArr[foldIndex] := con.Value
+}
+
 ;增加宏模块
 OnItemAddFoldBtnClick(tableItem, btn, *) {
     foldInfo := tableItem.FoldInfo
     foldIndex := tableItem.ConIndexMap[btn].itemConInfo.FoldIndex
     foldInfo.RemarkArr.InsertAt(foldIndex + 1, "")
     foldInfo.IndexSpanArr.InsertAt(foldIndex + 1, "无-无")
-    foldInfo.FoldStateArr.InsertAt(foldIndex + 1, true)
+    foldInfo.ForbidStateArr.InsertAt(foldIndex + 1, false)
+    foldInfo.FoldStateArr.InsertAt(foldIndex + 1, false)
     tableItem.FoldOffsetArr.InsertAt(foldIndex + 1, 55)
 
-    PosY := 1000000
-    Con := ""
-    for index, value in tableItem.AllConArr {
-        if (foldIndex == value.FoldIndex && PosY > value.OriPosY) {
-            PosY := value.OriPosY
-            Con := value.Con
-        }
-
-        value.UpdateFoldIndex(foldIndex, true)
-    }
-    Con.GetPos(&x, &y, &w, &h)
-    PosY := PosY + h
+    UpdateConFoldIndex(tableItem, foldIndex, true)
+    LastGroupCon := tableItem.AllGroup[foldIndex]
+    LastGroupCon.GetPos(&x, &y, &w, &h)
+    LastOriPosY := tableItem.ConIndexMap[LastGroupCon].itemConInfo.OriPosY
+    PosY := LastOriPosY + h - tableItem.FoldOffsetArr[foldIndex]
     MySoftData.TabCtrl.UseTab(tableItem.Index)
     LoadItemFoldTitle(tableItem, foldIndex + 1, PosY)
     MySoftData.TabCtrl.UseTab()
@@ -474,13 +492,12 @@ OnItemDelFoldBtnClick(tableItem, btn, *) {
     if (foldInfo.IndexSpanArr.Length == 1) {
         MsgBox("最后一个模块，不可删除！！！")
     }
+    UpdateConFoldIndex(tableItem, foldIndex, false)
     foldInfo.RemarkArr.RemoveAt(foldIndex)
     foldInfo.IndexSpanArr.RemoveAt(foldIndex)
+    foldInfo.ForbidStateArr.RemoveAt(foldIndex)
     foldInfo.FoldStateArr.RemoveAt(foldIndex)
     tableItem.FoldOffsetArr.RemoveAt(foldIndex)
-    for index, value in tableItem.AllConArr {
-        value.UpdateFoldIndex(foldIndex, false)
-    }
 
     MySlider.RefreshTab()
 }
@@ -522,6 +539,7 @@ UpdateItemConPos(tableItem, isDown) {
 }
 
 UpdateConItemIndex(tableItem, OperIndex, FoldIndex, IsAdd) {
+    DelKeys := []
     for key, value in tableItem.ConIndexMap {
         if (value.index < OperIndex)
             continue
@@ -532,26 +550,55 @@ UpdateConItemIndex(tableItem, OperIndex, FoldIndex, IsAdd) {
             }
             else {
                 value.itemConInfo.Hide()
-                tableItem.ConIndexMap.Delete(key)
+                DelKeys.Push(key)
             }
         }
-
-        if (value.index > OperIndex) {
+        else if (value.index > OperIndex) {
             if (IsAdd) {
                 value.index += 1
             }
             else {
                 value.index -= 1
-                if (FoldIndex == value.itemConInfo.FoldInfo)
+                if (FoldIndex == value.itemConInfo.FoldIndex)
                     value.itemConInfo.DelAfterOffset(70)
             }
         }
     }
+
+    for index, value in DelKeys {
+        tableItem.ConIndexMap.Delete(value)
+    }
 }
 
-UpdateFoldIndexInfo(FoldInfo, FoldIndex, IsAdd) {
+UpdateConFoldIndex(tableItem, FoldIndex, IsAdd) {
+    tableItem.AllGroup[FoldIndex].GetPos(&x, &y, &w, &h)
+    DelOffsetY := h - tableItem.FoldOffsetArr[FoldIndex]
+
+    for index, value in tableItem.AllConArr {
+        if (isAdd) {
+            if (value.FoldIndex <= FoldIndex)
+                continue
+
+            value.FoldIndex += 1
+        }
+        else {
+            if (value.FoldIndex < FoldIndex)
+                continue
+
+            if (value.FoldIndex == FoldIndex)
+                value.Hide()
+
+            if (value.FoldIndex > FoldIndex) {
+                value.FoldIndex -= 1
+                value.DelAfterOffset(DelOffsetY)
+            }
+
+        }
+    }
+}
+
+UpdateFoldIndexInfo(FoldInfo, OperIndex, FoldIndex, IsAdd) {
     curMaxItemIndex := 0
-    OperIndex := 0
     for Index, IndexSpanStr in FoldInfo.IndexSpanArr {
         IndexSpan := StrSplit(IndexSpanStr, "-")
         if (Index < FoldIndex) {
@@ -570,8 +617,6 @@ UpdateFoldIndexInfo(FoldInfo, FoldIndex, IsAdd) {
                     IndexSpan[1] := curMaxItemIndex + 1
                     IndexSpan[2] := curMaxItemIndex + 1
                 }
-                FoldInfo.IndexSpanArr[Index] := IndexSpan[1] "-" IndexSpan[2]
-                OperIndex := IndexSpan[2]
             }
             else {
                 IndexSpan[2] := IndexSpan[2] - 1
@@ -579,7 +624,6 @@ UpdateFoldIndexInfo(FoldInfo, FoldIndex, IsAdd) {
                     IndexSpan[1] := "无"
                     IndexSpan[2] := "无"
                 }
-                FoldInfo.IndexSpanArr[Index] := IndexSpan[1] "-" IndexSpan[2]
             }
         }
         if (Index > FoldIndex) {
@@ -589,14 +633,14 @@ UpdateFoldIndexInfo(FoldInfo, FoldIndex, IsAdd) {
                 IndexSpan[2] := IndexSpan[2] + Value
             }
         }
+        FoldInfo.IndexSpanArr[Index] := IndexSpan[1] "-" IndexSpan[2]
     }
-    return OperIndex
 }
 
 ;封装方法
 GetFoldGroupHeight(FoldInfo, index) {
     height := 55
-    if (!FoldInfo.FoldStateArr[index])
+    if (FoldInfo.FoldStateArr[index])
         return height
     IndexSpan := StrSplit(FoldInfo.IndexSpanArr[index], "-")
     if (!IsInteger(IndexSpan[1]) || !IsInteger(IndexSpan[2]))
@@ -605,4 +649,24 @@ GetFoldGroupHeight(FoldInfo, index) {
     height := height + 30
     height := height + (IndexSpan[2] - IndexSpan[1] + 1) * 70
     return height
+}
+
+GetFoldAddItemIndex(FoldInfo, FoldIndex) {
+    IndexSpan := StrSplit(FoldInfo.IndexSpanArr[FoldIndex], "-")
+    if (IsInteger(IndexSpan[1]) && IsInteger(IndexSpan[2])) {
+        return IndexSpan[2] + 1
+    }
+
+    CurFoldLastIndex := 0
+    for index, value in FoldInfo.IndexSpanArr {
+        if (index > FoldIndex)
+            break
+
+        IndexSpan := StrSplit(value, "-")
+        if (IsInteger(IndexSpan[1]) && IsInteger(IndexSpan[2])) {
+            CurFoldLastIndex := IndexSpan[2]
+        }
+    }
+
+    return CurFoldLastIndex + 1
 }

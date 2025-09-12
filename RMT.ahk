@@ -18,6 +18,7 @@
 #Include Gui\CMDTipGui.ahk
 #Include Gui\FrontInfoGui.ahk
 #Include Gui\CMDTipSettingGui.ahk
+#Include Gui\CustomMsgBoxGui.ahk
 #Include Main\Gdip_All.ahk
 #Include Main\DataClass.ahk
 #Include Main\AssetUtil.ahk
@@ -32,6 +33,7 @@
 #Include Main\TimingUtil.ahk
 #Include Main\BindUtil.ahk
 #Include Main\VariableUtil.ahk
+#Include Main\TriggerKeyData.ahk
 SetWorkingDir A_ScriptDir
 DetectHiddenWindows true
 Persistent
@@ -41,6 +43,7 @@ global MySoftData := SoftData()
 global ToolCheckInfo := ToolCheck()
 global MyJoyMacro := JoyMacro()
 global MyWinClip := WinClip()
+global MyMouseInfo := MouseWinData()
 global MyTriggerKeyGui := TriggerKeyGui()
 global MyTriggerStrGui := TriggerStrGui()
 global MyEditHotkeyGui := EditHotkeyGui()
@@ -52,6 +55,7 @@ global MyFrontInfoGui := FrontInfoGui()
 global MyCMDTipGui := CMDTipGui()
 global MyTimingGui := TimingGui()
 global MySlider := VerticalSlider()
+global MyMsgboxGui := CustomMsgBoxGui()
 global MyCMDTipSettingGui := CMDTipSettingGui()
 global MyToolRecordSettingGui := ToolRecordSettingGui()
 global IniFile := A_WorkingDir "\Setting\MainSettings.ini"
@@ -78,5 +82,3 @@ SetGlobalVar()      ;缓存全局变量
 PluginInit()
 TimingCheck()       ;轮询检测触发
 BindKey()           ;绑定快捷键
-    
-    ;删除宏，刷新问题排查

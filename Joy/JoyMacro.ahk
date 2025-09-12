@@ -10,12 +10,8 @@ class JoyMacro {
 
         Action() {
             if (this.processName != "") {
-                infoStr := GetParamsWinInfoStr(this.processName)
-                try {
-                    if (!WinActivate(infoStr))
-                        return
-                }
-
+                if (!MyMouseInfo.CheckIfMatch(this.processName, true))
+                    return
             }
 
             action := this.actionFunc

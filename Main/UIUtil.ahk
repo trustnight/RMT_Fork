@@ -2,7 +2,7 @@
 InitUI() {
     global MySoftData
     MyGui := Gui()
-    MyGui.Title := "RMTv1.0.7"
+    MyGui.Title := "RMTv1.0.8BateF1"
     MyGui.SetFont("S10 W550 Q2", MySoftData.FontType)
     MySoftData.MyGui := MyGui
 
@@ -22,16 +22,27 @@ OnOpen() {
         IniWrite(true, IniFile, IniSection, "AgreeAgreement")
     }
 
-    if (!MySoftData.IsExecuteShow && !MySoftData.IsLastSaved)
+    if (!MySoftData.IsExecuteShow)
         return
 
-    RefreshGui()    ;不同的分辨率滑动条会异常，两次ShowGUI后才正常，
     RefreshGui()
-    IniWrite(false, IniFile, IniSection, "LastSaved")
 }
 
 RefreshGui() {
-    MySoftData.MyGui.Show(Format("w{} h{} center", 1070, 540))
+    IniWrite(false, IniFile, IniSection, "LastSaved")
+    if (MySoftData.IsLastSaved) {
+        LastWinPosStr := IniRead(IniFile, IniSection, "LastWinPos", "")
+        WinPosArr := StrSplit(LastWinPosStr, "π")
+        if (WinPosArr.Length == 2 && IsNumber(WinPosArr[1]) && IsNumber(WinPosArr[2])) {
+            isXValid := WinPosArr[1] > 0 && WinPosArr[1] < A_ScreenWidth
+            isYValid := WinPosArr[2] > 0 && WinPosArr[2] < A_ScreenHeight
+            if (isXValid && isYValid) {
+                MySoftData.MyGui.Show(Format("x{} y{} w{} h{}", WinPosArr[1], WinPosArr[2], 1070, 540))
+                return
+            }
+        }
+    }
+    MySoftData.MyGui.Show(Format("w{} h{}", 1070, 540))
 }
 
 RefreshToolUI() {
