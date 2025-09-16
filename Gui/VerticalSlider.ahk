@@ -28,10 +28,10 @@ class VerticalSlider {
         this.AreaCon := AreaCon
         this.BarCon := BarCon
         this.BarCon.OnEvent("Click", this.OnDragBar.Bind(this))
-        this.BindScrollHotkey("~WheelUp", this.OnScrollWheel.Bind(this))
-        this.BindScrollHotkey("~WheelDown", this.OnScrollWheel.Bind(this))
-        this.BindScrollHotkey("~+WheelUp", this.OnScrollWheel.Bind(this))
-        this.BindScrollHotkey("~+WheelDown", this.OnScrollWheel.Bind(this))
+        ; this.BindScrollHotkey("~WheelUp", this.OnScrollWheel.Bind(this))
+        ; this.BindScrollHotkey("~WheelDown", this.OnScrollWheel.Bind(this))
+        ; this.BindScrollHotkey("~+WheelUp", this.OnScrollWheel.Bind(this))
+        ; this.BindScrollHotkey("~+WheelDown", this.OnScrollWheel.Bind(this))
     }
 
     SwitchTab(tableItem) {
@@ -68,7 +68,7 @@ class VerticalSlider {
         HotIfWinActive
     }
 
-    OnScrollWheel(*) {
+    OnScrollWheel(key) {
         if (!this.ShowSlider)
             return
 
@@ -78,7 +78,7 @@ class VerticalSlider {
         ;     if (WinPosArr[2] >= 35 && WinPosArr[2] <= 525)
         ;         return
 
-        isDown := InStr(A_ThisHotkey, "Down") ? true : false
+        isDown := InStr(key, "Down", "Off") ? true : false
         value := 80
         if ((value / this.BarMaxPosY) * (this.ContentHeight - this.AeraHeight - 2 * this.Vindent) >= 420) {
             value := (420 / (this.ContentHeight - this.AeraHeight - 2 * this.Vindent)) * this.BarMaxPosY

@@ -10,8 +10,17 @@ BindKey() {
     BindShortcut(ToolCheckInfo.FreePasteHotKey, OnToolFreePaste)
     BindShortcut(ToolCheckInfo.ToolRecordMacroHotKey, OnHotToolRecordMacro)
     BindTabHotKey()
+    BindSoftHotKey()
     BindSave()
     OnExit(OnExitSoft)
+}
+
+OnScrollWheel(*) {
+    MyMouseInfo.UpdateInfo()
+    frontStr := "RMTv⎖⎖"
+    if (MyMouseInfo.CheckIfMatch(frontStr)) {
+        MySlider.OnScrollWheel(A_Args*)
+    }
 }
 
 BindSuspendHotkey() {
@@ -409,6 +418,14 @@ InitTriggerKeyMap() {
         }
         MySoftData.TriggerKeyMap[key].AddData(index)
     }
+
+    for index, value in MySoftData.SoftHotKeyArr {
+        key := LTrim(value, "~")
+        key := StrLower(key)
+        if (!MySoftData.TriggerKeyMap.Has(key)) {
+            MySoftData.TriggerKeyMap[key] := TriggerKeyData(key)
+        }
+    }
 }
 
 GetMacroAction(tableIndex, index) {
@@ -419,20 +436,21 @@ GetMacroAction(tableIndex, index) {
     actionUp := ""
 
     if (tableSymbol == "Normal") {
-        actionDown := GetClosureActionNew(tableIndex, index, OnTriggerKeyDown)
-        actionUp := GetClosureActionNew(tableIndex, index, OnTriggerKeyUp)
+        actionDown := OnTriggerKeyDown.Bind(tableIndex, index)
+        actionUp := OnTriggerKeyUp.Bind(tableIndex, index)
     }
     else if (tableSymbol == "String") {
-        actionDown := GetClosureActionNew(tableIndex, index, TriggerMacroHandler)
+        actionDown := TriggerMacroHandler.Bind(tableIndex, index)
     }
     else if (tableSymbol == "Replace") {
-        actionDown := GetClosureAction(tableItem, macro, index, OnReplaceDownKey)
-        actionUp := GetClosureAction(tableItem, macro, index, OnReplaceUpKey)
+    
+        actionDown := OnReplaceDownKey.Bind(tableItem, macro, index)
+        actionUp := OnReplaceUpKey.Bind(tableItem, macro, index)
     }
     return [actionDown, actionUp]
 }
 
-OnTriggerKeyDown(tableIndex, itemIndex) {
+OnTriggerKeyDown(tableIndex, itemIndex, *) {
     tableItem := MySoftData.TableInfo[tableIndex]
     key := LTrim(tableItem.TKArr[itemIndex], "~")
     key := StrLower(key)
@@ -441,36 +459,10 @@ OnTriggerKeyDown(tableIndex, itemIndex) {
 
     Data := MySoftData.TriggerKeyMap[key]
     Data.OnTriggerKeyDown()
-
-    ; tableItem := MySoftData.TableInfo[tableIndex]
-    ; macro := tableItem.MacroArr[itemIndex]
-
-    ; if (tableItem.TriggerTypeArr[itemIndex] == 1) { ;按下触发
-    ;     if (SubStr(tableItem.TKArr[itemIndex], 1, 1) != "~")
-    ;         LoosenModifyKey(tableItem.TKArr[itemIndex])
-    ;     TriggerMacroHandler(tableIndex, itemIndex)
-    ; }
-    ; else if (tableItem.TriggerTypeArr[itemIndex] == 3) { ;松开停止
-    ;     TriggerMacroHandler(tableIndex, itemIndex)
-    ; }
-    ; else if (tableItem.TriggerTypeArr[itemIndex] == 4) {  ;开关
-    ;     if (tableItem.IsWorkIndexArr[itemIndex]) {       ;关闭开关
-    ;         MySubMacroStopAction(tableIndex, itemIndex)
-    ;         return
-    ;     }
-    ;     OnToggleTriggerMacro(tableIndex, itemIndex)
-    ; }
-    ; else if (tableItem.TriggerTypeArr[itemIndex] == 5) {    ;长按
-    ;     Sleep(tableItem.HoldTimeArr[itemIndex])
-
-    ;     keyCombo := LTrim(tableItem.TKArr[itemIndex], "~")
-    ;     if (AreKeysPressed(keyCombo))
-    ;         TriggerMacroHandler(tableIndex, itemIndex)
-    ; }
 }
 
 ;松开停止
-OnTriggerKeyUp(tableIndex, itemIndex) {
+OnTriggerKeyUp(tableIndex, itemIndex, *) {
     tableItem := MySoftData.TableInfo[tableIndex]
     key := LTrim(tableItem.TKArr[itemIndex], "~")
     key := StrLower(key)
@@ -479,21 +471,36 @@ OnTriggerKeyUp(tableIndex, itemIndex) {
 
     Data := MySoftData.TriggerKeyMap[key]
     Data.OnTriggerKeyUp()
+}
 
-    ; tableItem := MySoftData.TableInfo[tableIndex]
-    ; isWork := tableItem.IsWorkIndexArr[itemIndex]
-    ; if (tableItem.TriggerTypeArr[itemIndex] == 2 && !isWork) { ;松开触发
-    ;     TriggerMacroHandler(tableIndex, itemIndex)
-    ; }
-    ; else if (tableItem.TriggerTypeArr[itemIndex] == 3) {  ;松开停止
-    ;     if (isWork) {
-    ;         workPath := MyWorkPool.GetWorkPath(tableItem.IsWorkIndexArr[itemIndex])
-    ;         MyWorkPool.PostMessage(WM_STOP_MACRO, workPath, 0, 0)
-    ;         return
-    ;     }
+BindSoftHotKey() {
+    for index, value in MySoftData.SoftHotKeyArr {
+        key := "$*" value
+        actionDown := OnSoftKeyDown.Bind(value)
+        actionUp := OnSoftKeyUp.Bind(value)
+        Hotkey(key, actionDown)
+        Hotkey(key " up", actionUp)
+    }
+}
 
-    ;     KillTableItemMacro(tableItem, itemIndex)
-    ; }
+OnSoftKeyDown(key, *) {
+    key := LTrim(key, "~")
+    key := StrLower(key)
+    if (!MySoftData.TriggerKeyMap.Has(key))
+        return
+
+    Data := MySoftData.TriggerKeyMap[key]
+    Data.OnTriggerKeyDown()
+}
+
+OnSoftKeyUp(key, *) {
+    key := LTrim(key, "~")
+    key := StrLower(key)
+    if (!MySoftData.TriggerKeyMap.Has(key))
+        return
+
+    Data := MySoftData.TriggerKeyMap[key]
+    Data.OnTriggerKeyUp()
 }
 
 OnToggleTriggerMacro(tableIndex, itemIndex) {
@@ -526,7 +533,7 @@ OnToggleTriggerMacro(tableIndex, itemIndex) {
     }
 }
 
-TriggerMacroHandler(tableIndex, itemIndex) {
+TriggerMacroHandler(tableIndex, itemIndex, *) {
     tableItem := MySoftData.TableInfo[tableIndex]
     macro := tableItem.MacroArr[itemIndex]
     isWork := tableItem.IsWorkIndexArr[itemIndex]

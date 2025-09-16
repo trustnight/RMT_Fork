@@ -426,6 +426,9 @@ ReadTableItemInfo(index) {
 
         if (tableItem.FrontInfoArr.Length == 0)
             tableItem.FrontInfoArr := [""]
+    
+        if (tableItem.RemarkArr.Length == 0)
+            tableItem.RemarkArr := [""]
     }
 
     loop tableItem.ModeArr.length {
@@ -604,18 +607,16 @@ GetSavedTableItemInfo(index) {
     symbol := GetTableSymbol(index)
 
     loop tableItem.ModeArr.Length {
-        TKArrStr .= tableItem.TKConArr.Has(A_Index) ? tableItem.TKConArr[A_Index].Value : ""
+        TKArrStr .= tableItem.TKConArr[A_Index].Value
         ModeArrStr .= tableItem.ModeConArr[A_Index].Value
         ForbidArrStr .= tableItem.ForbidConArr[A_Index].Value
         HoldTimeArrStr .= tableItem.HoldTimeArr[A_Index]
         FrontInfoArrStr .= tableItem.ProcessNameConArr[A_Index].Value
-        RemarkArrStr .= tableItem.RemarkConArr.Length >= A_Index ? tableItem.RemarkConArr[A_Index].Value : ""
-        TriggerTypeArrStr .= tableItem.TriggerTypeConArr.Length >= A_Index ? tableItem.TriggerTypeConArr[A_Index].Value :
-            ""
+        RemarkArrStr .=  tableItem.RemarkConArr[A_Index].Value
+        TriggerTypeArrStr .= tableItem.TriggerTypeConArr[A_Index].Value
         LoopCountArrStr .= GetItemSaveCountValue(tableItem.Index, A_Index)
-        SerialArrStr .= tableItem.SerialArr.Length >= A_Index ? tableItem.SerialArr[A_Index] : "000000"
-        TimingSerialArrStr .= tableItem.TimingSerialArr.Length >= A_Index ? tableItem.TimingSerialArr[A_Index] :
-            "Timing000000"
+        SerialArrStr .= tableItem.SerialArr[A_Index]
+        TimingSerialArrStr .= tableItem.TimingSerialArr[A_Index]
         if (tableItem.ModeArr.Length > A_Index) {
             TKArrStr .= "π"
             ModeArrStr .= "π"

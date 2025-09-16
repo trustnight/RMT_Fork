@@ -289,6 +289,7 @@ class SoftData {
         this.CMDFontColor := "000000"
 
         this.TriggerKeyMap := Map()
+        this.SoftHotKeyArr := ["~WheelUp", "~WheelDown"]
     }
 }
 
@@ -513,7 +514,7 @@ class MouseWinData {
         }
     }
 
-    CheckIfMatch(FrontInfoStr, isUpdate) {
+    CheckIfMatch(FrontInfoStr, isUpdate := false) {
         if (isUpdate)
             this.UpdateInfo()
 
@@ -528,7 +529,7 @@ class MouseWinData {
         className := infoArr[2]
         process := infoArr[3]
 
-        if (title != "" && title != this.WinTitle)
+        if (title != "" && !InStr(this.WinTitle, title, "Off"))
             return false
 
         if (className != "" && className != this.WinClass)

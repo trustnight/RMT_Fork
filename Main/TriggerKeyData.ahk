@@ -8,7 +8,7 @@ class TriggerKeyData {
         this.OriLoosenStopArr := []    ;松止
         this.OriTogArr := []   ;开关
         this.OriHoldArr := []  ;按长按
-        this.HoldActionArr := []
+        this.HoldActionMap := Map()
 
         this.DownArr := []
         this.LoosenArr := []
@@ -16,7 +16,19 @@ class TriggerKeyData {
         this.TogArr := []
         this.HoldArr := []
 
-        ; this.Get
+        this.InitState()
+    }
+
+    InitState() {
+        this.IsSoftHotKey := false
+        for index, value in MySoftData.SoftHotKeyArr {
+            key := LTrim(value, "~")
+            key := StrLower(key)
+            if (this.Key == key) {
+                this.IsSoftHotKey := true
+                break
+            }
+        }
     }
 
     AddData(index) {
@@ -72,6 +84,7 @@ class TriggerKeyData {
 
     OnTriggerKeyDown() {
         this.UpdataArr()
+        this.HandleSoftHotKeyDown()
         tableItem := MySoftData.TableInfo[1]
         for index, value in this.DownArr {
             if (index == 1 && SubStr(tableItem.TKArr[value], 1, 1) != "~")
@@ -93,13 +106,12 @@ class TriggerKeyData {
             OnToggleTriggerMacro(1, value)
         }
 
-        if (this.HoldActionArr.Length == 0) {
-            this.SetHoldTimeChecker()
-        }
+        this.SetHoldTimeChecker()
     }
 
     OnTriggerKeyUp() {
         this.UpdataArr()
+        this.HandleSoftHotKeyUp()
         tableItem := MySoftData.TableInfo[1]
         for index, value in this.LoosenArr {
             TriggerMacroHandler(1, value)
@@ -114,29 +126,59 @@ class TriggerKeyData {
             }
             KillTableItemMacro(tableItem, value)
         }
+
+        this.DelHoldTimeChecker()
     }
 
     SetHoldTimeChecker() {
         tableItem := MySoftData.TableInfo[1]
-        this.HoldActionArr := []
         for _, value in this.HoldArr {
-            action := this.HoldTimeAction.Bind(this)
+            isWork := tableItem.IsWorkIndexArr[value]
+            if (isWork)
+                continue
+            if (this.HoldActionMap.Has(value))
+                continue
+
+            action := this.HoldTimeAction.Bind(this, value)
             SetTimer(action, -tableItem.HoldTimeArr[value])
-            this.HoldActionArr.Push(action)
+            this.HoldActionMap.Set(value, action)
         }
     }
 
     DelHoldTimeChecker() {
-        for _, value in this.HoldActionArr {
+        for key, value in this.HoldActionMap {
             SetTimer(value, 0)
         }
-        this.HoldActionArr := []
+        this.HoldActionMap := Map()
     }
 
     HoldTimeAction(index) {
         tableItem := MySoftData.TableInfo[1]
         keyCombo := LTrim(tableItem.TKArr[index], "~")
+        if (this.HoldActionMap.Has(index))
+            this.HoldActionMap.Delete(index)
+
         if (AreKeysPressed(keyCombo))
             TriggerMacroHandler(1, index)
+    }
+
+    HandleSoftHotKeyDown() {
+        if (!this.IsSoftHotKey)
+            return
+
+        if (this.Key == "wheelup" || this.Key == "wheeldown") {
+            if (MyMouseInfo.CheckIfMatch("RMTv⎖⎖")) {
+                MySlider.OnScrollWheel(this.Key)
+            }
+
+            if (MyMouseInfo.CheckIfMatch("RMT-FreePaste⎖⎖")) {
+                MyFreePasteGui.OnScrollWheel(this.Key)
+            }
+        }
+    }
+
+    HandleSoftHotKeyUp() {
+        if (!this.IsSoftHotKey)
+            return
     }
 }

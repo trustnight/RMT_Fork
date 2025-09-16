@@ -341,7 +341,8 @@ class MacroEditGui {
             this.ContextMenu.Add("下方插入", subMenu)  ; 将子菜单添加到主菜单
 
             this.ContextMenu.Add()  ; 分隔线
-            this.ContextMenu.Add("复制指令", (*) => this.MenuHandler("复制指令"))
+            this.ContextMenu.Add("共享复制", (*) => this.MenuHandler("共享复制"))
+            this.ContextMenu.Add("完全复制", (*) => this.MenuHandler("完全复制"))
             this.ContextMenu.Add("上方粘贴", (*) => this.MenuHandler("上方粘贴"))
             this.ContextMenu.Add("下方粘贴", (*) => this.MenuHandler("下方粘贴"))
 
@@ -397,9 +398,13 @@ class MacroEditGui {
                 subGui := this.SubGuiMap[paramsArr[1]]
                 this.OnOpenSubGui(subGui, 2)
             }
-            case "复制指令":
+            case "共享复制":
             {
                 A_Clipboard := itemText
+            }
+            case "完全复制":
+            {
+                A_Clipboard := FullCopyMacroCmd(itemText)
             }
             case "上方粘贴":
             {

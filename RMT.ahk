@@ -37,6 +37,7 @@
 SetWorkingDir A_ScriptDir
 DetectHiddenWindows true
 Persistent
+A_MaxHotkeysPerInterval := 400
 
 global MyvJoy := SuperCvJoyInterface().GetMyvJoy()
 global MySoftData := SoftData()

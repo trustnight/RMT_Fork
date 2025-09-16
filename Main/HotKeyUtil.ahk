@@ -13,16 +13,6 @@ BindShortcut(triggerInfo, action) {
     }
 }
 
-GetClosureActionNew(tableIndex, itemIndex, func) {
-    funcObj := func.Bind(tableIndex, itemIndex)
-    return (*) => funcObj()
-}
-
-GetClosureAction(tableItem, macro, index, func) {     ;获取闭包函数
-    funcObj := func.Bind(tableItem, macro, index)
-    return (*) => funcObj()
-}
-
 ;按键宏命令
 OnTriggerMacroKeyAndInit(tableItem, macro, index) {
     tableItem.KilledArr[index] := false
@@ -763,7 +753,7 @@ OnPressKey(tableItem, cmd, index) {
 }
 
 ;按键替换
-OnReplaceDownKey(tableItem, info, index) {
+OnReplaceDownKey(tableItem, info, index, *) {
     infos := StrSplit(info, ",")
     mode := tableItem.ModeArr[index]
 
@@ -779,7 +769,7 @@ OnReplaceDownKey(tableItem, info, index) {
 
 }
 
-OnReplaceUpKey(tableItem, info, index) {
+OnReplaceUpKey(tableItem, info, index, *) {
     infos := StrSplit(info, ",")
     mode := tableItem.ModeArr[index]
 

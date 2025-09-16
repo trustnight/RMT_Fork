@@ -114,7 +114,8 @@ class ExVariableGui {
         PosY += 35
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 550),
-        "提取文本：空内容时，屏幕/剪切板所有文本信息保存到变量中`n提取文本：&&x表示数字变量，&&c表示文本变量`n提取文本：形如`"坐标(&&x,&&x)`"可以提取`"坐标(10.5,8.6)`"中的10.5和8.6到变量1和变量2")
+        "提取文本：空内容时，屏幕/剪切板所有文本信息保存到变量中`n提取文本：&&x表示数字变量，&&c表示文本变量`n提取文本：形如`"坐标(&&x,&&x)`"可以提取`"坐标(10.5,8.6)`"中的10.5和8.6到变量1和变量2"
+        )
 
         PosY += 65
         PosX := 10
@@ -258,8 +259,10 @@ class ExVariableGui {
 
     CheckIfValid() {
         if (!InStr(this.ExtractStrCon.Value, "&x") && !InStr(this.ExtractStrCon.Value, "&c")) {
-            MsgBox("提取文本：不包含&x 或 &c 无法提取内容到变量中")
-            return false
+            if (this.ExtractStrCon.Value != "") {
+                MsgBox("提取文本：不包含&x 或 &c 无法提取内容到变量中")
+                return false
+            }
         }
 
         return true

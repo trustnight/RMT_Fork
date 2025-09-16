@@ -348,37 +348,94 @@ OnItemDelMacroBtnClick(tableItem, btn, *) {
     if (result == "Cancel")
         return
 
+    OnItemDelMacro(tableItem, DelIndex, foldInfo, foldIndex)
+    MySlider.RefreshTab()
+}
+
+OnItemDelMacro(tableItem, itemIndex, foldInfo, foldIndex) {
     beforeHei := GetFoldGroupHeight(foldInfo, foldIndex)
-    UpdateFoldIndexInfo(foldInfo, DelIndex, foldIndex, false)
-    UpdateConItemIndex(tableItem, DelIndex, foldIndex, false)
+    UpdateFoldIndexInfo(foldInfo, itemIndex, foldIndex, false)
+    UpdateConItemIndex(tableItem, itemIndex, foldIndex, false)
     afterHei := GetFoldGroupHeight(foldInfo, foldIndex)
     tableItem.FoldOffsetArr[foldIndex] += afterHei - beforeHei
     tableItem.AllGroup[foldIndex].Move(, , , afterHei)
 
-    tableItem.ModeArr.RemoveAt(DelIndex)
-    tableItem.ModeConArr.RemoveAt(DelIndex)
-    tableItem.ForbidArr.RemoveAt(DelIndex)
-    tableItem.HoldTimeArr.RemoveAt(DelIndex)
-    tableItem.TKArr.RemoveAt(DelIndex)
-    tableItem.MacroArr.RemoveAt(DelIndex)
-    tableItem.FrontInfoArr.RemoveAt(DelIndex)
-    tableItem.LoopCountArr.RemoveAt(DelIndex)
-    tableItem.RemarkArr.RemoveAt(DelIndex)
-    tableItem.SerialArr.RemoveAt(DelIndex)
-    tableItem.TimingSerialArr.RemoveAt(DelIndex)
-    tableItem.IndexConArr.RemoveAt(DelIndex)
-    tableItem.ColorConArr.RemoveAt(DelIndex)
-    tableItem.ColorStateArr.RemoveAt(DelIndex)
-    tableItem.TriggerTypeConArr.RemoveAt(DelIndex)
-    tableItem.ForbidConArr.RemoveAt(DelIndex)
-    tableItem.TKConArr.RemoveAt(DelIndex)
-    tableItem.MacroConArr.RemoveAt(DelIndex)
-    tableItem.ProcessNameConArr.RemoveAt(DelIndex)
-    tableItem.LoopCountConArr.RemoveAt(DelIndex)
-    tableItem.RemarkConArr.RemoveAt(DelIndex)
+    tableItem.ModeArr.RemoveAt(itemIndex)
+    tableItem.ModeConArr.RemoveAt(itemIndex)
+    tableItem.ForbidArr.RemoveAt(itemIndex)
+    tableItem.HoldTimeArr.RemoveAt(itemIndex)
+    tableItem.TKArr.RemoveAt(itemIndex)
+    tableItem.MacroArr.RemoveAt(itemIndex)
+    tableItem.FrontInfoArr.RemoveAt(itemIndex)
+    tableItem.LoopCountArr.RemoveAt(itemIndex)
+    tableItem.RemarkArr.RemoveAt(itemIndex)
+    tableItem.SerialArr.RemoveAt(itemIndex)
+    tableItem.TimingSerialArr.RemoveAt(itemIndex)
+    tableItem.IndexConArr.RemoveAt(itemIndex)
+    tableItem.ColorConArr.RemoveAt(itemIndex)
+    tableItem.ColorStateArr.RemoveAt(itemIndex)
+    tableItem.TriggerTypeConArr.RemoveAt(itemIndex)
+    tableItem.ForbidConArr.RemoveAt(itemIndex)
+    tableItem.TKConArr.RemoveAt(itemIndex)
+    tableItem.MacroConArr.RemoveAt(itemIndex)
+    tableItem.ProcessNameConArr.RemoveAt(itemIndex)
+    tableItem.LoopCountConArr.RemoveAt(itemIndex)
+    tableItem.RemarkConArr.RemoveAt(itemIndex)
     for index, value in tableItem.IndexConArr {
         value.Text := index
     }
+}
+
+;增加宏模块
+OnItemAddFoldBtnClick(tableItem, btn, *) {
+    foldInfo := tableItem.FoldInfo
+    foldIndex := tableItem.ConIndexMap[btn].itemConInfo.FoldIndex
+    foldInfo.RemarkArr.InsertAt(foldIndex + 1, "")
+    foldInfo.IndexSpanArr.InsertAt(foldIndex + 1, "无-无")
+    foldInfo.ForbidStateArr.InsertAt(foldIndex + 1, false)
+    foldInfo.FoldStateArr.InsertAt(foldIndex + 1, false)
+    tableItem.FoldOffsetArr.InsertAt(foldIndex + 1, 55)
+
+    UpdateConFoldIndex(tableItem, foldIndex, true)
+    LastGroupCon := tableItem.AllGroup[foldIndex]
+    LastGroupCon.GetPos(&x, &y, &w, &h)
+    LastOriPosY := tableItem.ConIndexMap[LastGroupCon].itemConInfo.OriPosY
+    PosY := LastOriPosY + h - tableItem.FoldOffsetArr[foldIndex]
+    MySoftData.TabCtrl.UseTab(tableItem.Index)
+    LoadItemFoldTitle(tableItem, foldIndex + 1, PosY)
+    MySoftData.TabCtrl.UseTab()
+
+    MySlider.RefreshTab()
+}
+
+;删除模块
+OnItemDelFoldBtnClick(tableItem, btn, *) {
+    foldInfo := tableItem.FoldInfo
+    foldIndex := tableItem.ConIndexMap[btn].itemConInfo.FoldIndex
+
+    result := MsgBox("是否删除当前模块以及模块中所有的宏配置", "提示", 1)
+    if (result == "Cancel")
+        return
+
+    if (foldInfo.IndexSpanArr.Length == 1) {
+        MsgBox("最后一个模块，不可删除！！！")
+        return
+    }
+    hasSetting := foldInfo.IndexSpanArr[foldIndex] != "无-无"
+    if (hasSetting) {
+        IndexSpan := StrSplit(foldInfo.IndexSpanArr[foldIndex], "-")
+        loop IndexSpan[2] - IndexSpan[1] + 1 {
+            itemIndex := IndexSpan[2] - A_Index + 1
+            OnItemDelMacro(tableItem, itemIndex, foldInfo, foldIndex)
+        }
+    }
+
+    UpdateConFoldIndex(tableItem, foldIndex, false)
+    foldInfo.RemarkArr.RemoveAt(foldIndex)
+    foldInfo.IndexSpanArr.RemoveAt(foldIndex)
+    foldInfo.ForbidStateArr.RemoveAt(foldIndex)
+    foldInfo.FoldStateArr.RemoveAt(foldIndex)
+    tableItem.FoldOffsetArr.RemoveAt(foldIndex)
 
     MySlider.RefreshTab()
 }
@@ -460,46 +517,6 @@ OnFoldForbidChange(tableItem, con, *) {
     foldInfo := tableItem.FoldInfo
     foldIndex := tableItem.ConIndexMap[con].itemConInfo.FoldIndex
     foldInfo.ForbidStateArr[foldIndex] := con.Value
-}
-
-;增加宏模块
-OnItemAddFoldBtnClick(tableItem, btn, *) {
-    foldInfo := tableItem.FoldInfo
-    foldIndex := tableItem.ConIndexMap[btn].itemConInfo.FoldIndex
-    foldInfo.RemarkArr.InsertAt(foldIndex + 1, "")
-    foldInfo.IndexSpanArr.InsertAt(foldIndex + 1, "无-无")
-    foldInfo.ForbidStateArr.InsertAt(foldIndex + 1, false)
-    foldInfo.FoldStateArr.InsertAt(foldIndex + 1, false)
-    tableItem.FoldOffsetArr.InsertAt(foldIndex + 1, 55)
-
-    UpdateConFoldIndex(tableItem, foldIndex, true)
-    LastGroupCon := tableItem.AllGroup[foldIndex]
-    LastGroupCon.GetPos(&x, &y, &w, &h)
-    LastOriPosY := tableItem.ConIndexMap[LastGroupCon].itemConInfo.OriPosY
-    PosY := LastOriPosY + h - tableItem.FoldOffsetArr[foldIndex]
-    MySoftData.TabCtrl.UseTab(tableItem.Index)
-    LoadItemFoldTitle(tableItem, foldIndex + 1, PosY)
-    MySoftData.TabCtrl.UseTab()
-
-    MySlider.RefreshTab()
-}
-
-;删除模块，todo有元素的需要额外处理
-OnItemDelFoldBtnClick(tableItem, btn, *) {
-    foldInfo := tableItem.FoldInfo
-    foldIndex := tableItem.ConIndexMap[btn].itemConInfo.FoldIndex
-
-    if (foldInfo.IndexSpanArr.Length == 1) {
-        MsgBox("最后一个模块，不可删除！！！")
-    }
-    UpdateConFoldIndex(tableItem, foldIndex, false)
-    foldInfo.RemarkArr.RemoveAt(foldIndex)
-    foldInfo.IndexSpanArr.RemoveAt(foldIndex)
-    foldInfo.ForbidStateArr.RemoveAt(foldIndex)
-    foldInfo.FoldStateArr.RemoveAt(foldIndex)
-    tableItem.FoldOffsetArr.RemoveAt(foldIndex)
-
-    MySlider.RefreshTab()
 }
 
 OnFoldBtnClick(tableItem, btn, *) {
