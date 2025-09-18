@@ -404,7 +404,7 @@ class MacroEditGui {
             }
             case "完全复制":
             {
-                A_Clipboard := FullCopyMacroCmd(itemText)
+                A_Clipboard := FullCopyCmd(itemText)
             }
             case "上方粘贴":
             {

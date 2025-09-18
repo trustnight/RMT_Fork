@@ -7,7 +7,9 @@ OnSaveSetting(*) {
     if (!isValid)
         return
 
-    MyWorkPool.Clear()
+    if (ObjHasOwnProp(MyWorkPool, "Clear"))
+        MyWorkPool.Clear()
+
     loop MySoftData.TabNameArr.Length {
         SaveTableItemInfo(A_Index)
     }
@@ -579,7 +581,7 @@ SimpleRecordMacroStr(MacroStr) {
 }
 
 ;还要递归处理
-FullCopyMacroCmd(cmd) {
+FullCopyCmd(cmd) {
     paramArr := SplitKeyCommand(cmd)
     if (InStr(paramArr[1], "间隔"))
         return cmd
@@ -591,22 +593,43 @@ FullCopyMacroCmd(cmd) {
         return cmd
 
     DataFileMap := Map("搜索", SearchFile, "搜索Pro", SearchProFile, "移动Pro", MMProFile,
-    "输出", OutputFile, "运行", RunFile, "变量", VariableFile, "变量提取", ExVariableFile, "运算", OperationFile,
-    "如果", CompareFile, "宏操作", SubMacroFile, "后台鼠标", BGMouseFile)
+        "输出", OutputFile, "运行", RunFile, "变量", VariableFile, "变量提取", ExVariableFile, "运算", OperationFile,
+        "如果", CompareFile, "宏操作", SubMacroFile, "后台鼠标", BGMouseFile)
 
     dataFile := Map(paramArr[1])
     Data := GetMacroCMDData(dataFile, paramArr[2])
     Data.SerialStr .= "C"
     saveStr := JSON.stringify(Data, 0)
-    IniWrite(saveStr, dataFile, IniSection, Data.SerialStr)
     paramArr[2] := Data.SerialStr
-
     result := ""
     for index, value in paramArr {
         result .= value
         if (index != paramArr.Length)
             result .= "_"
     }
+    if (ObjHasOwnProp(Data, "TrueMacro")) {
+        Data.TrueMacro := FullCopyMacro(Data.TrueMacro)
+    }
 
+    if (ObjHasOwnProp(Data, "FalseMacro")) {
+        Data.FalseMacro := FullCopyMacro(Data.FalseMacro)
+    }
+
+    IniWrite(saveStr, dataFile, IniSection, Data.SerialStr)
+    return result
+}
+
+FullCopyMacro(MacroStr) {
+    cmdArr := SplitMacro(MacroStr)
+    loop cmdArr.Length {
+        cmdArr[A_Index] := FullCopyCmd(cmdArr[A_Index])
+    }
+
+    result := ""
+    for index, value in cmdArr {
+        result .= value
+        if (index != cmdArr.Length)
+            result .= ","
+    }
     return result
 }
