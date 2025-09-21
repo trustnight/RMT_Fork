@@ -86,7 +86,6 @@ PluginInit()
 TimingCheck()       ;轮询检测触发
 BindKey()           ;绑定快捷键
 
-; WheelLeft:: {
-;     aa := 1
-;     ; MyTargetGui.ShowGui()
-; }
+WheelLeft:: {
+    MyTargetGui.ShowGui()
+}
