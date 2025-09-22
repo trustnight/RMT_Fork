@@ -641,18 +641,19 @@ FullCopyMacro(MacroStr) {
 GetPixelColorMap(CentPosX, CentPosY, Row, Col) {
     width := Col
     height := Row
-    PosX := CentPosX - (Col - 1) / 2
-    PosY := CentPosY - (Row - 1) / 2
+    PosX := Integer(CentPosX - (Col - 1) / 2)
+    PosY := Integer(CentPosY - (Row - 1) / 2)
     pBitmap := Gdip_BitmapFromScreen(PosX "|" PosY "|" width "|" height)
     ResultMap := Map()
     loop Row {
         rowValue := A_Index
         loop Col {
             colValue := A_Index
-            Value := Gdip_GetPixel(pBitmap, colValue, rowValue)
+            Value := Gdip_GetPixel(pBitmap, colValue - 1, rowValue - 1)
             Key := Format("{}-{}", colValue, rowValue)
             RGB_Value := Value & 0xFFFFFF  ; 移除Alpha通道，保留RGB
-            ResultMap.Set(Key, 0x00FF00)
+            hexStr := Format("0x{:X}", RGB_Value)
+            ResultMap.Set(Key, hexStr)
         }
     }
     return ResultMap

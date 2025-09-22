@@ -175,10 +175,23 @@ class TriggerKeyData {
                 MyFreePasteGui.OnScrollWheel(this.Key)
             }
         }
+
+        isArrowKey1 := this.Key == "left" || this.Key == "right"
+        isArrowKey2 := this.Key == "up" || this.Key == "down"
+        isArrowKey := isArrowKey1 || isArrowKey2
+        if (isArrowKey) {
+            MyTargetGui.OnArrowKeyDown(this.Key)
+        }
     }
 
     HandleSoftHotKeyUp() {
         if (!this.IsSoftHotKey)
             return
+
+        if (this.Key == "lbutton") {
+            if (MyMouseInfo.CheckIfMatch("RMT-Target⎖⎖")) {
+                MyTargetGui.OnLButtonUp(this.Key)
+            }
+        }
     }
 }
