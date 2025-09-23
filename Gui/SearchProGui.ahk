@@ -508,7 +508,7 @@ class SearchProGui {
             SetTimer(this.CheckClipboardAction, 500)  ; 每 500 毫秒检查一次剪贴板
         }
         else {
-            EnableSelectAerea(this.OnScreenShotGetArea.Bind(this))
+            MySoftData.SelectAereaAction := this.OnScreenShotGetArea.Bind(this)
         }
     }
 
@@ -641,14 +641,14 @@ class SearchProGui {
     OnClickSelectToggle() {
         state := this.SelectToggleCon.Value
         if (state == 1)
-            EnableSelectAerea(this.SetAreaAction)
+            MySoftData.SelectAereaAction := this.SetAreaAction
         else
-            DisSelectArea(this.SetAreaAction)
+            MySoftData.SelectAereaAction := ""
     }
 
     OnF1() {
         this.SelectToggleCon.Value := 1
-        EnableSelectAerea(this.SetAreaAction)
+        MySoftData.SelectAereaAction := this.SetAreaAction
     }
 
     OnSetSearchArea(x1, y1, x2, y2) {

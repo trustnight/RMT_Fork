@@ -466,17 +466,9 @@ OnToolTextCheckScreenShot() {
     }
 }
 
-EnableSelectAerea(action) {
-    Hotkey("LButton", (*) => SelectArea(action), "On")
-    Hotkey("LButton Up", (*) => DisSelectArea(action), "On")
-}
-
-DisSelectArea(action) {
-    Hotkey("LButton", (*) => SelectArea(action), "Off")
-    Hotkey("LButton Up", (*) => DisSelectArea(action), "Off")
-}
-
-SelectArea(action) {
+SelectArea() {
+    action := MySoftData.SelectAereaAction
+    MySoftData.SelectAereaAction := ""
     ; 获取起始点坐标
     startX := startY := endX := endY := 0
     CoordMode("Mouse", "Screen")

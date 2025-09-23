@@ -138,7 +138,7 @@ OnToolTextFilterScreenShot(*) {
         SetTimer(OnToolTextCheckScreenShot, 500)  ; 每 500 毫秒检查一次剪贴板
     }
     else {
-        EnableSelectAerea(OnToolTextFilterGetArea)
+        MySoftData.SelectAereaAction := OnToolTextFilterGetArea
     }
 }
 
@@ -147,7 +147,7 @@ OnToolScreenShot(*) {
         Run("ms-screenclip:")
     }
     else {
-        EnableSelectAerea(OnToolScreenShotGetArea)
+        MySoftData.SelectAereaAction := OnToolScreenShotGetArea
     }
 }
 
@@ -443,7 +443,7 @@ GetMacroAction(tableIndex, index) {
         actionDown := TriggerMacroHandler.Bind(tableIndex, index)
     }
     else if (tableSymbol == "Replace") {
-    
+
         actionDown := OnReplaceDownKey.Bind(tableItem, macro, index)
         actionUp := OnReplaceUpKey.Bind(tableItem, macro, index)
     }

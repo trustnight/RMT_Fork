@@ -182,6 +182,12 @@ class TriggerKeyData {
         if (isArrowKey) {
             MyTargetGui.OnArrowKeyDown(this.Key)
         }
+
+        if (this.Key == "lbutton") {
+            if (MySoftData.SelectAereaAction != "") {
+                SelectArea()
+            }
+        }
     }
 
     HandleSoftHotKeyUp() {

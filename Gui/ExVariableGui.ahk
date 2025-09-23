@@ -239,14 +239,14 @@ class ExVariableGui {
     OnClickSelectToggle() {
         state := this.SelectToggleCon.Value
         if (state == 1)
-            EnableSelectAerea(this.SetAreaAction)
+            MySoftData.SelectAereaAction := this.SetAreaAction
         else
-            DisSelectArea(this.SetAreaAction)
+            MySoftData.SelectAereaAction := ""
     }
 
     OnF1() {
         this.SelectToggleCon.Value := 1
-        EnableSelectAerea(this.SetAreaAction)
+        MySoftData.SelectAereaAction := this.SetAreaAction
     }
 
     OnSetSearchArea(x1, y1, x2, y2) {

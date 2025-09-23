@@ -292,6 +292,7 @@ class SoftData {
 
         this.TriggerKeyMap := Map()
         this.SoftHotKeyArr := ["~WheelUp", "~WheelDown", "~LButton", "~Left", "~Right", "~Up", "~Down", "~Enter"]
+        this.SelectAereaAction := "" ;左键框选范围回调
     }
 }
 
