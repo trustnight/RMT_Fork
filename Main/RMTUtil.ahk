@@ -624,7 +624,7 @@ FullCopyCmd(cmd) {
         return cmd
     if (InStr(paramArr[1], "按键"))
         return cmd
-    if (InStr(paramArr[1], "移动"))
+    if (paramArr[1] == "移动")
         return cmd
     if (InStr(paramArr[1], "RMT指令"))
         return cmd
