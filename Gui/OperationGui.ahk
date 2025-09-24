@@ -204,6 +204,20 @@ class OperationGui {
     }
 
     CheckIfValid() {
+        loop 4 {
+            if (this.ToggleConArr[A_Index].Value) {
+                if (IsNumber(this.UpdateNameConArr[A_Index].Text)) {
+                    MsgBox(Format("{}. 结果变量名不规范：变量名不能是纯数字", A_Index))
+                    return false
+                }
+
+                if (this.UpdateNameConArr[A_Index].Text == "") {
+                    MsgBox(Format("{}. 结果变量名不规范：变量名不能为空", A_Index))
+                    return false
+                }
+            }
+        }
+
         return true
     }
 

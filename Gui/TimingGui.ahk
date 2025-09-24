@@ -56,7 +56,7 @@ class TimingGui {
         con.Focus()
         PosX += 80
         this.TypeCon := MyGui.Add("DropDownList", Format("x{} y{} w100", PosX, PosY - 3), ["单次", "每小时", "每天", "每周",
-            "每月", "自定义"])
+            "每月", "软件启动时","自定义"])
         this.TypeCon.OnEvent("Change", (*) => this.OnChangeType())
         PosX += 170
         this.IntervalLabelCon := MyGui.Add("Text", Format("x{} y{}", PosX, PosY), "每次间隔：")
@@ -78,7 +78,7 @@ class TimingGui {
             return false
         }
 
-        if (this.TypeCon.Value == 6 && IsFloat(this.CustomIntervalCon.Value)) {
+        if (this.TypeCon.Value == 7 && IsFloat(this.CustomIntervalCon.Value)) {
             MsgBox("每次间隔时间只能是整数！！")
             return false
         }
@@ -92,7 +92,7 @@ class TimingGui {
     }
 
     OnChangeType() {
-        isCustom := this.TypeCon.Value == 6
+        isCustom := this.TypeCon.Value == 7
 
         this.IntervalLabelCon.Enabled := isCustom
         this.CustomIntervalCon.Enabled := isCustom

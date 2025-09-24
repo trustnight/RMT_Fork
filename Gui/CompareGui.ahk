@@ -240,6 +240,18 @@ class CompareGui {
     }
 
     CheckIfValid() {
+        if (this.SaveToggleCon.Value) {
+            if (IsNumber(this.SaveNameCon.Text)) {
+                MsgBox("结果变量名不规范：变量名不能是纯数字")
+                return false
+            }
+
+            if (this.SaveNameCon.Text == "") {
+                MsgBox("结果变量名不规范：变量名不能为空")
+                return false
+            }
+        }
+
         return true
     }
 

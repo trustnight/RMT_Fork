@@ -202,6 +202,16 @@ SplitKeyCommand(macro) {
     return result
 }
 
+GetCmdByParams(paramArr) {
+    result := ""
+    for index, value in paramArr {
+        result .= value
+        if (index != paramArr.Length)
+            result .= "_"
+    }
+    return result
+}
+
 GetComboKeyArr(ComboKey) {
     KeyArr := []
     ModifyKeyMap := Map("LAlt", "<!", "RAlt", ">!", "Alt", "!", "LWin", "<#", "RWin", ">#", "Win", "#",

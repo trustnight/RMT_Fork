@@ -431,6 +431,9 @@ ExcuteRMTCMDAction(cmdStr) {
     else if (cmdStr == "重载") {
         MenuReload()
     }
+    else if (cmdStr == "关闭软件") {
+        ExitApp()
+    }
 }
 
 ScreenShot(X1, Y1, X2, Y2, FileName) {
@@ -618,7 +621,7 @@ SimpleRecordMacroStr(MacroStr) {
     return resultStr
 }
 
-FullCopyCmd(cmd) {
+FullCopyCmd(cmd, CopyedMap := Map()) {
     paramArr := SplitKeyCommand(cmd)
     if (InStr(paramArr[1], "间隔"))
         return cmd
@@ -629,6 +632,11 @@ FullCopyCmd(cmd) {
     if (InStr(paramArr[1], "RMT指令"))
         return cmd
 
+    if (CopyedMap.Has(paramArr[2])) {
+        paramArr[2] := CopyedMap[paramArr[2]]
+        return GetCmdByParams(paramArr)
+    }
+
     DataFileMap := Map("搜索", SearchFile, "搜索Pro", SearchProFile, "移动Pro", MMProFile,
         "输出", OutputFile, "运行", RunFile, "变量", VariableFile, "变量提取", ExVariableFile, "运算", OperationFile,
         "如果", CompareFile, "宏操作", SubMacroFile, "后台鼠标", BGMouseFile)
@@ -636,33 +644,28 @@ FullCopyCmd(cmd) {
     dataFile := DataFileMap[paramArr[1]]
     Data := GetMacroCMDData(dataFile, paramArr[2])
     Data.SerialStr := SubStr(Data.SerialStr, 1, StrLen(Data.SerialStr) - 7) GetRandomStr(7)
+    CopyedMap.Set(paramArr[2], Data.SerialStr)
     paramArr[2] := Data.SerialStr
 
     if (ObjHasOwnProp(Data, "TrueMacro")) {
-        Data.TrueMacro := FullCopyMacro(Data.TrueMacro)
+        Data.TrueMacro := FullCopyMacro(Data.TrueMacro, CopyedMap)
     }
 
     if (ObjHasOwnProp(Data, "FalseMacro")) {
-        Data.FalseMacro := FullCopyMacro(Data.FalseMacro)
+        Data.FalseMacro := FullCopyMacro(Data.FalseMacro, CopyedMap)
     }
     saveStr := JSON.stringify(Data, 0)
     IniWrite(saveStr, dataFile, IniSection, Data.SerialStr)
 
-    result := ""
-    for index, value in paramArr {
-        result .= value
-        if (index != paramArr.Length)
-            result .= "_"
-    }
-    return result
+    return GetCmdByParams(paramArr)
 }
 
-FullCopyMacro(MacroStr) {
+FullCopyMacro(MacroStr, CopyedMap) {
     if (MacroStr == "")
         return MacroStr
     cmdArr := SplitMacro(MacroStr)
     loop cmdArr.Length {
-        cmdArr[A_Index] := FullCopyCmd(cmdArr[A_Index])
+        cmdArr[A_Index] := FullCopyCmd(cmdArr[A_Index], CopyedMap)
     }
 
     result := ""

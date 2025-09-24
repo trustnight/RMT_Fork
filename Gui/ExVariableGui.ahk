@@ -265,6 +265,15 @@ class ExVariableGui {
             }
         }
 
+        loop 4 {
+            if (this.ToggleConArr[A_Index].Value) {
+                if (IsNumber(this.VariableConArr[A_Index].Text)) {
+                    MsgBox(Format("{}. 变量名不规范：变量名不能是纯数字", A_Index))
+                    return false
+                }
+            }
+        }
+
         return true
     }
 
