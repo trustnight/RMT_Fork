@@ -24,6 +24,7 @@
 #Include Main\DataClass.ahk
 #Include Main\AssetUtil.ahk
 #Include Main\RecordJoyUtil.ahk
+#Include Main\ThankUIUtil.ahk
 #Include Main\HotkeyUtil.ahk
 #Include Main\RMTUtil.ahk
 #Include Main\WorkPool.ahk

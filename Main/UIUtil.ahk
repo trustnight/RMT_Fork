@@ -155,7 +155,7 @@ AddOperBtnUI() {
 
 GetUIAddFunc(index) {
     UIAddFuncArr := [LoadItemFold, LoadItemFold, LoadItemFold, LoadItemFold, LoadItemFold,
-        AddToolUI, AddSettingUI, AddHelpUI, AddRewardUI]
+        AddToolUI, AddSettingUI, AddHelpUI, AddRewardUI, AddThankUI]
     return UIAddFuncArr[index]
 }
 
