@@ -90,8 +90,8 @@ LoadItemFoldTitle(tableItem, foldIndex, PosY) {
     tableItem.AllConArr.Push(conInfo)
     tableItem.ConIndexMap[con] := MacroItemInfo(-10000, conInfo)
 
-    btnStr := FoldInfo.FoldStateArr[foldIndex] ? "❯" : "🞃"
-    con := MyGui.Add("Button", Format("x{} y{} +BackgroundTrans", MySoftData.TabPosX + 840, posY),
+    btnStr := FoldInfo.FoldStateArr[foldIndex] ? "🞃" : "❯"
+    con := MyGui.Add("Button", Format("x{} y{} w{} +BackgroundTrans", MySoftData.TabPosX + 840, posY, 30),
     btnStr)
     con.OnEvent("Click", OnFoldBtnClick.Bind(tableItem))
     conInfo := ItemConInfo(con, tableItem, foldIndex)
