@@ -164,132 +164,215 @@ AddToolUI(index) {
     global ToolCheckInfo
 
     MyGui := MySoftData.MyGui
+    tableItem := MySoftData.TableInfo[index]
     posY := MySoftData.TabPosY
     posX := MySoftData.TabPosX
     ; 配置规则说明
     posY += 35
-    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "鼠标信息：")
+    con := MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "鼠标信息：")
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
 
     isHotKey := CheckIsNormalHotKey(ToolCheckInfo.ToolCheckHotkey)
     CtrlType := isHotKey ? "Hotkey" : "Text"
     con := MyGui.Add(CtrlType, Format("x{} y{} w{}", posX + 120, posY - 3, 130), ToolCheckInfo.ToolCheckHotkey)
     con.Enabled := false
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
 
-    ToolCheckInfo.ToolCheckCtrl := MyGui.Add("CheckBox", Format("x{} y{}", posX + 260, posY, 60), "开关")
+    con := MyGui.Add("CheckBox", Format("x{} y{}", posX + 260, posY, 60), "开关")
+    ToolCheckInfo.ToolCheckCtrl := con
     ToolCheckInfo.ToolCheckCtrl.Value := ToolCheckInfo.IsToolCheck
     ToolCheckInfo.ToolCheckCtrl.OnEvent("Click", OnToolCheckHotkey)
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
 
-    ToolCheckInfo.AlwaysOnTopCtrl := MyGui.Add("CheckBox", Format("x{} y{}", posX + 400, posY, 60), "窗口置顶")
+    con := MyGui.Add("CheckBox", Format("x{} y{}", posX + 400, posY, 60), "窗口置顶")
+    ToolCheckInfo.AlwaysOnTopCtrl := con
     ToolCheckInfo.AlwaysOnTopCtrl.Value := false
     ToolCheckInfo.AlwaysOnTopCtrl.OnEvent("Click", OnToolAlwaysOnTop)
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
 
     posY += 35
-    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "屏幕坐标：")
-    ToolCheckInfo.ToolMousePosCtrl := MyGui.Add("Edit", Format("x{} y{} w240", posX + 120, posY - 5), ToolCheckInfo.PosStr
-    )
+    con := MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "屏幕坐标：")
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
+    con := MyGui.Add("Edit", Format("x{} y{} w240", posX + 120, posY - 5), ToolCheckInfo.PosStr)
+    ToolCheckInfo.ToolMousePosCtrl := con
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
 
-    MyGui.Add("Text", Format("x{} y{}", posX + 400, posY), "窗口坐标：")
-    ToolCheckInfo.ToolMouseWinPosCtrl := MyGui.Add("Edit", Format("x{} y{} w240", posX + 480, posY - 5), ToolCheckInfo.WinPosStr
-    )
-
-    posY += 35
-    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "进程窗口标题：")
-    ToolCheckInfo.ToolProcessTileCtrl := MyGui.Add("Edit", Format("x{} y{} w240", posX + 120, posY - 5), ToolCheckInfo.ProcessTile
-    )
-
-    MyGui.Add("Text", Format("x{} y{}", posX + 400, posY), "进程名：")
-    ToolCheckInfo.ToolProcessNameCtrl := MyGui.Add("Edit", Format("x{} y{} w240", posX + 480, posY - 5), ToolCheckInfo.ProcessName
-    )
-
-    posY += 35
-    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "进程窗口类：")
-    ToolCheckInfo.ToolProcessClassCtrl := MyGui.Add("Edit", Format("x{} y{} w240", posX + 120, posY - 5), ToolCheckInfo
-    .ProcessClass
-    )
-
-    MyGui.Add("Text", Format("x{} y{}", posX + 400, posY), "进程PID:")
-    ToolCheckInfo.ToolProcessPidCtrl := MyGui.Add("Edit", Format("x{} y{} w240", posX + 480, posY - 5), ToolCheckInfo.ProcessPid
-    )
+    con := MyGui.Add("Text", Format("x{} y{}", posX + 400, posY), "窗口坐标：")
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
+    con := MyGui.Add("Edit", Format("x{} y{} w240", posX + 480, posY - 5), ToolCheckInfo.WinPosStr)
+    ToolCheckInfo.ToolMouseWinPosCtrl := con
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
 
     posY += 35
-    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "句柄Id:")
-    ToolCheckInfo.ToolProcessIdCtrl := MyGui.Add("Edit", Format("x{} y{} w240", posX + 120, posY - 5), ToolCheckInfo.ProcessId
-    )
+    con := MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "进程窗口标题：")
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
+    con := MyGui.Add("Edit", Format("x{} y{} w240", posX + 120, posY - 5), ToolCheckInfo.ProcessTile)
+    ToolCheckInfo.ToolProcessTileCtrl := con
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
 
-    MyGui.Add("Text", Format("x{} y{}", posX + 400, posY), "位置颜色：")
-    ToolCheckInfo.ToolColorCtrl := MyGui.Add("Edit", Format("x{} y{} w240", posX + 480, posY - 5), ToolCheckInfo.Color
-    )
+    con := MyGui.Add("Text", Format("x{} y{}", posX + 400, posY), "进程名：")
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
+    con := MyGui.Add("Edit", Format("x{} y{} w240", posX + 480, posY - 5), ToolCheckInfo.ProcessName)
+    ToolCheckInfo.ToolProcessNameCtrl := con
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
+
+    posY += 35
+    con := MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "进程窗口类：")
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
+    con := MyGui.Add("Edit", Format("x{} y{} w240", posX + 120, posY - 5), ToolCheckInfo.ProcessClass)
+    ToolCheckInfo.ToolProcessClassCtrl := con
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
+
+    con := MyGui.Add("Text", Format("x{} y{}", posX + 400, posY), "进程PID:")
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
+    con := MyGui.Add("Edit", Format("x{} y{} w240", posX + 480, posY - 5), ToolCheckInfo.ProcessPid)
+    ToolCheckInfo.ToolProcessPidCtrl := con
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
+
+    posY += 35
+    con := MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "句柄Id:")
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
+    con := MyGui.Add("Edit", Format("x{} y{} w240", posX + 120, posY - 5), ToolCheckInfo.ProcessId)
+    ToolCheckInfo.ToolProcessIdCtrl := con
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
+
+    con := MyGui.Add("Text", Format("x{} y{}", posX + 400, posY), "位置颜色：")
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
+    con := MyGui.Add("Edit", Format("x{} y{} w240", posX + 480, posY - 5), ToolCheckInfo.Color)
+    ToolCheckInfo.ToolColorCtrl := con
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
 
     posY += 40
-    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "截图和自由贴：")
+    con := MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "截图和自由贴：")
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
 
     isHotKey := CheckIsNormalHotKey(ToolCheckInfo.ScreenShotHotKey)
     CtrlType := isHotKey ? "Hotkey" : "Text"
     con := MyGui.Add(CtrlType, Format("x{} y{} w{}", posX + 120, posY - 3, 130), ToolCheckInfo.ScreenShotHotKey
     )
     con.Enabled := false
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
 
     con := MyGui.Add("Button", Format("x{} y{} w{}", posX + 260, posY - 5, 100), "截图")
     con.OnEvent("Click", OnToolScreenShot)
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
 
     isHotKey := CheckIsNormalHotKey(ToolCheckInfo.FreePasteHotKey)
     CtrlType := isHotKey ? "Hotkey" : "Text"
     con := MyGui.Add(CtrlType, Format("x{} y{} w{}", posX + 400, posY - 3, 130), ToolCheckInfo.FreePasteHotKey
     )
     con.Enabled := false
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
 
     con := MyGui.Add("Button", Format("x{} y{} w{}", posX + 540, posY - 5, 100), "自由贴")
     con.OnEvent("Click", OnToolFreePaste)
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
 
     posY += 40
-    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "指令录制：")
+    con := MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "指令录制：")
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
 
     isHotKey := CheckIsNormalHotKey(ToolCheckInfo.ToolRecordMacroHotKey)
     CtrlType := isHotKey ? "Hotkey" : "Text"
     con := MyGui.Add(CtrlType, Format("x{} y{} w{}", posX + 120, posY - 3, 130), ToolCheckInfo.ToolRecordMacroHotKey
     )
     con.Enabled := false
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
 
-    ToolCheckInfo.ToolCheckRecordMacroCtrl := MyGui.Add("CheckBox", Format("x{} y{}", posX + 260, posY, 60), "开关")
+    con := MyGui.Add("CheckBox", Format("x{} y{}", posX + 260, posY, 60), "开关")
+    ToolCheckInfo.ToolCheckRecordMacroCtrl := con
     ToolCheckInfo.ToolCheckRecordMacroCtrl.Value := ToolCheckInfo.IsToolRecord
     ToolCheckInfo.ToolCheckRecordMacroCtrl.OnEvent("Click", OnHotToolRecordMacro.Bind(false))
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
 
     con := MyGui.Add("Button", Format("x{} y{} w{}", posX + 400, posY - 5, 100), "录制选项")
     con.OnEvent("Click", OnClickToolRecordSettingBtn)
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
 
     posY += 40
-    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "图片文本提取：")
+    con := MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "图片文本提取：")
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
 
     isHotKey := CheckIsNormalHotKey(ToolCheckInfo.ToolTextFilterHotKey)
     CtrlType := isHotKey ? "Hotkey" : "Text"
     con := MyGui.Add(CtrlType, Format("x{} y{} w{}", posX + 120, posY - 3, 130), ToolCheckInfo.ToolTextFilterHotKey
     )
     con.Enabled := false
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
 
     con := MyGui.Add("Button", Format("x{} y{} w{}", posX + 260, posY - 5, 100), "截图提取文本")
     con.OnEvent("Click", OnToolTextFilterScreenShot)
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
 
     con := MyGui.Add("Button", Format("x{} y{} w{}", posX + 400, posY - 5, 120), "从图片提取文本")
     con.OnEvent("Click", OnToolTextFilterSelectImage)
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
 
     posY += 35
-    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "相关选项：")
+    con := MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "相关选项：")
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
 
-    MyGui.Add("Text", Format("x{} y{} w{}", PosX + 120, PosY, 110), "文本识别模型:")
-    ToolCheckInfo.OCRTypeCtrl := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 260, PosY - 5, 100), [
+    con := MyGui.Add("Text", Format("x{} y{} w{}", PosX + 120, PosY, 110), "文本识别模型:")
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
+
+    con := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX + 260, PosY - 5, 100), [
         "中文",
         "英文"])
+    ToolCheckInfo.OCRTypeCtrl := con
     ToolCheckInfo.OCRTypeCtrl.Value := ToolCheckInfo.OCRTypeValue
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
 
     posY += 40
-    MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "录制的指令或提取的文本内容：")
+    con := MyGui.Add("Text", Format("x{} y{}", posX + 20, posY), "录制的指令或提取的文本内容：")
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
 
     con := MyGui.Add("Button", Format("x{} y{} w{} h{}", posX + 260, posY - 5, 80, 25), "清空内容")
     con.OnEvent("Click", OnClearToolText)
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
 
     posY += 25
-    ToolCheckInfo.ToolTextCtrl := MyGui.Add("Edit", Format("x{} y{} w{} h{}", posX + 20, posY, 800, 100), "")
-
+    con := ToolCheckInfo.ToolTextCtrl := MyGui.Add("Edit", Format("x{} y{} w{} h{}", posX + 20, posY, 800, 100), "")
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
+    
     posY += 20
     MySoftData.TableInfo[index].underPosY := posY
 }
