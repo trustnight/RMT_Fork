@@ -45,6 +45,10 @@ OnSuspendHotkey(*) {
         TraySetIcon("Images\Soft\rabit.ico")
     }
 
+    tipStr := MySoftData.IsSuspend ? "软件休眠" : "取消软件休眠"
+    if (MySoftData.CMDTip)
+        MyCMDReportAciton(tipStr)
+
     Suspend(MySoftData.IsSuspend)
 }
 
@@ -58,6 +62,10 @@ OnPauseHotKey(*) {
             SetItemPauseState(tableItem.index, index, MySoftData.IsPause)
         }
     }
+
+    tipStr := MySoftData.IsPause ? "暂停所有宏" : "回复所有暂停"
+    if (MySoftData.CMDTip)
+        MyCMDReportAciton(tipStr)
 
     MySoftData.SpecialTableItem.PauseArr[1] := MySoftData.IsPause
 }
@@ -93,6 +101,11 @@ OnKillAllMacro(*) {
     }
 
     KillSingleTableMacro(MySoftData.SpecialTableItem)
+
+    
+    tipStr := "终止所有宏"
+    if (MySoftData.CMDTip)
+        MyCMDReportAciton(tipStr)
 }
 
 OnToolCheckHotkey(*) {
@@ -213,7 +226,7 @@ OnToolRecordMacro(isHotkey, *) {
     }
 
     if (state) {
-        MySoftData.IsTogStartRecord := isHotkey
+        MySoftData.IsTogStartRecord := isHotkey == ""
         if (ToolCheckInfo.RecordJoy)
             RecordJoy()
 
@@ -221,7 +234,7 @@ OnToolRecordMacro(isHotkey, *) {
             RecordMouseTrail
     }
     else {
-        MySoftData.IsTogEndRecord := isHotkey
+        MySoftData.IsTogEndRecord := isHotkey == ""
         OnFinishRecordMacro()
     }
 }
@@ -335,6 +348,8 @@ OnFinishRecordMacro() {
     }
     macroStr := Trim(ToolCheckInfo.RecordMacroStr, ",")
     macroStr := SimpleRecordMacroStr(macroStr)
+    macroStr := DiscardRecordTriggerKey(macroStr, true)
+    macroStr := DiscardRecordTriggerKey(macroStr, false)
 
     if (MySoftData.MacroEditGui != "") {
         MySoftData.MacroEditGui.InitTreeView(macroStr)

@@ -74,11 +74,11 @@ class SubMacroGui {
 
         PosX := 10
         PosY += 25
-        MyGui.Add("Text", Format("x{} y{} h{}", PosX, PosY, 20), "插入:插入到当前执行的宏中，该宏的变量操作都是依赖于当前宏环境")
+        MyGui.Add("Text", Format("x{} y{} h{}", PosX, PosY, 20), "插入: 指定宏按循环次数插入（无限循环仅插入一次）")
 
         PosX := 10
         PosY += 25
-        MyGui.Add("Text", Format("x{} y{} h{}", PosX, PosY, 20), "触发:与正常的按键触发等效")
+        MyGui.Add("Text", Format("x{} y{} h{}", PosX, PosY, 20), "触发: 与正常的按键触发等效")
 
         PosY += 30
         PosX := 200
@@ -218,18 +218,18 @@ class SubMacroGui {
         if (hasRemark) {
             CommandStr .= "_" this.RemarkCon.Value
         }
-        else {
-            if (this.TypeCon.Value == 1)
-                CommandStr .= "_当前宏"
-            else if (this.TypeCon.Value == 2)
-                CommandStr .= "_按键宏" this.DropDownIndexCon.Text
-            else if (this.TypeCon.Value == 3)
-                CommandStr .= "_字串宏" this.DropDownIndexCon.Text
-            else if (this.TypeCon.Value == 4)
-                CommandStr .= "_定时宏" this.DropDownIndexCon.Text
-            else if (this.TypeCon.Value == 5)
-                CommandStr .= "_宏" this.DropDownIndexCon.Text
-        }
+        ; else {
+        ;     if (this.TypeCon.Value == 1)
+        ;         CommandStr .= "_当前宏"
+        ;     else if (this.TypeCon.Value == 2)
+        ;         CommandStr .= "_按键宏" this.DropDownIndexCon.Text
+        ;     else if (this.TypeCon.Value == 3)
+        ;         CommandStr .= "_字串宏" this.DropDownIndexCon.Text
+        ;     else if (this.TypeCon.Value == 4)
+        ;         CommandStr .= "_定时宏" this.DropDownIndexCon.Text
+        ;     else if (this.TypeCon.Value == 5)
+        ;         CommandStr .= "_宏" this.DropDownIndexCon.Text
+        ; }
         return CommandStr
     }
 

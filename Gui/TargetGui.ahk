@@ -88,7 +88,7 @@ class TargetGui {
         isVisible := (style & 0x10000000)  ; 0x10000000 = WS_VISIBLE
         if (!isVisible)
             return
-    
+
         this.Gui.Hide()
         if (this.SureAction == "")
             return
@@ -161,6 +161,7 @@ class TargetGui {
         this.Gui.Move(x, y)
 
         CoordMode("Pixel", "Screen")
+
         loop this.RowColorNum {
             RowValue := A_Index
             loop this.ColColorNum {
@@ -173,9 +174,41 @@ class TargetGui {
             }
         }
 
-        Key := Format("{}-{}", Integer((ColValue + 1) / 2), Integer((RowValue + 1) / 2))
-        this.ColorValue := ColorValue := ColorValueMap[Key]
+        Key := Format("{}-{}", Integer((this.ColColorNum + 1) / 2), Integer((this.RowColorNum + 1) / 2))
+        this.ColorValue := ColorValueMap[Key]
         this.ColorCon.Opt("Background" this.ColorValue)
         this.ColorCon.Redraw()
+    
+        CenterBoxKey := Format("{}-{}", 0, 0)
+        CenterBoxCon := this.ColorConMap[CenterBoxKey]
+        ColorValue := this.GetInvertedColor(this.ColorValue)
+        CenterBoxCon.Opt("Background" ColorValue)
+        CenterBoxCon.Redraw() 
+    }
+
+    GetInvertedColor(color) {
+        ; 去除可能的前缀（如0x）
+        if (SubStr(color, 1, 2) = "0x") {
+            color := SubStr(color, 3)
+        }
+
+        ; 确保颜色值是6位十六进制
+        if (StrLen(color) = 6) {
+            ; 将十六进制转换为RGB分量
+            red := Integer("0x" SubStr(color, 1, 2))
+            green := Integer("0x" SubStr(color, 3, 2))
+            blue := Integer("0x" SubStr(color, 5, 2))
+
+            ; 计算反色
+            invertedRed := 255 - red
+            invertedGreen := 255 - green
+            invertedBlue := 255 - blue
+
+            ; 将RGB分量转换回十六进制
+            invertedColor := Format("0x{:02X}{:02X}{:02X}", invertedRed, invertedGreen, invertedBlue)
+
+            return invertedColor
+        }
+        return "0xFFFFFF"
     }
 }

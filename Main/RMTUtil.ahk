@@ -613,30 +613,56 @@ SimpleRecordMacroStr(MacroStr) {
         }
         SimpleCmdArr.Push(CmdArr[A_Index])
     }
-    resultStr := ""
-    loop SimpleCmdArr.Length {
-        resultStr .= SimpleCmdArr[A_Index] ","
-    }
-    resultStr := Trim(resultStr, ",")
-    return resultStr
+
+    return GetMacroStrByCmdArr(SimpleCmdArr)
 }
 
-DiscardTriggerKey(MacroStr) {
+DiscardRecordTriggerKey(MacroStr, isFront) {
+    triggerMap := GetRecordTriggerKeyMap()
     CmdArr := SplitMacro(MacroStr)
     SimpleCmdArr := []
-    isDiscardStart := false
+    hasDiscard := false
     loop CmdArr.Length {
-        if (!isDiscardStart) {
-            if (MySoftData.IsTogStartRecord) {
-                isDiscardStart := true
+        cmd := isFront ? CmdArr[A_Index] : CmdArr[CmdArr.Length - A_Index + 1]
+
+        if (!hasDiscard) {
+            if (isFront && MySoftData.IsTogStartRecord) {
+                hasDiscard := true
             }
-            else{
-                if (InStr(CmdArr[A_Index], "间隔"))
+            else if (!isFront && MySoftData.IsTogEndRecord) {
+                hasDiscard := true
+            }
+            else {
+                if (InStr(cmd, "间隔"))
+                    continue
+
+                if (CheckIfDiscardCMD(triggerMap, cmd))
+                    continue
+
+                hasDiscard := true
             }
         }
 
-        SimpleCmdArr.Push(CmdArr[A_Index])
+        if (isFront)
+            SimpleCmdArr.Push(cmd)
+        else
+            SimpleCmdArr.InsertAt(1, cmd)
     }
+
+    return GetMacroStrByCmdArr(SimpleCmdArr)
+}
+
+CheckIfDiscardCMD(triggerMap, cmd) {
+    if (!InStr(cmd, "按键"))
+        return false
+
+    paramArr := SplitKeyCommand(cmd)
+    if (triggerMap.Has(paramArr[2]) && triggerMap[paramArr[2]] < 2) {
+        triggerMap[paramArr[2]] += 1
+        return true
+    }
+
+    return false
 }
 
 FullCopyCmd(cmd, CopyedMap := Map()) {

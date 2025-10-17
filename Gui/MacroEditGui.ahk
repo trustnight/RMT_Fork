@@ -350,6 +350,14 @@ class MacroEditGui {
 
         if (this.BranchContextMenu == "") {
             this.BranchContextMenu := Menu()
+
+            subMenu := Menu()
+            for value in this.CMDStrArr {
+                subMenu.Add(value, this.MenuHandler.Bind(this, "Add_" value))
+            }
+            this.BranchContextMenu.Add("添加指令", subMenu)  ; 将子菜单添加到主菜单
+
+            this.BranchContextMenu.Add()  ; 分隔线
             this.BranchContextMenu.Add("删除", (*) => this.MenuHandler("删除"))
         }
 
@@ -382,7 +390,7 @@ class MacroEditGui {
         itemText := this.MacroTreeViewCon.GetText(this.CurItemID)
         paramsArr := StrSplit(cmdStr, "_")
         if (paramsArr.Length == 2) {
-            modeType := paramsArr[1] == "Pre" ? 3 : 4
+            modeType := paramsArr[1] == "Pre" ? 3 : paramsArr[1] == "Next" ? 4 : 5
             this.EditModeType := modeType
             subGui := this.SubGuiMap[paramsArr[2]]
             this.OnOpenSubGui(subGui, modeType)
@@ -449,6 +457,8 @@ class MacroEditGui {
         IsSearch := StrCompare(paramArr[1], "搜索", false) == 0
         IsSearchPro := StrCompare(paramArr[1], "搜索Pro", false) == 0
         IsIf := StrCompare(paramArr[1], "如果", false) == 0
+        if (!IsSearch && !IsSearchPro && !IsIf)
+            return
 
         ParentID := this.MacroTreeViewCon.GetParent(root)
         while (ParentID != 0) {
@@ -486,18 +496,17 @@ class MacroEditGui {
             FalseMacro := Data.FalseMacro
         }
 
-        if (TrueMacro != "") {
-            trueRoot := this.MacroTreeViewCon.Add("真", root)
-            this.TreeAddSubTree(trueRoot, TrueMacro)
-        }
+        trueRoot := this.MacroTreeViewCon.Add("真", root)
+        this.TreeAddSubTree(trueRoot, TrueMacro)
 
-        if (FalseMacro != "") {
-            falseRoot := this.MacroTreeViewCon.Add("假", root)
-            this.TreeAddSubTree(falseRoot, FalseMacro)
-        }
+        falseRoot := this.MacroTreeViewCon.Add("假", root)
+        this.TreeAddSubTree(falseRoot, FalseMacro)
     }
 
     TreeAddSubTree(root, CommandStr) {
+        if (CommandStr == "")
+            return
+
         cmdArr := SplitMacro(CommandStr)
         for cmdStr in cmdArr {
             subRoot := this.MacroTreeViewCon.Add(cmdStr, root)
@@ -505,7 +514,7 @@ class MacroEditGui {
         }
     }
 
-    ;打开子指令编辑器
+    ;打开子指令编辑器 modeType 1:默认行尾追加 2:编辑修改 3:上方插入 4:下方插入 5:真假节点添加
     OnOpenSubGui(subGui, modeType := 1) {
         this.EditModeType := modeType
         if ObjHasOwnProp(subGui, "VariableObjArr") {
@@ -535,6 +544,9 @@ class MacroEditGui {
         }
         else if (this.EditModeType == 4) {
             this.OnNextInsertCmd(CommandStr)
+        }
+        else if (this.EditModeType == 5) {
+            this.OnNodeAddCmd(CommandStr)
         }
         MySoftData.RecordToggleCon := this.RecordMacroCon
         MySoftData.MacroEditGui := this
@@ -613,7 +625,7 @@ class MacroEditGui {
         this.CurItemID := this.MacroTreeViewCon.GetParent(ParentID)
         RealCommandStr := this.MacroTreeViewCon.GetText(this.CurItemID)
         this.SaveCommandData(RealCommandStr, macroStr, isTrueMacro, false)
-        this.TreeAddBranch(this.CurItemID, CommandStr)
+        this.RefreshTree(this.CurItemID)
     }
 
     ;插入指令
@@ -633,7 +645,18 @@ class MacroEditGui {
         this.CurItemID := this.MacroTreeViewCon.GetParent(ParentID)
         RealCommandStr := this.MacroTreeViewCon.GetText(this.CurItemID)
         this.SaveCommandData(RealCommandStr, macroStr, isTrueMacro, false)
-        this.TreeAddBranch(this.CurItemID, CommandStr)
+        this.RefreshTree(this.CurItemID)
+    }
+
+    OnNodeAddCmd(CommandStr) {
+        newItemID := this.MacroTreeViewCon.Add(CommandStr, this.CurItemID)
+        macroStr := this.GetMacroStr(this.CurItemID)
+        isTrueMacro := this.MacroTreeViewCon.GetText(this.CurItemID) == "真"
+
+        this.CurItemID := this.MacroTreeViewCon.GetParent(this.CurItemID)
+        RealCommandStr := this.MacroTreeViewCon.GetText(this.CurItemID)
+        this.SaveCommandData(RealCommandStr, macroStr, isTrueMacro, false)
+        this.RefreshTree(this.CurItemID)
     }
 
     TreeExpand(ItemID, Num) {

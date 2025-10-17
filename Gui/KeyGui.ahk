@@ -90,8 +90,10 @@ class KeyGui {
 
     ClearCheckedBox() {
         for index, value in this.CheckedBox {
-            con := this.ConMap.Get(value)
-            con.Value := 0
+            if (this.ConMap.Has(value)) {
+                con := this.ConMap.Get(value)
+                con.Value := 0
+            }
         }
         this.CheckedBox := []
         this.Refresh()
@@ -1217,15 +1219,17 @@ class KeyGui {
 
     RefreshCheckBox(ComboKey) {
         this.CheckedBox := GetComboKeyArr(ComboKey)
-        
 
         for key, value in this.ConMap {
             value.Value := 0
         }
 
         for index, value in this.CheckedBox {
-            con := this.ConMap.Get(value)
-            con.Value := 1
+            if (this.ConMap.Has(value)) {
+                con := this.ConMap.Get(value)
+                con.Value := 1
+            }
+
         }
     }
 

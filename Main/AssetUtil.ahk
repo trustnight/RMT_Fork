@@ -212,6 +212,16 @@ GetCmdByParams(paramArr) {
     return result
 }
 
+GetMacroStrByCmdArr(cmdArr) {
+    macroStr := ""
+    loop cmdArr.Length {
+        macroStr .= cmdArr[A_Index] ","
+    }
+    macroStr := Trim(macroStr, ",")
+    return macroStr
+}
+
+
 GetComboKeyArr(ComboKey) {
     KeyArr := []
     ModifyKeyMap := Map("LAlt", "<!", "RAlt", ">!", "Alt", "!", "LWin", "<#", "RWin", ">#", "Win", "#",
@@ -1024,13 +1034,20 @@ ClearUselessSetting(deleteMacro) {
 LoosenModifyKey(keyCombo) {
     modifiers := []
     modPrefixes := ["^", "<^", ">^", "!", "<!", ">!", "+", "<+", ">+", "#", "<#", ">#"]
+
     ; 检查是否以修饰键开头
-    for prefix in modPrefixes {
-        if (SubStr(keyCombo, 1, StrLen(prefix)) == prefix) {
-            modifiers.Push(prefix)
-            keyCombo := SubStr(keyCombo, StrLen(prefix) + 1)
-            break
+    loop {
+        hasAdd := false
+        for prefix in modPrefixes {
+            if (SubStr(keyCombo, 1, StrLen(prefix)) == prefix) {
+                modifiers.Push(prefix)
+                keyCombo := SubStr(keyCombo, StrLen(prefix) + 1)
+                hasAdd := true
+                break
+            }
         }
+        if (!hasAdd)
+            break
     }
 
     ; 检查所有修饰键是否按下
@@ -1075,14 +1092,22 @@ AreKeysPressed(keyCombo) {
     ; 初始化存储修饰键的数组
     modifiers := []
     modPrefixes := ["^", "<^", ">^", "!", "<!", ">!", "+", "<+", ">+", "#", "<#", ">#"]
+
     ; 检查是否以修饰键开头
-    for prefix in modPrefixes {
-        if (SubStr(keyCombo, 1, StrLen(prefix)) == prefix) {
-            modifiers.Push(prefix)
-            keyCombo := SubStr(keyCombo, StrLen(prefix) + 1)
-            break
+    loop {
+        hasAdd := false
+        for prefix in modPrefixes {
+            if (SubStr(keyCombo, 1, StrLen(prefix)) == prefix) {
+                modifiers.Push(prefix)
+                keyCombo := SubStr(keyCombo, StrLen(prefix) + 1)
+                hasAdd := true
+                break
+            }
         }
+        if (!hasAdd)
+            break
     }
+
     ; 剩余部分是主键
     mainKey := keyCombo
 
@@ -1108,7 +1133,7 @@ AreKeysPressed(keyCombo) {
                 return false
             case ">+": if !GetKeyState("RShift")
                 return false
-            case "#": if !(GetKeyState("Win"))
+            case "#": if (!GetKeyState("LWin") && !GetKeyState("RWin"))
                 return false
             case "<#": if !GetKeyState("LWin")
                 return false
@@ -1138,6 +1163,61 @@ AreKeysPressed(keyCombo) {
     }
 
     return false
+}
+
+GetRecordTriggerKeyMap() {
+    triggerKey := ToolCheckInfo.ToolRecordMacroHotKey
+    ; 初始化存储修饰键的数组
+    modifiers := []
+    modPrefixes := ["^", "<^", ">^", "!", "<!", ">!", "+", "<+", ">+", "#", "<#", ">#"]
+
+    ; 检查是否以修饰键开头
+    loop {
+        hasAdd := false
+        for prefix in modPrefixes {
+            if (SubStr(triggerKey, 1, StrLen(prefix)) == prefix) {
+                modifiers.Push(prefix)
+                triggerKey := SubStr(triggerKey, StrLen(prefix) + 1)
+                hasAdd := true
+                break
+            }
+        }
+        if (!hasAdd)
+            break
+    }
+
+    ; 剩余部分是主键
+    resultMap := Map()
+    if (triggerKey != "")
+        resultMap.Set(triggerKey, true)
+
+    for index, value in modifiers {
+        if (value == "^" || value == "<^" || value == ">^") {
+            resultMap.Set("Ctrl", 0)
+            resultMap.Set("LCtrl", 0)
+            resultMap.Set("RCtrl", 0)
+        }
+
+        if (value == "!" || value == "<!" || value == ">!") {
+            resultMap.Set("Alt", 0)
+            resultMap.Set("LAlt", 0)
+            resultMap.Set("RAlt", 0)
+        }
+
+        if (value == "+" || value == "<+" || value == ">+") {
+            resultMap.Set("Shift", 0)
+            resultMap.Set("LShift", 0)
+            resultMap.Set("RShift", 0)
+        }
+
+        if (value == "#" || value == "<#" || value == ">#") {
+            resultMap.Set("Win", 0)
+            resultMap.Set("LWin", 0)
+            resultMap.Set("RWin", 0)
+        }
+    }
+
+    return resultMap
 }
 
 GetOperationResult(BaseValue, SymbolArr, ValueArr) {
