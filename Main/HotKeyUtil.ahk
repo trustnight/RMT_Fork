@@ -699,7 +699,16 @@ OnMouseMove(tableItem, cmd, index) {
 
 OnRMTCMD(tableItem, cmd, index) {
     paramArr := StrSplit(cmd, "_")
-    MyExcuteRMTCMDAction(paramArr[2])
+    cmdStr := paramArr[2]
+    if (cmdStr == "启用键鼠") {
+        BlockInput false
+    }
+    else if (cmdStr == "禁用键鼠") {
+        BlockInput true
+    }
+    else {
+        MyExcuteRMTCMDAction(cmdStr)
+    }
 }
 
 OnInterval(tableItem, cmd, index) {

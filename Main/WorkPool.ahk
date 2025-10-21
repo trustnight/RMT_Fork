@@ -5,9 +5,14 @@ class WorkPool {
         this.pool := []              ; 对象池数组
         this.hwndMap := Map()
         this.pidMap := Map()
+        ; loop this.maxSize {
+        ;     workPath := A_ScriptDir "\Thread\Work" A_Index ".exe"
+        ;     Run (Format("{} {} {}", workPath, MySoftData.MyGui.Hwnd, A_Index))
+        ; }
+
         loop this.maxSize {
             workPath := A_ScriptDir "\Thread\Work" A_Index ".exe"
-            Run (Format("{} {} {}", workPath, MySoftData.MyGui.Hwnd, A_Index))
+            ShellRun(workPath, "", "", "", MySoftData.MyGui.Hwnd " " A_Index)
         }
         OnMessage(WM_LOAD_WORK, this.OnFinishLoad.Bind(this))  ; 工作器完成工作回调
         OnMessage(WM_RELEASE_WORK, this.OnRelease.Bind(this))  ; 工作器完成工作回调
