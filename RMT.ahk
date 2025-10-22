@@ -74,6 +74,7 @@ global MySetTableItemState := SetTableItemState
 global MySetItemPauseState := SetItemPauseState
 global MyMsgBoxContent := MsgBoxContent
 global MyToolTipContent := ToolTipContent
+global MyMacroCount := MacroCount
 
 LoadMainSetting()       ;加载配置
 InitFilePath()          ;初始化文件路径

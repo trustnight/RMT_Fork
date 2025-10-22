@@ -44,6 +44,7 @@ class TriggerKeyGui {
         arrayIndex := 0
         isModifyKey := false
         isNormalIndex := 0
+        con := this.ConMap.Get(key)
 
         for modifyKey, modifyValue in this.ModifyKeyMap {
             if (modifyKey == key) {
@@ -65,9 +66,11 @@ class TriggerKeyGui {
         }
 
         if (isSelected) {
+            con.Opt("-Background")
             this.CheckedBox.RemoveAt(arrayIndex)
         }
         else {
+            con.Opt("Background" "0x4cae50")
             if (isModifyKey) {
                 this.CheckedBox.InsertAt(isNormalIndex, key)
             }
@@ -82,6 +85,7 @@ class TriggerKeyGui {
     ClearCheckedBox() {
         for index, value in this.CheckedBox {
             con := this.ConMap.Get(value)
+            con.Opt("-Background")
             con.Value := 0
         }
         this.CheckedBox := []
@@ -153,11 +157,13 @@ class TriggerKeyGui {
             if (StrCompare(key, triggerKey, false) == 0)
                 this.CheckedBox.Push(key)
 
+            value.Opt("-Background")
             value.Value := 0
         }
 
         for index, value in this.CheckedBox {
             con := this.ConMap.Get(value)
+            con.Opt("Background" "0x4cae50")
             con.Value := 1
         }
 

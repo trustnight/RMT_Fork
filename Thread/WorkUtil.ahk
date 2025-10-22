@@ -155,3 +155,8 @@ WorkToolTipContent(content) {
     str := Format("ToolTip_{}", content)
     MsgSendHandler(str)
 }
+
+WorkMacroCount(content) {
+    str := Format("MacroCount_{}", content)
+    MsgSendHandler(str)
+}

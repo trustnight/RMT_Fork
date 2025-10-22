@@ -123,7 +123,7 @@ LoadItemFoldTitle(tableItem, foldIndex, PosY) {
 
 LoadItemFoldTip(tableItem, foldIndex, PosY) {
     isNoTriggerKey := CheckIsNoTriggerKey(tableItem.Index)
-    offsetPosx := isNoTriggerKey ? -60 : 0
+    offsetPosx := isNoTriggerKey ? -80 : 0
 
     MyGui := MySoftData.MyGui
     con := MyGui.Add("Text", Format("x{} y{} w100", MySoftData.TabPosX + 30, posY), "宏触发按键")

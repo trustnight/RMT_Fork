@@ -5,6 +5,7 @@
 #Include "..\Main\HotkeyUtil.ahk"
 #Include "..\Main\Gdip_All.ahk"
 #Include "..\Main\CompareUtil.ahk"
+#Include "..\Main\FixCompatUtil.ahk"
 #Include "..\Joy\SuperCvJoyInterface.ahk"
 #Include "..\Joy\JoyMacro.ahk"
 #Include "..\Plugins\RapidOcr\RapidOcr.ahk"
@@ -45,6 +46,7 @@ global MySetTableItemState := WorkSetTableItemState
 global MySetItemPauseState := WorkSetItemPauseState
 global MyMsgBoxContent := WorkMsgBoxContent
 global MyToolTipContent := WorkToolTipContent
+global MyMacroCount := WorkMacroCount
 WorkOpenCVLoadDll()
 
 ; 注册消息

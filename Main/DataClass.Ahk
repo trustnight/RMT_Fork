@@ -253,8 +253,8 @@ class SoftData {
         this.EditHotKeyCtrl := ""
         this.EditHotStrCtrl := ""
 
-        this.TabNameArr := ["按键宏", "字串宏", "定时宏", "宏", "按键替换", "工具", "设置", "帮助", "打赏作者", "特别感谢"]
-        this.TabSymbolArr := ["Normal", "String", "Timing", "SubMacro", "Replace", "Tool", "Setting", "Help", "Reward", "Thank"]
+        this.TabNameArr := ["按键宏", "字串宏", "菜单宏", "定时宏", "宏", "按键替换", "工具", "设置", "帮助", "打赏作者", "特别感谢"]
+        this.TabSymbolArr := ["Normal", "String", "Menu", "Timing", "SubMacro", "Replace", "Tool", "Setting", "Help", "Reward", "Thank"]
         this.TabCtrl := {}
         this.TableInfo := []
 

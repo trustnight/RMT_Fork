@@ -53,6 +53,7 @@ class KeyGui {
         arrayIndex := 0
         isModifyKey := false
         isNormalIndex := 0
+        con := this.ConMap.Get(key)
 
         for modifyKey, modifyValue in this.ModifyKeyMap {
             if (modifyKey == key) {
@@ -74,9 +75,11 @@ class KeyGui {
         }
 
         if (isSelected) {
+            con.Opt("-Background")
             this.CheckedBox.RemoveAt(arrayIndex)
         }
         else {
+            con.Opt("Background" "0x4cae50")
             if (isModifyKey) {
                 this.CheckedBox.InsertAt(isNormalIndex, key)
             }
@@ -92,6 +95,7 @@ class KeyGui {
         for index, value in this.CheckedBox {
             if (this.ConMap.Has(value)) {
                 con := this.ConMap.Get(value)
+                con.Opt("-Background")
                 con.Value := 0
             }
         }
@@ -1221,12 +1225,14 @@ class KeyGui {
         this.CheckedBox := GetComboKeyArr(ComboKey)
 
         for key, value in this.ConMap {
+            value.Opt("-Background")
             value.Value := 0
         }
 
         for index, value in this.CheckedBox {
             if (this.ConMap.Has(value)) {
                 con := this.ConMap.Get(value)
+                con.Opt("Background" "0x4cae50")
                 con.Value := 1
             }
 

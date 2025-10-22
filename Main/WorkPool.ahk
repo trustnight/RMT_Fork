@@ -5,15 +5,11 @@ class WorkPool {
         this.pool := []              ; 对象池数组
         this.hwndMap := Map()
         this.pidMap := Map()
-        ; loop this.maxSize {
-        ;     workPath := A_ScriptDir "\Thread\Work" A_Index ".exe"
-        ;     Run (Format("{} {} {}", workPath, MySoftData.MyGui.Hwnd, A_Index))
-        ; }
-
         loop this.maxSize {
             workPath := A_ScriptDir "\Thread\Work" A_Index ".exe"
-            ShellRun(workPath, "", "", "", MySoftData.MyGui.Hwnd " " A_Index)
+            Run (Format("{} {} {}", workPath, MySoftData.MyGui.Hwnd, A_Index))
         }
+
         OnMessage(WM_LOAD_WORK, this.OnFinishLoad.Bind(this))  ; 工作器完成工作回调
         OnMessage(WM_RELEASE_WORK, this.OnRelease.Bind(this))  ; 工作器完成工作回调
         OnMessage(WM_STOP_MACRO, this.OnStopMacro.Bind(this))  ;终止其他宏
@@ -138,6 +134,7 @@ class WorkPool {
         isPauseState := StrCompare(paramArr[1], "PauseState", false) == 0
         isMsgBox := StrCompare(paramArr[1], "MsgBox", false) == 0
         isToolTip := StrCompare(paramArr[1], "ToolTip", false) == 0
+        isMacroCount := StrCompare(paramArr[1], "MacroCount", false) == 0
         if (isSetVari) {
             SetGlobalVariable(paramArr[2], paramArr[3], false)
         }
@@ -162,6 +159,9 @@ class WorkPool {
         }
         else if (isToolTip) {
             MyToolTipContent(paramArr[2])
+        }
+        else if (isMacroCount) {
+            MyMacroCount(paramArr[2])
         }
     }
 }

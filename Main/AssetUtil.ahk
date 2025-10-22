@@ -836,6 +836,8 @@ CheckIsMacroTable(index) {
         return true
     if (symbol == "Timing")
         return true
+    if (symbol == "Menu")
+        return true
     return false
 }
 
@@ -873,6 +875,8 @@ CheckIsNoTriggerKey(index) {
     if (symbol == "SubMacro")
         return true
     if (symbol == "Timing")
+        return true
+    if (symbol == "Menu")
         return true
     return false
 }

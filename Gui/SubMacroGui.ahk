@@ -52,8 +52,7 @@ class SubMacroGui {
 
         PosX += 70
         this.TypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX, PosY - 5, 100), ["当前宏", "按键宏", "字串宏",
-            "定时宏",
-            "宏"])
+            "菜单宏", "定时宏", "宏"])
         this.TypeCon.Value := 1
         this.TypeCon.OnEvent("Change", (*) => this.OnRefresh())
 
@@ -132,9 +131,11 @@ class SubMacroGui {
             this.RemarkCon.Value := ""
         else if (this.TypeCon.Value == 3 && this.RemarkCon.Value == "字串宏" this.DropDownIndexCon.Text)
             this.RemarkCon.Value := ""
-        else if (this.TypeCon.Value == 4 && this.RemarkCon.Value == "定时宏" this.DropDownIndexCon.Text)
+        else if (this.TypeCon.Value == 4 && this.RemarkCon.Value == "菜单宏" this.DropDownIndexCon.Text)
             this.RemarkCon.Value := ""
-        else if (this.TypeCon.Value == 5 && this.RemarkCon.Value == "宏" this.DropDownIndexCon.Text)
+        else if (this.TypeCon.Value == 5 && this.RemarkCon.Value == "定时宏" this.DropDownIndexCon.Text)
+            this.RemarkCon.Value := ""
+        else if (this.TypeCon.Value == 6 && this.RemarkCon.Value == "宏" this.DropDownIndexCon.Text)
             this.RemarkCon.Value := ""
     }
 
