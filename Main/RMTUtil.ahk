@@ -803,9 +803,9 @@ FormatIntegerWithCommas(num) {
     return RegExReplace(num, "(\d)(?=(\d{3})+$)", "$1,")
 }
 
-OpenMenuWheel(index) {
-    MySoftData.CurMenuWheelIndex := index
-    MyMenuWheel.Show(index)
+OpenMenuWheel(MenuIndex) {
+    MySoftData.CurMenuWheelIndex := MenuIndex
+    MyMenuWheel.ShowGui(MenuIndex)
 }
 
 CloseMenuWheel() {

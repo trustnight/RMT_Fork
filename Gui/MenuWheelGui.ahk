@@ -25,13 +25,17 @@ class MenuWheelGui {
     }
 
     AddGui() {
-        MyGui := Gui(, "菜单轮")
-        this.Gui := MyGui
+        MyGui := Gui("-Caption +AlwaysOnTop +ToolWindow", "菜单轮")
         MyGui.SetFont("S11 W550 Q2", MySoftData.FontType)
+        MyGui.BackColor := "EEAA99"
+        WinSetTransColor("EEAA99", MyGui)
+        this.Gui := MyGui
+        PosX := 0
+        PosY := 0
 
         PosX := 120
         PosY += 40
-        con := MyGui.Add("Button", Format("x{} y{} w100 h40", PosX, PosY), "确定")
+        con := MyGui.Add("Button", Format("x{} y{} w90 h30", PosX, PosY), "菜单配置1")
         con.OnEvent("Click", (*) => this.OnBtnClick(1))
 
         MyGui.Show(Format("w{} h{}", 360, 180))
