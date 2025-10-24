@@ -33,12 +33,22 @@ class MenuWheelGui {
         PosX := 0
         PosY := 0
 
-        PosX := 120
-        PosY += 40
+        PosX := 115
+        PosY := 10
         con := MyGui.Add("Button", Format("x{} y{} w90 h30", PosX, PosY), "菜单配置1")
         con.OnEvent("Click", (*) => this.OnBtnClick(1))
 
-        MyGui.Show(Format("w{} h{}", 360, 180))
+        PosX := 210
+        PosY := 45
+        con := MyGui.Add("Button", Format("x{} y{} w90 h30", PosX, PosY), "菜单配置2")
+        con.OnEvent("Click", (*) => this.OnBtnClick(1))
+
+        PosX := 210
+        PosY := 80
+        con := MyGui.Add("Button", Format("x{} y{} w90 h30", PosX, PosY), "菜单配置2")
+        con.OnEvent("Click", (*) => this.OnBtnClick(1))
+
+        MyGui.Show(Format("w{} h{}", 300, 180))
     }
 
     OnBtnClick(index) {
