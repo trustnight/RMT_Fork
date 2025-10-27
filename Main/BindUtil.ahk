@@ -487,7 +487,7 @@ InitTriggerKeyMap() {
             MySoftData.TriggerKeyMap[key] := TriggerKeyData(key)
         }
         info := TriggerKeyInfo()
-        info.itemIndex := tableItem.Index
+        info.tableIndex := tableItem.Index
         info.macroType := 2
         info.foldIndex := index
         MySoftData.TriggerKeyMap[key].AddData(info)

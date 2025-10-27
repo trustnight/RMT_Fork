@@ -4,9 +4,7 @@ class MenuWheelGui {
     __new() {
         this.Gui := ""
         MenuIndex := 1
-
-        ShowPosX := 540
-        ShowPosY := 300
+        this.BtnConArr := []
     }
 
     ShowGui(MenuIndex) {
@@ -21,6 +19,14 @@ class MenuWheelGui {
 
     Init(MenuIndex) {
         this.MenuIndex := MenuIndex
+
+        tableItem := MySoftData.TableInfo[3]
+        loop 6 {
+            
+            remark := tableItem.RemarkArr[(MenuIndex - 1) * 6 + A_Index]
+            btnName := remark != "" ? remark : "菜单配置" A_Index
+            this.BtnConArr[A_Index].Text := btnName
+        }
     }
 
     AddGui() {
@@ -36,31 +42,37 @@ class MenuWheelGui {
         PosY := 10
         con := MyGui.Add("Button", Format("x{} y{} w90 h30", PosX, PosY), "菜单配置1")
         con.OnEvent("Click", (*) => this.OnBtnClick(1))
+        this.BtnConArr.Push(con)
 
         PosX := 215
         PosY := 45
         con := MyGui.Add("Button", Format("x{} y{} w90 h30", PosX, PosY), "菜单配置2")
         con.OnEvent("Click", (*) => this.OnBtnClick(2))
+        this.BtnConArr.Push(con)
 
         PosX := 215
         PosY := 80
         con := MyGui.Add("Button", Format("x{} y{} w90 h30", PosX, PosY), "菜单配置3")
         con.OnEvent("Click", (*) => this.OnBtnClick(3))
+        this.BtnConArr.Push(con)
 
         PosX := 115
         PosY := 115
         con := MyGui.Add("Button", Format("x{} y{} w90 h30", PosX, PosY), "菜单配置4")
         con.OnEvent("Click", (*) => this.OnBtnClick(4))
+        this.BtnConArr.Push(con)
 
         PosX := 15
         PosY := 80
         con := MyGui.Add("Button", Format("x{} y{} w90 h30", PosX, PosY), "菜单配置5")
         con.OnEvent("Click", (*) => this.OnBtnClick(5))
+        this.BtnConArr.Push(con)
 
         PosX := 15
         PosY := 45
         con := MyGui.Add("Button", Format("x{} y{} w90 h30", PosX, PosY), "菜单配置6")
         con.OnEvent("Click", (*) => this.OnBtnClick(6))
+        this.BtnConArr.Push(con)
 
         MyGui.Show(this.GetGuiShowParamStr())
     }
@@ -72,7 +84,9 @@ class MenuWheelGui {
     }
 
     OnBtnClick(index) {
-        MsgBox(index)
+        MySoftData.CurMenuWheelIndex := -1
         this.Gui.Hide()
+        macroIndex := (this.MenuIndex - 1) * 6 + index
+        TriggerSubMacro(3, macroIndex)
     }
 }

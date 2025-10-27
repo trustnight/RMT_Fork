@@ -104,7 +104,6 @@ class TriggerKeyData {
     OnTriggerKeyUp() {
         this.UpdataArr()
         this.HandleSoftHotKeyUp()
-        tableItem := MySoftData.TableInfo[1]
         for index, value in this.LoosenArr {
             value.Action()
         }
@@ -117,7 +116,6 @@ class TriggerKeyData {
     }
 
     SetHoldTimeChecker() {
-        tableItem := MySoftData.TableInfo[1]
         for _, value in this.HoldArr {
             isWork := value.GetWorkState()
             if (isWork)

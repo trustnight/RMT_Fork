@@ -60,20 +60,24 @@ class BGMouseGui {
 
         PosY += 25
         PosX := 10
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 500), "F1:选取当前窗口标题   F2:选取当前窗口位置   F3:选取标题和位置")
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 500), "F1:选取当前窗口信息   F2:选取当前窗口位置   F3:选取信息和位置")
 
         PosX := 10
         PosY += 20
-        this.CurTitleCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 380, 20), "当前窗口标题:RMT")
+        this.CurTitleCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 450, 40), "当前窗口信息:RMT")
         PosX := 10
-        PosY += 20
+        PosY += 40
         this.CurPosCon := MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 380, 20), "当前窗口坐标:0,0")
 
         PosX := 10
         PosY += 30
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "窗口标题:")
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 75), "窗口信息:")
         PosX += 80
-        this.TargetTitleCon := MyGui.Add("Edit", Format("x{} y{} w{}", PosX, PosY - 3, 300), "")
+        this.TargetTitleCon := MyGui.Add("Edit", Format("x{} y{} w{}", PosX, PosY - 3, 190), "")
+
+        PosX += 200
+        btnCon := MyGui.Add("Button", Format("x{} y{} w{}", PosX, PosY - 5, 100), "编辑")
+        btnCon.OnEvent("Click", this.OnClickEditBtn.Bind(this))
 
         PosX := 10
         PosY += 40
@@ -124,7 +128,7 @@ class BGMouseGui {
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
 
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 500, 325))
+        MyGui.Show(Format("w{} h{}", 500, 335))
     }
 
     Init(cmd) {
@@ -176,7 +180,10 @@ class BGMouseGui {
         CoordMode("Mouse", "Window")
         MouseGetPos &mouseX, &mouseY, &winId
         try {
-            this.TargetTitleCon.Value := WinGetTitle(winId)
+            title := WinGetTitle(winId)
+            className := WinGetClass(winId)
+            process := WinGetProcessName(winId)
+            this.TargetTitleCon.Value := title "⎖" className "⎖" process
         }
     }
 
@@ -197,8 +204,16 @@ class BGMouseGui {
         PosArr := GetWinPos()
         try {
             this.CurPosCon.Value := "当前窗口坐标: " PosArr[1] "," PosArr[2]
-            this.CurTitleCon.Value := "当前窗口标题: " WinGetTitle(oriId)
+
+            title := WinGetTitle(oriId)
+            className := WinGetClass(oriId)
+            process := WinGetProcessName(oriId)
+            this.CurTitleCon.Value := "当前窗口信息: " title "⎖" className "⎖" process
         }
+    }
+
+    OnClickEditBtn(*) {
+        MyFrontInfoGui.ShowGui(this.TargetTitleCon)
     }
 
     OnClickSureBtn() {
@@ -215,7 +230,7 @@ class BGMouseGui {
 
     CheckIfValid() {
         if (this.TargetTitleCon.Value == "") {
-            MsgBox("目标窗口标题不能为空")
+            MsgBox("目标窗口信息不能为空")
             return false
         }
         return true

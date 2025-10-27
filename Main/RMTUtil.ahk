@@ -404,7 +404,7 @@ ToolTipTimer() {
 }
 
 ExcuteRMTCMDAction(Cmd) {
-    paramArr := StrSplit(Cmd)
+    paramArr := StrSplit(Cmd, "_")
     cmdStr := paramArr[2]
     if (cmdStr == "截图") {
         OnToolScreenShot()
@@ -824,5 +824,5 @@ CloseMenuWheel() {
     style := WinGetStyle(MyMenuWheel.Gui.Hwnd)
     isVisible := (style & 0x10000000)  ; 0x10000000 = WS_VISIBLE
     if (isVisible)
-        MyCMDTipGui.Gui.Hide()
+        MyMenuWheel.Gui.Hide()
 }
