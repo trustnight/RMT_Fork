@@ -88,6 +88,7 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         IsSubMacro := StrCompare(paramArr[1], "宏操作", false) == 0
         IsOperation := StrCompare(paramArr[1], "运算", false) == 0
         IsBGMouse := StrCompare(paramArr[1], "后台鼠标", false) == 0
+        IsBGKey := StrCompare(paramArr[1], "后台按键", false) == 0
         IsRMT := StrCompare(paramArr[1], "RMT指令", false) == 0
 
         if (MySoftData.CMDTip) {
@@ -147,6 +148,9 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         }
         else if (IsRMT) {
             OnRMTCMD(tableItem, cmdArr[A_Index], index)
+        }
+        else if (IsBGKey) {
+            OnBGKey(tableItem, cmdArr[A_Index], index)
         }
     }
 }
@@ -675,6 +679,88 @@ OnBGMouse(tableItem, cmd, index) {
         }
         else if (Data.OperateType == 4) {   ;松开
             PostMessage WM_UP_ARR[Data.MouseType], 0, lParam, , "ahk_id " hwnd
+        }
+    }
+}
+
+OnBGKey(tableItem, cmd, index) {
+    paramArr := StrSplit(cmd, "_")
+    Data := GetMacroCMDData(BGKeyFile, paramArr[2])
+    loop Data.ClickCount {
+        WaitIfPaused(tableItem.index, index)
+
+        if (tableItem.KilledArr[index])
+            break
+
+        FloatHold := GetFloatTime(Data.ClickTime, MySoftData.HoldFloat)
+        FloatInterval := GetFloatTime(Data.ClickInterval, MySoftData.PreIntervalFloat)
+        SendBGKey(Data, tableItem, index)
+        if (Data.Type == 3 && A_Index != Data.ClickCount)
+            Sleep(FloatInterval)
+    }
+}
+
+SendBGKey(Data, tableItem, index) {
+    frontStr := GetParamsWinInfoStr(Data.FrontStr)
+    hwndList := WinGetList(frontStr)
+
+    if (Data.Type == 1 || Data.Type == 3) {
+        for hwnd in hwndList {
+            for key in Data.KeyArr {
+                SendBGKeyState(hwnd, key, 1, tableItem, index)
+            }
+        }
+
+    }
+
+    if (Data.Type == 3) {
+        Sleep(Data.ClickTime)
+    }
+
+    if (Data.Type == 2 || Data.Type == 3) {
+        for hwnd in hwndList {
+            for key in Data.KeyArr {
+                SendBGKeyState(hwnd, key, 0, tableItem, index)
+            }
+        }
+    }
+}
+
+SendBGKeyState(hwnd, Key, state, tableItem, index) {
+    if (Key == "逗号")
+        Key := ","
+    VKCode := GetKeyVK(Key)
+    VSCode := GetKeySC(Key)
+    lParamDown := (VSCode << 16) | 1
+    lParamUp := (VSCode << 16) | 0xC0000001
+
+    if (MySoftData.SpecialNumKeyMap.Has(Key)) {
+        if (state == 0)
+            return
+        try {
+            PostMessage 0x100, VKCode, lParamDown, , "ahk_id " hwnd
+        }
+
+        return
+    }
+
+    if (state == 1) {
+        try {
+            PostMessage 0x100, VKCode, lParamDown, , "ahk_id " hwnd
+        }
+    }
+    else {
+        try {
+            PostMessage 0x101, VKCode, lParamUp, , "ahk_id " hwnd
+        }
+    }
+
+    if (state == 1) {
+        tableItem.HoldKeyArr[index][Key] := "Normal"
+    }
+    else {
+        if (tableItem.HoldKeyArr[index].Has(Key)) {
+            tableItem.HoldKeyArr[index].Delete(Key)
         }
     }
 }

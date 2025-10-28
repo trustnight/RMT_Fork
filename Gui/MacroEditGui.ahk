@@ -14,6 +14,7 @@
 #Include BGMouseGui.ahk
 #Include ExVariableGui.ahk
 #Include RMTCMDGui.ahk
+#Include BGKeyGui.ahk
 
 class MacroEditGui {
     __new() {
@@ -41,12 +42,11 @@ class MacroEditGui {
         this.SubMacroLastIndex := 0
 
         this.CMDStrArr := ["间隔", "按键", "搜索", "搜索Pro", "移动", "移动Pro", "输出", "运行", "变量", "变量提取", "运算", "如果", "宏操作",
-            "RMT指令",
-            "后台鼠标"]
+            "RMT指令", "后台鼠标", "后台按键"]
         this.IconMap := Map("间隔", "Icon1", "按键", "Icon2", "搜索", "Icon3", "搜索Pro", "Icon4", "移动", "Icon5", "移动Pro",
             "Icon6", "输出", "Icon7",
             "运行", "Icon8", "变量", "Icon9", "变量提取", "Icon10", "运算", "Icon11", "如果", "Icon12", "RMT指令", "Icon13", "宏操作",
-            "Icon14", "后台鼠标", "Icon15", "真", "Icon16", "假", "Icon17")
+            "Icon14", "后台鼠标", "Icon15", "真", "Icon16", "假", "Icon17", "后台按键", "Icon2")
 
         this.InitSubGui()
     }
@@ -107,6 +107,10 @@ class MacroEditGui {
         this.BGMouseGui := BGMouseGui()
         this.BGMouseGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
         this.SubGuiMap.Set("后台鼠标", this.BGMouseGui)
+
+        this.BGKeyGui := BGKeyGui()
+        this.BGKeyGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
+        this.SubGuiMap.Set("后台按键", this.BGKeyGui)
 
         this.RMTCMDGui := RMTCMDGui()
         this.RMTCMDGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
@@ -252,6 +256,12 @@ class MacroEditGui {
         btnCon.SetFont((Format("S{} W{} Q{}", 11, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.BGMouseGui))
         this.CmdBtnConMap.Set("后台鼠标", btnCon)
+
+        PosX += 85
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 75), "后台按键")
+        btnCon.SetFont((Format("S{} W{} Q{}", 11, 400, 5)))
+        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.BGKeyGui))
+        this.CmdBtnConMap.Set("后台按键", btnCon)
 
         PosX := 200
         PosY := 10

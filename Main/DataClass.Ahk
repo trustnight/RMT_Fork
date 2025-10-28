@@ -495,6 +495,18 @@ class BGMouseData {
     }
 }
 
+class BGKeyData {
+    __New() {
+        this.SerialStr := ""
+        this.FrontStr := ""
+        this.KeyArr := []
+        this.Type := 1  ;1按下 2松开 3点击
+        this.ClickTime := 100
+        this.ClickCount := 1
+        this.ClickInterval := 100
+    }
+}
+
 class TimingData {
     __New() {
         this.SerialStr := ""
