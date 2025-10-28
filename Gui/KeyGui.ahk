@@ -10,7 +10,6 @@ class KeyGui {
         this.CheckedBox := []
         this.ConMap := Map()
         this.CheckedInfoCon := ""
-        this.CheckedInvalidTipCon := ""
         this.CheckRuleBtn := ""
 
         this.KeyStr := ""
@@ -39,34 +38,13 @@ class KeyGui {
         this.Refresh()
     }
 
-    OnClickRuleBtn() {
-        tipStr := "特殊按键：Shift, Alt, Ctrl, Win, LShift, RShift, LAlt, RAlt, LCtrl, RCtrl, LWin, RWin`n"
-        tipStr .= "普通按键：除特殊按键的其他按键`n"
-        tipStr .= "勾选规则1：特殊按键中可以 同时勾选多个按键 或 不选，普通按键中只能 勾选一个按键 或 不选`n"
-        tipStr .= "勾选规则2：手柄按钮、摇杆只能单独选"
-        MsgBox(tipStr)
-    }
-
     ;选项相关
     OnCheckedKey(key) {
         isSelected := false
         arrayIndex := 0
-        isModifyKey := false
-        isNormalIndex := 0
         con := this.ConMap.Get(key)
 
-        for modifyKey, modifyValue in this.ModifyKeyMap {
-            if (modifyKey == key) {
-                isModifyKey := true
-                break
-            }
-        }
-
         for index, value in this.CheckedBox {
-            if (!this.ModifyKeyMap.Has(value) && isNormalIndex == 0) {
-                isNormalIndex := index
-            }
-
             if (value == key) {
                 isSelected := true
                 arrayIndex := index
@@ -80,12 +58,7 @@ class KeyGui {
         }
         else {
             con.Opt("Background" "0x4cae50")
-            if (isModifyKey) {
-                this.CheckedBox.InsertAt(isNormalIndex, key)
-            }
-            else {
-                this.CheckedBox.Push(key)
-            }
+            this.CheckedBox.Push(key)
         }
 
         this.Refresh()
@@ -103,72 +76,17 @@ class KeyGui {
         this.Refresh()
     }
 
-    CheckConfigValid() {
-        normalKeyNum := 0
-        joyKeyNum := 0
-        hasModifyKey := false
-        for index, value in this.CheckedBox {
-            isSpecialKey := false
-
-            subValue := SubStr(value, 1, 3)
-            if (subValue == "Joy") {
-                joyKeyNum += 1
-                isSpecialKey := true
-            }
-
-            for modifyKey, modifyValue in this.ModifyKeyMap {
-                if (value == modifyKey) {
-                    hasModifyKey := true
-                    isSpecialKey := true
-                    break
-                }
-            }
-
-            if (!isSpecialKey)
-                normalKeyNum += 1
-        }
-
-        if (normalKeyNum + joyKeyNum > 1)
-            return false
-
-        if (joyKeyNum == 1 && hasModifyKey)
-            return false
-
-        return true
-    }
-
     GetTriggerKey() {
         triggerKey := ""
-        hasJoy := false
-        onlyModifyKey := true
         for index, value in this.CheckedBox {
-            if (RegExMatch(value, "Joy")) {
-                hasJoy := true
-            }
-
-            if (!this.ModifyKeyMap.Has(value)) {
-                onlyModifyKey := false
-            }
+            triggerKey .= value "⎖"
         }
-
-        for index, value in this.CheckedBox {
-            isKeyMap := this.ModifyKeyMap.Has(value)
-            isLast := index == this.CheckedBox.Length
-            subTriggerKey := (isKeyMap && !isLast) ? this.ModifyKeyMap.Get(value) : value
-            triggerKey .= subTriggerKey
-        }
-
+        triggerKey := RTrim(triggerKey, "⎖")
         return triggerKey
     }
 
     ;按钮点击回调
     OnSureBtnClick() {
-        isValid := this.CheckConfigValid()
-        if (!isValid) {
-            MsgBox("当前配置无效,请浏览勾选规则后，检查配置,有异议请联系UP: 浮生若梦的兔子。")
-            return false
-        }
-
         this.UpdateCommandStr()
         action := this.SureBtnAction
         action(this.CommandStr)
@@ -202,16 +120,6 @@ class KeyGui {
         PosX += 150
         con := MyGui.Add("Button", Format("x{} y{}", PosX, PosY - 5), "确定")
         con.OnEvent("Click", (*) => this.OnSureHotkey())
-
-        PosX += 180
-        this.CheckRuleBtn := MyGui.Add("Button", Format("x{} y{}", PosX, PosY - 5), "勾选规则")
-        this.CheckRuleBtn.OnEvent("Click", (*) => this.OnClickRuleBtn())
-
-        PosX += 80
-        con := MyGui.Add("Text", Format("x{} y{} h{} Center Background{}", PosX, PosY, 20, "FF0000"),
-        "当前配置无效,请浏览勾选规则后，检查配置")
-        con.Visible := false
-        this.CheckedInvalidTipCon := con
 
         PosY += 30
         PosX := 10
@@ -1221,8 +1129,8 @@ class KeyGui {
         this.RefreshCheckBox(this.KeyStr)
     }
 
-    RefreshCheckBox(ComboKey) {
-        this.CheckedBox := GetComboKeyArr(ComboKey)
+    RefreshCheckBox(KeyArrStr) {
+        this.CheckedBox := GetPressKeyArr(KeyArrStr)
 
         for key, value in this.ConMap {
             value.Opt("-Background")
@@ -1306,8 +1214,6 @@ class KeyGui {
 
     Refresh() {
         MySoftData.SpecialTableItem.ModeArr[1] := this.GameModeCon.Value
-        isValid := this.CheckConfigValid()
-        this.CheckedInvalidTipCon.Visible := !isValid
         this.KeyStr := this.GetTriggerKey()
         this.UpdateCommandStr()
 

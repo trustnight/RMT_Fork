@@ -930,8 +930,8 @@ OnBootStartChanged(*) {
 }
 
 ;按键模拟
-SendGameModeKeyClick(ComboKey, holdTime, tableItem, index, keyType) {
-    KeyArr := GetComboKeyArr(ComboKey)
+SendGameModeKeyClick(KeyArrStr, holdTime, tableItem, index, keyType) {
+    KeyArr := GetPressKeyArr(KeyArrStr)
     if (keyType == 1 || keyType == 3) {
         for key in KeyArr {
             SendGameModeKey(key, 1, tableItem, index)
@@ -1033,11 +1033,11 @@ SendGameMouseKey(key, state, tableItem, index) {
     }
 }
 
-SendNormalKeyClick(ComboKey, holdTime, tableItem, index, keyType) {
-    KeyArr := GetComboKeyArr(ComboKey)
+SendNormalKeyClick(KeyArrStr, holdTime, tableItem, index, keyType) {
+    KeyArr := GetPressKeyArr(KeyArrStr)
     if (keyType == 1 || keyType == 3) {
-        for ComboKey in KeyArr {
-            SendNormalKey(ComboKey, 1, tableItem, index)
+        for key in KeyArr {
+            SendNormalKey(key, 1, tableItem, index)
         }
     }
 
@@ -1046,8 +1046,8 @@ SendNormalKeyClick(ComboKey, holdTime, tableItem, index, keyType) {
     }
 
     if (keyType == 2 || keyType == 3) {
-        for ComboKey in KeyArr {
-            SendNormalKey(ComboKey, 0, tableItem, index)
+        for key in KeyArr {
+            SendNormalKey(key, 0, tableItem, index)
         }
     }
 }
@@ -1081,7 +1081,7 @@ SendNormalKey(Key, state, tableItem, index) {
     }
 }
 
-SendJoyBtnClick(key, holdTime, tableItem, index, keyType) {
+SendJoyBtnClick(KeyArrStr, holdTime, tableItem, index, keyType) {
     if (!CheckIfInstallVjoy()) {
         MsgBox("使用手柄功能前,请先安装Joy目录下的vJoy驱动!")
         return
@@ -1092,8 +1092,11 @@ SendJoyBtnClick(key, holdTime, tableItem, index, keyType) {
         return
     }
 
+    KeyArr := GetPressKeyArr(KeyArrStr)
     if (keyType == 1 || keyType == 3) {
-        SendJoyBtnKey(key, 1, tableItem, index)
+        for key in KeyArr {
+            SendJoyBtnKey(key, 1, tableItem, index)
+        }
     }
 
     if (keyType == 3) {
@@ -1101,7 +1104,9 @@ SendJoyBtnClick(key, holdTime, tableItem, index, keyType) {
     }
 
     if (keyType == 2 || keyType == 3) {
-        SendJoyBtnKey(key, 0, tableItem, index)
+        for key in KeyArr {
+            SendJoyBtnKey(key, 0, tableItem, index)
+        }
     }
 }
 
@@ -1119,7 +1124,7 @@ SendJoyBtnKey(key, state, tableItem, index) {
     }
 }
 
-SendJoyAxisClick(key, holdTime, tableItem, index, keyType) {
+SendJoyAxisClick(KeyArrStr, holdTime, tableItem, index, keyType) {
     if (!CheckIfInstallVjoy()) {
         MsgBox("使用手柄功能前,请先安装Joy目录下的vJoy驱动!")
         return
@@ -1130,8 +1135,11 @@ SendJoyAxisClick(key, holdTime, tableItem, index, keyType) {
         return
     }
 
+    KeyArr := GetPressKeyArr(KeyArrStr)
     if (keyType == 1 || keyType == 3) {
-        SendJoyAxisKey(key, 1, tableItem, index)
+        for key in KeyArr {
+            SendJoyAxisKey(key, 1, tableItem, index)
+        }
     }
 
     if (keyType == 3) {
@@ -1139,7 +1147,9 @@ SendJoyAxisClick(key, holdTime, tableItem, index, keyType) {
     }
 
     if (keyType == 2 || keyType == 3) {
-        SendJoyAxisKey(key, 0, tableItem, index)
+        for key in KeyArr {
+            SendJoyAxisKey(key, 0, tableItem, index)
+        }
     }
 }
 

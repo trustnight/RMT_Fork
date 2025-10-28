@@ -221,6 +221,13 @@ GetMacroStrByCmdArr(cmdArr) {
     return macroStr
 }
 
+GetPressKeyArr(KeyArrStr) {
+    if (InStr(KeyArrStr, "⎖")) {
+        return StrSplit(KeyArrStr, "⎖")
+    }
+    return GetComboKeyArr(KeyArrStr)    ;兼容旧版本
+}
+
 GetComboKeyArr(ComboKey) {
     KeyArr := []
     ModifyKeyMap := Map("LAlt", "<!", "RAlt", ">!", "Alt", "!", "LWin", "<#", "RWin", ">#", "Win", "#",
