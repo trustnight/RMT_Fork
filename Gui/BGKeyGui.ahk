@@ -758,7 +758,7 @@ class BGKeyGui {
         this.Data := this.GetBGKeyData(this.SerialStr)
         this.RemarkCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : ""
 
-        this.FrontCon.Value := this.Data.FrontStr
+        this.FrontCon.Value := this.Data.FrontStr != "" ? this.Data.FrontStr : this.FrontCon.Value
         this.CheckedBox := this.Data.KeyArr
         this.KeyTypeCon.Value := this.Data.type
         this.HoldTimeCon.Value := this.Data.ClickTime

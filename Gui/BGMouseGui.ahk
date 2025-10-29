@@ -137,7 +137,7 @@ class BGMouseGui {
         this.RemarkCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : ""
         this.Data := this.GetBGMouseData(this.SerialStr)
 
-        this.TargetTitleCon.Value := this.Data.TargetTitle
+        this.TargetTitleCon.Value := this.Data.TargetTitle != "" ? this.Data.TargetTitle : this.TargetTitleCon.Value
         this.OperateTypeCon.Value := this.Data.OperateType
         this.MouseTypeCon.Value := this.Data.MouseType
         this.ClickTimeCon.Value := this.Data.ClickTime
