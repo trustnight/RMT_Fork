@@ -11,9 +11,17 @@ class MenuWheelGui {
 
         this.BtnRegions := Map() ; ✅按钮区域表
         this.DrawAction := this.DrawLine.Bind(this)
+
+        this.DPIScale := A_ScreenDPI / 96
+    }
+
+    ; DPI缩放适配的坐标转换
+    Scale(value) {
+        return Round(value * this.DPIScale)
     }
 
     ShowGui(MenuIndex) {
+        PreviousActiveWindow := WinExist("A")
         if (this.Gui != "") {
             this.Gui.Show(this.GetGuiShowPos())
         }
@@ -21,6 +29,7 @@ class MenuWheelGui {
             this.AddGui()
         }
         this.Init(MenuIndex)
+        WinActivate(PreviousActiveWindow)
     }
 
     Init(MenuIndex) {
@@ -116,7 +125,9 @@ class MenuWheelGui {
             this.CurCenterPosX := mouseX
             this.CurCenterPosY := mouseY
         }
-        return Format("x{} y{}", this.CurCenterPosX - 170, this.CurCenterPosY - 130)
+        offsetX := this.Scale(170)
+        offsetY := this.Scale(130)
+        return Format("x{} y{}", this.CurCenterPosX - offsetX, this.CurCenterPosY - offsetY)
     }
 
     OnBtnClick(index) {
@@ -131,7 +142,7 @@ class MenuWheelGui {
     ToggleFunc(state) {
         if (state) {
             LineOverlay.Init()
-            SetTimer(this.DrawAction, 16) ; 60fps
+            SetTimer(this.DrawAction, 15) ; 60fps
         } else {
             SetTimer(this.DrawAction, 0)
             LineOverlay.Clear()
@@ -144,18 +155,58 @@ class MenuWheelGui {
 
         LineOverlay.Clear()
         LineOverlay.DrawLine(this.CurCenterPosX, this.CurCenterPosY, mx, my)
-        this.CheckMouseHover(mx, my) ; ✅检测悬停
+        isHover := this.CheckMouseHover(mx, my) ; ✅检测悬停
+        if (isHover)
+            return
+    
+        this.CheckDistanceAndAngle(mx, my)
     }
 
     CheckMouseHover(mx, my) {
         for index, rect in this.BtnRegions {
-            ScreenRectX := this.CurCenterPosX - 170 + rect.X
-            ScreenRectY := this.CurCenterPosY - 130 + rect.Y
-            if (mx >= ScreenRectX && mx <= ScreenRectX + rect.W
-                && my >= ScreenRectY && my <= ScreenRectY + rect.H) {
+            ; 计算屏幕坐标时考虑DPI缩放
+            ScreenRectX := this.CurCenterPosX - this.Scale(170) + this.Scale(rect.X)
+            ScreenRectY := this.CurCenterPosY - this.Scale(130) + this.Scale(rect.Y)
+
+            if (mx >= ScreenRectX && mx <= ScreenRectX + this.Scale(rect.W)
+            && my >= ScreenRectY && my <= ScreenRectY + this.Scale(rect.H)) {
                 this.OnBtnClick(index)
-                return
+                return true
             }
         }
+    }
+
+    CheckDistanceAndAngle(mx, my) {
+        ; 计算相对坐标和距离
+        deltaX := mx - this.CurCenterPosX
+        deltaY := my - this.CurCenterPosY
+        distance := Sqrt(deltaX * deltaX + deltaY * deltaY)
+
+        ; 距离检查
+        if (distance < this.Scale(170)) {
+            return
+        }
+
+        ; 超简化的方向判断（基于坐标比值）
+        ratio := Abs(deltaY / (deltaX != 0 ? deltaX : 0.001))  ; 避免除零
+
+        if (Abs(deltaX) > Abs(deltaY)) {
+            ; 水平方向为主
+            if (deltaX > 0) {
+                sector := (ratio < 0.414) ? 1 : (deltaY > 0 ? 2 : 8)  ; 右、右上、右下
+            } else {
+                sector := (ratio < 0.414) ? 5 : (deltaY > 0 ? 4 : 6)  ; 左、左上、左下
+            }
+        } else {
+            ; 垂直方向为主
+            if (deltaY > 0) {
+                sector := (ratio > 2.414) ? 3 : (deltaX > 0 ? 2 : 4)  ; 上、右上、左上
+            } else {
+                sector := (ratio > 2.414) ? 7 : (deltaX > 0 ? 8 : 6)  ; 下、右下、左下
+            }
+        }
+
+        ; 触发对应的事件
+        this.OnBtnClick(sector)
     }
 }

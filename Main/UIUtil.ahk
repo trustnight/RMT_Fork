@@ -754,12 +754,12 @@ AddHelpUI(index) {
 
     posY += 50
     posX := MySoftData.TabPosX + 15
-    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 140, 35),
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 130, 35),
     "更新视频合集：")
     con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
     conInfo := ItemConInfo(con, tableItem, 1)
     tableItem.AllConArr.Push(conInfo)
-    con := MyGui.Add("Link", Format("x{} y{} w{} h{}", posX + 140, posY, 500, 35),
+    con := MyGui.Add("Link", Format("x{} y{} w{} h{}", posX + 130, posY, 500, 35),
     '<a href="https://www.bilibili.com/video/BV1oWVRzaEzk">版本更新视频，直播交流问答</a>')
     con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
     conInfo := ItemConInfo(con, tableItem, 1)
@@ -767,12 +767,12 @@ AddHelpUI(index) {
 
     posY += 30
     posX := MySoftData.TabPosX + 15
-    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 140, 35),
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 130, 35),
     "操作说明文档：")
     con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
     conInfo := ItemConInfo(con, tableItem, 1)
     tableItem.AllConArr.Push(conInfo)
-    con := MyGui.Add("Link", Format("x{} y{} w{} h{}", posX + 140, posY, 500, 35),
+    con := MyGui.Add("Link", Format("x{} y{} w{} h{}", posX + 130, posY, 500, 35),
     '<a href="https://zclucas.github.io/RMT/">帮助你快速上手，理解词条，10分钟秒变大神</a>')
     con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
     conInfo := ItemConInfo(con, tableItem, 1)
@@ -780,38 +780,62 @@ AddHelpUI(index) {
 
     posY += 30
     posX := MySoftData.TabPosX + 15
-    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 140, 30),
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 130, 30),
     "国内开源网址：")
     con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
     conInfo := ItemConInfo(con, tableItem, 1)
     tableItem.AllConArr.Push(conInfo)
-    con := MyGui.Add("Link", Format("x{} y{} w{} h{}", posX + 140, posY, 500, 30),
+    con := MyGui.Add("Link", Format("x{} y{} w{} h{}", posX + 130, posY, 500, 30),
     '<a href="https://gitee.com/fateman/RMT">https://gitee.com/fateman/RMT</a>')
     con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
     conInfo := ItemConInfo(con, tableItem, 1)
     tableItem.AllConArr.Push(conInfo)
 
-    posY += 30
-    posX := MySoftData.TabPosX + 15
-    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 140, 30),
-    "国外开源网址：")
+    posX := MySoftData.TabPosX + 440
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 130, 30),
+    "配置开源：")
     con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
     conInfo := ItemConInfo(con, tableItem, 1)
     tableItem.AllConArr.Push(conInfo)
-    con := MyGui.Add("Link", Format("x{} y{} w{} h{}", posX + 140, posY, 500, 30),
-    '<a href="https://github.com/zclucas/RMT">https://github.com/zclucas/RMT</a>')
+    con := MyGui.Add("Link", Format("x{} y{} w{} h{}", posX + 85, posY, 500, 30),
+    '<a href="https://gitee.com/fateman/RMT-Setting">https://gitee.com/fateman/RMT-Setting</a>')
     con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
     conInfo := ItemConInfo(con, tableItem, 1)
     tableItem.AllConArr.Push(conInfo)
 
     posY += 30
     posX := MySoftData.TabPosX + 15
-    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 140, 30),
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 130, 30),
+    "国外开源网址：")
+    con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
+    con := MyGui.Add("Link", Format("x{} y{} w{} h{}", posX + 130, posY, 500, 30),
+    '<a href="https://github.com/zclucas/RMT">https://github.com/zclucas/RMT</a>')
+    con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
+
+    posX := MySoftData.TabPosX + 440
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 130, 30),
+    "配置开源：")
+    con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
+    con := MyGui.Add("Link", Format("x{} y{} w{} h{}", posX + 85, posY, 500, 30),
+    '<a href="https://github.com/zclucas/RMT-Setting">https://github.com/zclucas/RMT-Setting</a>')
+    con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
+    conInfo := ItemConInfo(con, tableItem, 1)
+    tableItem.AllConArr.Push(conInfo)
+
+    posY += 30
+    posX := MySoftData.TabPosX + 15
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 130, 30),
     "软件检查更新：")
     con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
     conInfo := ItemConInfo(con, tableItem, 1)
     tableItem.AllConArr.Push(conInfo)
-    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX + 140, posY, 500, 30),
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX + 130, posY, 500, 30),
     "浏览开源网址，查看右侧发行版处即可知道软件最新版本")
     con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
     conInfo := ItemConInfo(con, tableItem, 1)
@@ -819,12 +843,12 @@ AddHelpUI(index) {
 
     posY += 30
     posX := MySoftData.TabPosX + 15
-    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 140, 30),
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 130, 30),
     "软件交流渠道：")
     con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
     conInfo := ItemConInfo(con, tableItem, 1)
     tableItem.AllConArr.Push(conInfo)
-    con := MyGui.Add("Link", Format("x{} y{} w{} h{}", posX + 140, posY, 700, 30),
+    con := MyGui.Add("Link", Format("x{} y{} w{} h{}", posX + 130, posY, 700, 30),
     '<a href="https://qm.qq.com/q/DgpDumEPzq">[1群]837661891</a>、<a href="https://qm.qq.com/q/uZszuxabPW">[2群]1050141694</a>、<a href="https://pd.qq.com/s/5wyjvj7zw">[频道]pd63973680</a>'
     )
     con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
@@ -833,12 +857,12 @@ AddHelpUI(index) {
 
     posY += 30
     posX := MySoftData.TabPosX + 15
-    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 140, 30),
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 130, 30),
     "软件反馈表格：")
     con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
     conInfo := ItemConInfo(con, tableItem, 1)
     tableItem.AllConArr.Push(conInfo)
-    con := MyGui.Add("Link", Format("x{} y{} w{} h{}", posX + 140, posY, 700, 30),
+    con := MyGui.Add("Link", Format("x{} y{} w{} h{}", posX + 130, posY, 700, 30),
     '<a href="https://docs.qq.com/sheet/DVWJIdEVMV1pHUVJj">bug文档</a>、<a href="https://docs.qq.com/sheet/DVWRQaXBFUVV5bERo">需求文档</a>、<a href="https://docs.qq.com/sheet/DVVNwWHJEd3NOWXhR?tab=BB08J2">使用备注</a>(问题反馈，提出优化方案)'
     )
     con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
@@ -847,12 +871,12 @@ AddHelpUI(index) {
 
     posY += 30
     posX := MySoftData.TabPosX + 15
-    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 140, 30),
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX, posY, 130, 30),
     "软件开源协议：")
     con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
     conInfo := ItemConInfo(con, tableItem, 1)
     tableItem.AllConArr.Push(conInfo)
-    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX + 140, posY, 500, 30), "AGPL-3.0")
+    con := MyGui.Add("Text", Format("x{} y{} w{} h{}", posX + 130, posY, 500, 30), "AGPL-3.0")
     con.SetFont((Format("S{} W{} Q{}", 12, 600, 0)))
     conInfo := ItemConInfo(con, tableItem, 1)
     tableItem.AllConArr.Push(conInfo)
