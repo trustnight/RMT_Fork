@@ -12,6 +12,7 @@ RMT（若梦兔）是一款基于 AutoHotkey v2 的免费开源按键宏工具�
 - [📚 使用导航主页，无法加载浏览，请查看下面文档](https://zclucas.github.io/RMT/)
 - [⚡ 快速上手指南](Web/快速上手.md)
 - [📖 软件词条介绍](Web/词条介绍.md)
+- [💻 软件指令手册](Web/指令手册.md)
 - [🎮 手柄功能指南](Web/手柄功能指南.md)
 - [❓ 常见问题及应对措施](Web/问题及应对措施.md)
 - [🛠️ 开发指南](Web/开发指南.md)
@@ -28,6 +29,8 @@ RMT（若梦兔）是一款基于 AutoHotkey v2 的免费开源按键宏工具�
 - [RMT v1.0：逻辑指令增强，软件能力跃升](https://www.bilibili.com/video/BV1oWVRzaEzk)
 - [RMT v1.0.5：多线程，指令互不干扰](https://www.bilibili.com/video/BV1yATVzVE4E)
 - [RMT v1.0.6：手柄宏录制，多点取色教学](https://www.bilibili.com/video/BV1jD3eziE4d)
+- [RMT v1.0.7：定时宏，自由贴，配置管理](https://www.bilibili.com/video/BV1T2e8zAEaf)
+- [RMT v1.0.8: 直播交流解答](https://www.bilibili.com/video/BV1CYx1zmEx3)
 
 📺 更多内容欢迎关注 B 站账号：[浮生若梦的兔子](https://space.bilibili.com/397441876?spm_id_from=333.1007.0.0)
 
