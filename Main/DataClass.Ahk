@@ -403,6 +403,7 @@ class MMProData {
         this.SerialStr := ""
         this.PosVarX := 100
         this.PosVarY := 100
+        this.ActionType := 1          ;鼠标动作 1移动 2移动点击1次 3移动点击2次
         this.IsRelative := 0         ;相对位移
         this.IsGameView := 0        ;游戏视角
         this.Speed := 90           ;移动速度
@@ -424,6 +425,11 @@ class OutputData {
         this.SerialStr := ""
         this.Text := "将要输出的文本"
         this.OutputType := 1    ;sendtest  粘贴   粘贴
+        this.FilePath := ""
+        this.ExcelType := 1     ;1指定单元格    2 行号自增    3 列号自增
+        this.NameOrSerial := 1
+        this.RowVar := 1
+        this.ColVar := 1
     }
 }
 

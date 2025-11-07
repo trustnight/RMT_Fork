@@ -196,6 +196,7 @@ class SettingMgrGui {
             FolderPackager.UnpackFile(selectedFile, outputFolder)
             RepairPath(fileNameNoExt, SearchFile, 1)
             RepairPath(fileNameNoExt, SearchProFile, 1)
+            Compat1_0_8F7MMPro(outputFolder "\MMProFile.ini")
 
             if (LoadType != 2) {
                 MySoftData.SettingArrStr .= "π" fileNameNoExt

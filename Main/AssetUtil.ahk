@@ -1,4 +1,5 @@
 #Requires AutoHotkey v2.0
+#Include ExcelUtil.ahk
 global WM_COPYDATA := 0x4a ;传递字符串，系统信息
 
 global WM_LOAD_WORK := 0x500  ;资源加载完成事件
@@ -1365,7 +1366,7 @@ GetReplaceVarText(tableItem, tableIndex, text) {
 
 TryGetVariableValue(&Value, tableItem, index, variableName, variTip := true) {
     if (IsNumber(variableName)) {
-        Value := variableName
+        Value := Number(variableName)
         return true
     }
 

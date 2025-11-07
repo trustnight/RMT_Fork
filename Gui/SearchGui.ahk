@@ -334,7 +334,7 @@ class SearchGui {
     }
 
     OnClickSetPicBtn() {
-        path := FileSelect(, , "选择图片")
+        path := FileSelect(1, , "选择图片", "PNG Files (*.png)")
         this.ImageCon.Value := path
         this.Data.SearchImagePath := path
     }

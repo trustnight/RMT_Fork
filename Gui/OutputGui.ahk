@@ -11,6 +11,14 @@ class OutputGui {
         this.TextCon := ""
         this.VariTipCon := ""
         this.VariCon := ""
+        this.FilePathConArr := []
+        this.FilePathCon := ""
+
+        this.ExcelConArr := []
+        this.ExcelTypeCon := ""
+        this.NameOrSerialCon := ""
+        this.RowVarCon := ""
+        this.ColVarCon := ""
         this.Data := ""
     }
 
@@ -52,8 +60,9 @@ class OutputGui {
         MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 80, 20), "输出类型:")
         PosX += 80
         this.OutputTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX, PosY - 5, 110), ["发送内容",
-            "粘贴", "Win粘贴", "临时提示", "指令窗口", "复制到剪切板", "软件弹窗", "系统语音"])
+            "粘贴内容", "临时提示", "指令窗口", "软件弹窗", "系统语音", "复制到剪切板", "文本文件", "Excel"])
         this.OutputTypeCon.Value := 1
+        this.OutputTypeCon.OnEvent("Change", (*) => this.OnOutTypeChange())
 
         PosX := 10
         PosY += 30
@@ -74,15 +83,55 @@ class OutputGui {
 
         PosX := 10
         PosY += 80
-        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY, 350, 20), "提示：文本中{变量名}表示变量值、例如：变量1 = {变量1}")
+        con := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY + 5, 80), "文件路径:")
+        this.FilePathConArr.Push(con)
+        PosX += 80
+        this.FilePathCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 280, 30))
+        this.FilePathConArr.Push(this.FilePathCon)
+        PosX += 290
+        con := MyGui.Add("Button", Format("x{} y{} w{}", PosX, PosY, 80), "选择路径")
+        con.OnEvent("Click", (*) => this.OnSelectPathBtnClick())
+        this.FilePathConArr.Push(con)
 
-        PosY += 30
+        PosX := 10
+        PosY += 40
+        con := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY + 5, 80), "输入类型:")
+        this.ExcelConArr.Push(con)
+        PosX += 80
+        this.ExcelTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX, PosY, 110), ["指定单元格",
+            "行号自增", "列号自增"])
+        this.ExcelConArr.Push(this.ExcelTypeCon)
+        this.ExcelTypeCon.OnEvent("Change", (*) => this.OnOutTypeChange())
+
+        PosX += 160
+        con := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY + 5, 80), "表名或序号:")
+        this.ExcelConArr.Push(con)
+        PosX += 80
+        this.NameOrSerialCon := MyGui.Add("Edit", Format("x{} y{} w{} h{}", PosX, PosY, 110, 30))
+        this.ExcelConArr.Push(this.NameOrSerialCon)
+
+        PosX := 10
+        PosY += 40
+        con := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY + 5, 80), "单元格行号:")
+        this.ExcelConArr.Push(con)
+        PosX += 80
+        this.RowVarCon := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX, PosY, 110), [])
+        this.ExcelConArr.Push(this.RowVarCon)
+
+        PosX += 160
+        con := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY + 5, 80), "单元格列号:")
+        this.ExcelConArr.Push(con)
+        PosX += 80
+        this.ColVarCon := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX, PosY, 110, 30), [])
+        this.ExcelConArr.Push(this.ColVarCon)
+
+        PosY += 40
         PosX := 200
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 100, 40), "确定")
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
 
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 500, 260))
+        MyGui.Show(Format("w{} h{}", 500, 350))
     }
 
     Init(cmd) {
@@ -93,9 +142,21 @@ class OutputGui {
 
         this.TextCon.Value := this.Data.Text
         this.OutputTypeCon.Value := this.Data.OutputType
+        this.FilePathCon.Value := this.Data.FilePath
         this.VariCon.Delete()
         this.VariCon.Add(this.VariableObjArr)
         this.VariCon.Value := 1
+        this.RowVarCon.Delete()
+        this.RowVarCon.Add(this.VariableObjArr)
+        this.ColVarCon.Delete()
+        this.ColVarCon.Add(this.VariableObjArr)
+
+        this.ExcelTypeCon.Value := this.Data.ExcelType
+        this.NameOrSerialCon.Value := this.Data.NameOrSerial
+        this.RowVarCon.Text := this.Data.RowVar
+        this.ColVarCon.Text := this.Data.ColVar
+
+        this.OnOutTypeChange()
     }
 
     ToggleFunc(state) {
@@ -116,6 +177,28 @@ class OutputGui {
         this.TextCon.Value .= "{" this.VariCon.Text "}"
     }
 
+    OnOutTypeChange() {
+        showFileConArr := this.OutputTypeCon.Value == 8 || this.OutputTypeCon.Value == 9
+        showExcelConArr := this.OutputTypeCon.Value == 9
+        loop this.FilePathConArr.Length {
+            this.FilePathConArr[A_Index].Visible := showFileConArr
+        }
+
+        loop this.ExcelConArr.Length {
+            this.ExcelConArr[A_Index].Visible := showExcelConArr
+        }
+
+        enableRowCon := this.ExcelTypeCon.Value == 1 || this.ExcelTypeCon.Value == 3
+        enableColCon := this.ExcelTypeCon.Value == 1 || this.ExcelTypeCon.Value == 2
+        this.RowVarCon.Enabled := enableRowCon
+        this.ColVarCon.Enabled := enableColCon
+    }
+
+    OnSelectPathBtnClick() {
+        path := FileSelect(1, , "选择输出的目标文件")
+        this.FilePathCon.Value := path
+    }
+
     OnClickSureBtn() {
         valid := this.CheckIfValid()
         if (!valid)
@@ -129,6 +212,12 @@ class OutputGui {
     }
 
     CheckIfValid() {
+        if (this.OutputTypeCon.Value == 8 || this.OutputTypeCon.Value == 9) {
+            if (this.FilePathCon.Value == "") {
+                MsgBox("请选择文件路径")
+                return
+            }
+        }
         return true
     }
 
@@ -169,6 +258,11 @@ class OutputGui {
     SaveOutputData() {
         this.Data.Text := this.TextCon.Value
         this.Data.OutputType := this.OutputTypeCon.Value
+        this.Data.FilePath := this.FilePathCon.Value
+        this.Data.ExcelType := this.ExcelTypeCon.Value
+        this.Data.NameOrSerial := this.NameOrSerialCon.Value
+        this.Data.RowVar := this.RowVarCon.Text
+        this.Data.ColVar := this.ColVarCon.Text
 
         saveStr := JSON.stringify(this.Data, 0)
         IniWrite(saveStr, OutputFile, IniSection, this.Data.SerialStr)

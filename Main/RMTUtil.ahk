@@ -615,11 +615,8 @@ RepairPath(SettingName, FilePath, DataType) {
             continue
 
         SerialStr := SubStr(LineStr, 1, StrLen(Symbol) + 7)
-        Data := ""
-        if (DataType == 1) {
-            saveStr := IniRead(FilePath, IniSection, SerialStr, "")
-            Data := JSON.parse(saveStr, , false)
-        }
+        saveStr := IniRead(FilePath, IniSection, SerialStr, "")
+        Data := JSON.parse(saveStr, , false)
 
         if (Data == "")
             continue

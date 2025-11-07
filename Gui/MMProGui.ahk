@@ -12,6 +12,7 @@ class MMProGui {
 
         this.PosVarXCon := ""
         this.PosVarYCon := ""
+        this.ActionTypeCon := ""
         this.IsRelativeCon := ""
         this.isGameViewCon := ""
         this.SpeedCon := ""
@@ -56,7 +57,7 @@ class MMProGui {
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY + 3, 400), "F1:选取当前坐标")
 
-        PosX += 160
+        PosX := 240
         Con := MyGui.Add("Button", Format("x{} y{} w100", PosX, PosY), "定位取色器")
         Con.OnEvent("Click", this.OnClickTargeterBtn.Bind(this))
         Con := MyGui.Add("Button", Format("x{} y{} w30", PosX + 102, PosY), "?")
@@ -75,34 +76,41 @@ class MMProGui {
         PosX += 80
         this.PosVarXCon := MyGui.Add("ComboBox", Format("x{} y{} w{} R5 Center", PosX, PosY - 5, 100), [])
 
-        PosY += 30
-        PosX := 10
+        PosX := 240
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "坐标位置Y:")
         PosX += 80
         this.PosVarYCon := MyGui.Add("ComboBox", Format("x{} y{} w{} R5 Center", PosX, PosY - 5, 100), [])
 
-        PosX := 10
-        PosY += 30
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "移动次数:")
-        PosX += 80
-        this.CountCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50), 1)
-
-        PosX += 150
-        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "每次间隔:")
-        PosX += 80
-        this.IntervalCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50), 1000)
-
-        PosY += 30
+        PosY += 35
         PosX := 10
         MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "移动速度:")
         PosX += 80
-        this.SpeedCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 50), "90")
+        this.SpeedCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 100), "90")
 
-        PosX += 150
+        PosX := 240
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "鼠标动作:")
+        PosX += 80
+        this.ActionTypeCon := MyGui.Add("DropDownList", Format("x{} y{} w{} Center", PosX, PosY - 5, 100), ["移动",
+            "移动点击1次", "移动点击2次"])
+        this.ActionTypeCon.Value := 1
+
+        PosX := 10
+        PosY += 35
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "移动次数:")
+        PosX += 80
+        this.CountCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 100), 1)
+
+        PosX := 240
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), "每次间隔:")
+        PosX += 80
+        this.IntervalCon := MyGui.Add("Edit", Format("x{} y{} w{} Center", PosX, PosY - 5, 100), 1000)
+
+        PosY += 30
+        PosX := 90
         this.IsRelativeCon := MyGui.Add("Checkbox", Format("x{} y{} w{} h{}", PosX, PosY, 100, 20), "相对位移")
 
-        PosX += 100
-        this.IsGameViewCon := MyGui.Add("Checkbox", Format("x{} y{} w{} h{}", PosX, PosY, 150, 20), "游戏视角")
+        PosX := 320
+        this.IsGameViewCon := MyGui.Add("Checkbox", Format("x{} y{} w{} h{}", PosX, PosY, 100, 20), "游戏视角")
 
         PosY += 35
         PosX := 175
@@ -110,7 +118,7 @@ class MMProGui {
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
 
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 480, 300))
+        MyGui.Show(Format("w{} h{}", 480, 315))
     }
 
     Init(cmd) {
@@ -125,6 +133,7 @@ class MMProGui {
         this.PosVarYCon.Delete()
         this.PosVarYCon.Add(this.VariableObjArr)
         this.PosVarYCon.Text := this.Data.PosVarY
+        this.ActionTypeCon.Value := this.Data.ActionType
         this.IsRelativeCon.Value := this.Data.IsRelative
         this.isGameViewCon.Value := this.Data.IsGameView
         this.SpeedCon.Value := this.Data.Speed
@@ -203,7 +212,6 @@ class MMProGui {
         MsgBox("1.左键拖拽改变位置`n2.上下左右方向键微调位置`n3.左键双击或回车键关闭取色器，同时确定点位信息", "定位取色器操作说明")
     }
 
-
     OnClickSureBtn() {
         valid := this.CheckIfValid()
         if (!valid)
@@ -238,6 +246,7 @@ class MMProGui {
     SaveMMProData() {
         this.Data.PosVarX := this.PosVarXCon.Text
         this.Data.PosVarY := this.PosVarYCon.Text
+        this.Data.ActionType := this.ActionTypeCon.Value
         this.Data.IsRelative := this.IsRelativeCon.Value
         this.Data.IsGameView := this.isGameViewCon.Value
         this.Data.Speed := this.SpeedCon.Value

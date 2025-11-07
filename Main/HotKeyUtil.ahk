@@ -386,15 +386,27 @@ OnMMProOnce(tableItem, index, Data) {
 
     PosX := GetFloatValue(PosX, MySoftData.CoordXFloat)
     PosY := GetFloatValue(PosY, MySoftData.CoordYFloat)
+    ClickCount := Data.ActionType == 2 ? 1 : 2
     if (Data.IsGameView) {
         MOUSEEVENTF_MOVE := 0x0001
         DllCall("mouse_event", "UInt", MOUSEEVENTF_MOVE, "UInt", PosX, "UInt", PosY, "UInt", 0, "UInt", 0)
     }
-    else if (Data.IsRelative) {
-        MouseMove(PosX, PosY, Speed, "R")
+    else if (Data.ActionType == 1) {
+        if (Data.IsRelative) {
+            MouseMove(PosX, PosY, Speed, "R")
+        }
+        else
+            MouseMove(PosX, PosY, Speed)
     }
-    else
-        MouseMove(PosX, PosY, Speed)
+    else if (Data.ActionType == 2 || Data.ActionType == 3) {
+        SetDefaultMouseSpeed(Speed)
+        if (Data.IsRelative) {
+            Click(Format("{} {} {} Relative"), PosX, PosY, ClickCount)
+        }
+        else {
+            Click(Format("{} {} {}"), PosX, PosY, ClickCount)
+        }
+    }
 }
 
 OnOutput(tableItem, cmd, index) {
@@ -405,29 +417,46 @@ OnOutput(tableItem, cmd, index) {
     if (Data.OutputType == 1) {     ;send
         SendText(Content)
     }
-    else if (Data.OutputType == 2) {    ;粘贴
+    else if (Data.OutputType == 2) {    ;粘贴文本
         A_Clipboard := Content
         Send "{Blind}^v"
     }
-    else if (Data.OutputType == 3) {    ;粘贴
-        A_Clipboard := Content
-        MyWinClip.Paste(A_Clipboard)
-    }
-    else if (Data.OutputType == 4) {    ;提示
+    else if (Data.OutputType == 3) {    ;提示
         MyToolTipContent(Content)
     }
-    else if (Data.OutputType == 5) {    ;指令窗口
+    else if (Data.OutputType == 4) {    ;指令窗口
         MyCMDReportAciton(Content)
     }
-    else if (Data.OutputType == 6) {    ;剪切板
-        A_Clipboard := Content
-    }
-    else if (Data.OutputType == 7) {    ;弹窗
+    else if (Data.OutputType == 5) {    ;弹窗
         MyMsgBoxContent(Content)
     }
-    else if (Data.OutputType == 8) {    ;语音
+    else if (Data.OutputType == 6) {    ;语音
         spovice := ComObject("sapi.spvoice")
         spovice.Speak(Content)
+    }
+    else if (Data.OutputType == 7) {    ;剪切板
+        A_Clipboard := Content
+    }
+    else if (Data.OutputType == 8) {    ;文本文件
+        FileObj := FileOpen(Data.FilePath, "a")
+        FileObj.WriteLine(Content)
+        FileObj.Close()
+    }
+    else if (Data.OutputType == 9) {    ;Excel
+        hasRowValue := TryGetVariableValue(&RowValue, tableItem, index, Data.RowVar)
+        hasColValue := TryGetVariableValue(&ColValue, tableItem, index, Data.ColVar)
+        if (Data.ExcelType == 1) {
+            if (hasRowValue && hasColValue)
+                ExcelCellToWrite(Data.FilePath, Data.NameOrSerial, RowValue, ColValue, Content)
+        }
+        else if (Data.ExcelType == 2) {
+            if (hasColValue)
+                ExcelRowToWrite(Data.FilePath, Data.NameOrSerial, ColValue, Content)
+        }
+        else if (Data.ExcelType == 3) {
+            if (hasRowValue)
+                ExcelColToWrite(Data.FilePath, Data.NameOrSerial, RowValue, Content)
+        }
     }
 }
 

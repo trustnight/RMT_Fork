@@ -3,8 +3,6 @@
 #Include Joy\SuperCvJoyInterface.ahk
 #Include Joy\JoyMacro.ahk
 #Include Plugins\RapidOcr\RapidOcr.ahk
-#Include Plugins\WinClipAPI.ahk
-#Include Plugins\WinClip.ahk
 #Include Gui\TriggerKeyGui.ahk
 #Include Gui\TriggerStrGui.ahk
 #Include Gui\TimingGui.ahk
@@ -50,7 +48,6 @@ global MyvJoy := SuperCvJoyInterface().GetMyvJoy()
 global MySoftData := SoftData()
 global ToolCheckInfo := ToolCheck()
 global MyJoyMacro := JoyMacro()
-global MyWinClip := WinClip()
 global MyMouseInfo := MouseWinData()
 global MyTriggerKeyGui := TriggerKeyGui()
 global MyTriggerStrGui := TriggerStrGui()
@@ -93,3 +90,7 @@ SetGlobalVar()      ;缓存全局变量
 PluginInit()
 TimingCheck()       ;轮询检测触发
 BindKey()           ;绑定快捷键
+
+; a:: {
+;     WriteToExcel("C:\Users\gh\Desktop\若梦兔测试.xlsx", 1, 5, 5, "4444")
+; }
