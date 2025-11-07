@@ -74,7 +74,7 @@ A complete guide to understand core terms and configuration logic — from begin
 |--------|------|-------------|
 | 🐱 GitHub | [RMT Releases](https://github.com/zclucas/RMT/releases) | Latest version (official) |
 | 🅶 Gitee | [RMT Releases](https://gitee.com/fateman/RMT/releases) | Faster access in China |
-| 📦 Baidu Cloud | [Download](https://pan.baidu.com/s/1taK1EjL1-Yt4u9IeFQgV6g) (Code: `RMMT`) | |
+| 📦 Baidu Cloud | [Download](https://pan.baidu.com/s/1wVxQwQ3kvtMa_5n4pVvDOQ?pwd=RMMT) | Backup mirror |
 | ☁️ Aliyun Drive | [Download](https://www.alipan.com/s/e2Fq9NSt6Fo) | Backup mirror |
 
 ---
