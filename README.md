@@ -37,51 +37,73 @@
 
 ## 🎥 软件更新与功能演示
 
-| 版本 | 功能亮点 | 视频链接 |
-|------|-----------|-----------|
-| ButtonAssist 1.0 | 首个版本，起航！ | [BV1EU411f7dC](https://www.bilibili.com/video/BV1EU411f7dC) |
-| ButtonAssist 2.0 | 支持指定进程触发 | [BV1ojtHeUEjR](https://www.bilibili.com/video/BV1ojtHeUEjR) |
-| ButtonAssist 3.0 | 图片搜索功能上线 | [BV1i5CEYtEok](https://www.bilibili.com/video/BV1i5CEYtEok) |
-| ButtonAssist 4.0 | 图形化编辑 + 手柄宏 | [BV13Lr1YREMr](https://www.bilibili.com/video/BV13Lr1YREMr) |
-| ButtonAssist 5.0 | 宏指令录制登场 | [BV1kr9NYZE36](https://www.bilibili.com/video/BV1kr9NYZE36) |
-| ButtonAssist 6.0 | 文本识别能力加入 | [BV1UCZPYGEN8](https://www.bilibili.com/video/BV1UCZPYGEN8) |
-| RMT 1.0 | 逻辑指令增强，功能跃升 | [BV1oWVRzaEzk](https://www.bilibili.com/video/BV1oWVRzaEzk) |
-| RMT 1.0.7 | 定时宏、自定义贴图、配置管理 | [BV1T2e8zAEaf](https://www.bilibili.com/video/BV1T2e8zAEaf) |
-| RMT 1.0.8 | 直播交流与答疑 | [BV1CYx1zmEx3](https://www.bilibili.com/video/BV1CYx1zmEx3) |
+<div align="center">
+
+<table width="100%">
+  <thead>
+    <tr>
+      <th>版本</th>
+      <th>功能亮点</th>
+      <th>视频链接</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>ButtonAssist 1.0</td><td>首个版本，起航！</td><td><a href="https://www.bilibili.com/video/BV1EU411f7dC">BV1EU411f7dC</a></td></tr>
+    <tr><td>ButtonAssist 2.0</td><td>支持指定进程触发</td><td><a href="https://www.bilibili.com/video/BV1ojtHeUEjR">BV1ojtHeUEjR</a></td></tr>
+    <tr><td>ButtonAssist 3.0</td><td>图片搜索功能上线</td><td><a href="https://www.bilibili.com/video/BV1i5CEYtEok">BV1i5CEYtEok</a></td></tr>
+    <tr><td>ButtonAssist 4.0</td><td>图形化编辑 + 手柄宏</td><td><a href="https://www.bilibili.com/video/BV13Lr1YREMr">BV13Lr1YREMr</a></td></tr>
+    <tr><td>ButtonAssist 5.0</td><td>宏指令录制登场</td><td><a href="https://www.bilibili.com/video/BV1kr9NYZE36">BV1kr9NYZE36</a></td></tr>
+    <tr><td>ButtonAssist 6.0</td><td>文本识别能力加入</td><td><a href="https://www.bilibili.com/video/BV1UCZPYGEN8">BV1UCZPYGEN8</a></td></tr>
+    <tr><td>RMT 1.0</td><td>逻辑指令增强，功能跃升</td><td><a href="https://www.bilibili.com/video/BV1oWVRzaEzk">BV1oWVRzaEzk</a></td></tr>
+    <tr><td>RMT 1.0.7</td><td>定时宏、自定义贴图、配置管理</td><td><a href="https://www.bilibili.com/video/BV1T2e8zAEaf">BV1T2e8zAEaf</a></td></tr>
+    <tr><td>RMT 1.0.8</td><td>直播交流与答疑</td><td><a href="https://www.bilibili.com/video/BV1CYx1zmEx3">BV1CYx1zmEx3</a></td></tr>
+  </tbody>
+</table>
 
 🎬 更多内容请关注 B 站账号：  
-👉 [浮生若梦的兔子](https://space.bilibili.com/397441876?spm_id_from=333.1007.0.0)
+👉 <a href="https://space.bilibili.com/397441876">浮生若梦的兔子</a>
 
----
+</div>
+
 
 ## 💾 下载方式
 
-| 来源 | 地址 | 说明 |
-|------|------|------|
-| 🐙 GitHub | [RMT Releases](https://github.com/zclucas/RMT/releases) | 最新版本首发 |
-| 🧧 Gitee | [RMT Releases](https://gitee.com/fateman/RMT/releases) | 国内访问更快 |
-| 📦 百度网盘 | [点击下载](https://pan.baidu.com/s/1taK1EjL1-Yt4u9IeFQgV6g)（提取码: `RMMT`） | |
-| ☁️ 阿里云盘 | [点击下载](https://www.alipan.com/s/e2Fq9NSt6Fo) | 备用通道 |
+<div align="center">
 
----
+<table width="100%">
+  <thead>
+    <tr><th>来源</th><th>地址</th><th>说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>🐱 GitHub</td><td><a href="https://github.com/zclucas/RMT/releases">RMT Releases</a></td><td>最新版本首发</td></tr>
+    <tr><td>🅶 Gitee</td><td><a href="https://gitee.com/fateman/RMT/releases">RMT Releases</a></td><td>国内访问更快</td></tr>
+    <tr><td>📦 百度网盘</td><td><a href="https://pan.baidu.com/s/1taK1EjL1-Yt4u9IeFQgV6g">点击下载</a>（提取码: <code>RMMT</code>）</td><td></td></tr>
+    <tr><td>☁️ 阿里云盘</td><td><a href="https://www.alipan.com/s/e2Fq9NSt6Fo">点击下载</a></td><td>备用通道</td></tr>
+  </tbody>
+</table>
+
+</div>
 
 ## 🧠 配置共享仓库
 
-RMT 支持用户自由分享与下载宏配置文件，你可以在以下两个平台获取或贡献配置：  
+RMT 支持用户自由分享与下载宏配置文件，你可以在以下两个平台获取或贡献配置：
 
 <div align="center">
 
-| 🌍 平台 | 🔗 仓库地址 | 📦 特点 |
-|:--:|:--:|:--|
-| 🐱 **GitHub** | [RMT-Setting (GitHub)](https://github.com/zclucas/RMT-Setting) | 国际访问快 |
-| 🅶 **Gitee** | [RMT-Setting (Gitee)](https://gitee.com/fateman/RMT-Setting) | 国内访问更稳定 |
+<table width="100%">
+  <thead>
+    <tr><th>🌍 平台</th><th>🔗 仓库地址</th><th>📦 特点</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>🐱 GitHub</td><td><a href="https://github.com/zclucas/RMT-Setting">RMT-Setting (GitHub)</a></td><td>国际访问快</td></tr>
+    <tr><td>🅶 Gitee</td><td><a href="https://gitee.com/fateman/RMT-Setting">RMT-Setting (Gitee)</a></td><td>国内访问更稳定</td></tr>
+  </tbody>
+</table>
 
 </div>
 
 > 💡 你可以将自己录制或编辑的宏上传到共享仓库，与社区一起成长。  
 > 欢迎通过 Issue 或 PR 分享你的创意配置！
-
----
 
 ## ☕ 打赏支持
 
