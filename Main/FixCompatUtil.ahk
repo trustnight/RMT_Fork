@@ -19,6 +19,10 @@ Compat1_0_8F4FlodInfo(FoldInfo) {
 
 ;1.0.8F7到新版本兼容, 新增鼠标类型
 Compat1_0_8F7MMPro(filePath) {
+
+    if (!FileExist(FilePath))
+        return
+
     Symbol := "MMPro"
     loop read, filePath {
         LineStr := A_LoopReadLine
