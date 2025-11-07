@@ -37,33 +37,20 @@
 
 ## 🎥 软件更新与功能演示
 
-<div align="center">
-
-<table width="100%">
-  <thead>
-    <tr>
-      <th>版本</th>
-      <th>功能亮点</th>
-      <th>视频链接</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td>ButtonAssist 1.0</td><td>首个版本，起航！</td><td><a href="https://www.bilibili.com/video/BV1EU411f7dC">BV1EU411f7dC</a></td></tr>
-    <tr><td>ButtonAssist 2.0</td><td>支持指定进程触发</td><td><a href="https://www.bilibili.com/video/BV1ojtHeUEjR">BV1ojtHeUEjR</a></td></tr>
-    <tr><td>ButtonAssist 3.0</td><td>图片搜索功能上线</td><td><a href="https://www.bilibili.com/video/BV1i5CEYtEok">BV1i5CEYtEok</a></td></tr>
-    <tr><td>ButtonAssist 4.0</td><td>图形化编辑 + 手柄宏</td><td><a href="https://www.bilibili.com/video/BV13Lr1YREMr">BV13Lr1YREMr</a></td></tr>
-    <tr><td>ButtonAssist 5.0</td><td>宏指令录制登场</td><td><a href="https://www.bilibili.com/video/BV1kr9NYZE36">BV1kr9NYZE36</a></td></tr>
-    <tr><td>ButtonAssist 6.0</td><td>文本识别能力加入</td><td><a href="https://www.bilibili.com/video/BV1UCZPYGEN8">BV1UCZPYGEN8</a></td></tr>
-    <tr><td>RMT 1.0</td><td>逻辑指令增强，功能跃升</td><td><a href="https://www.bilibili.com/video/BV1oWVRzaEzk">BV1oWVRzaEzk</a></td></tr>
-    <tr><td>RMT 1.0.7</td><td>定时宏、自定义贴图、配置管理</td><td><a href="https://www.bilibili.com/video/BV1T2e8zAEaf">BV1T2e8zAEaf</a></td></tr>
-    <tr><td>RMT 1.0.8</td><td>直播交流与答疑</td><td><a href="https://www.bilibili.com/video/BV1CYx1zmEx3">BV1CYx1zmEx3</a></td></tr>
-  </tbody>
-</table>
+| | 版本 | 功能亮点 | 视频链接 | |
+|:--|:--:|:--|:--:|:--|
+| | ButtonAssist 1.0 | 首个版本，起航！ | [BV1EU411f7dC](https://www.bilibili.com/video/BV1EU411f7dC) | |
+| | ButtonAssist 2.0 | 支持指定进程触发 | [BV1ojtHeUEjR](https://www.bilibili.com/video/BV1ojtHeUEjR) | |
+| | ButtonAssist 3.0 | 图片搜索功能上线 | [BV1i5CEYtEok](https://www.bilibili.com/video/BV1i5CEYtEok) | |
+| | ButtonAssist 4.0 | 图形化编辑 + 手柄宏 | [BV13Lr1YREMr](https://www.bilibili.com/video/BV13Lr1YREMr) | |
+| | ButtonAssist 5.0 | 宏指令录制登场 | [BV1kr9NYZE36](https://www.bilibili.com/video/BV1kr9NYZE36) | |
+| | ButtonAssist 6.0 | 文本识别能力加入 | [BV1UCZPYGEN8](https://www.bilibili.com/video/BV1UCZPYGEN8) | |
+| | RMT 1.0 | 逻辑指令增强，功能跃升 | [BV1oWVRzaEzk](https://www.bilibili.com/video/BV1oWVRzaEzk) | |
+| | RMT 1.0.7 | 定时宏、自定义贴图、配置管理 | [BV1T2e8zAEaf](https://www.bilibili.com/video/BV1T2e8zAEaf) | |
+| | RMT 1.0.8 | 直播交流与答疑 | [BV1CYx1zmEx3](https://www.bilibili.com/video/BV1CYx1zmEx3) | |
 
 🎬 更多内容请关注 B 站账号：  
-👉 <a href="https://space.bilibili.com/397441876">浮生若梦的兔子</a>
-
-</div>
+👉 [浮生若梦的兔子](https://space.bilibili.com/397441876)
 
 
 ## 💾 下载方式
