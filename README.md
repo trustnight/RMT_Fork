@@ -34,6 +34,11 @@ RMT（若梦兔）是一款基于 AutoHotkey v2 的免费开源按键宏工具�
 3. [百度网盘](https://pan.baidu.com/s/1taK1EjL1-Yt4u9IeFQgV6g) 提取码: RMMT 
 4. [阿里云盘](https://www.alipan.com/s/e2Fq9NSt6Fo)
 
+## 配置共享仓库
+
+1. [Github配置共享仓库](https://github.com/zclucas/RMT-Setting)
+2. [Gitee配置共享仓库](https://gitee.com/fateman/RMT-Setting)
+
 ## 打赏支持
 RMT（若梦兔）是完全免费的开源项目，如果你觉得它对你有帮助，欢迎请我喝杯咖啡☕，你的支持将激励我不断更新与维护！
 
