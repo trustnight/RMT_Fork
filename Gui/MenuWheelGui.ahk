@@ -205,7 +205,6 @@ class MenuWheelGui {
                 sector := (ratio > 2.414) ? 1 : (deltaX > 0 ? 2 : 8)  ; 上、右上、左上
             }
         }
-        MsgBox(sector)
         ; 触发对应的事件
         this.OnBtnClick(sector)
     }
