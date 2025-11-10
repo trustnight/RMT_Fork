@@ -157,27 +157,13 @@ RMT 支持用户自由分享与下载宏配置文件，你可以在以下两个�
 | 2025/11/1 13:00:43   | 银联云闪 |                   |
 
 
-## 💬 交流群
+## 💬 社区与支持
 
-加入 RMT 官方交流群，与大家一起交流使用心得与优化方案！
+加入 RMT 官方社区，与大家一起交流使用心得、分享配置、反馈问题或获取帮助！
 
-- 💡 QQ 群  
-  - [1群：837661891](https://qm.qq.com/q/DgpDumEPzq)（已满）  
-  - [2群：1050141694](https://qm.qq.com/q/uZszuxabPW)
-- 🔊 QQ 频道：[pd63973680](https://pd.qq.com/s/5wyjvj7zw)
+| 📢 类型 | 💬 入口 |
+|:--|:--|
+| 💡 QQ 群 | [1群：837661891](https://qm.qq.com/q/DgpDumEPzq)（已满）<br>[2群：1050141694](https://qm.qq.com/q/uZszuxabPW) |
+| 💭 QQ 频道 | [pd63973680](https://pd.qq.com/s/5wyjvj7zw) |
 
----
-
-## 🤝 参与贡献
-
-欢迎开发者们一起完善 RMT！
-
-```bash
-# 1. Fork 本仓库
-# 2. 新建分支
-git checkout -b feat_xxx
-# 3. 提交更改
-git commit -m "新增功能：xxx"
-# 4. 推送分支
-git push origin feat_xxx
-# 5. 创建 Pull Request
+> 🧠 无论是新手提问、配置分享，还是功能建议，都欢迎在社区中积极交流！
