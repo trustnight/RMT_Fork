@@ -664,7 +664,7 @@ GetSavedTableItemInfo(index) {
     loop tableItem.ModeArr.Length {
         TKArrStr .= tableItem.TKArr[A_Index]
         ModeArrStr .= tableItem.ModeArr[A_Index]
-        ForbidArrStr .= tableItem.ForbidArr[A_Index]
+        ForbidArrStr .= tableItem.ForbidConArr[A_Index].Value
         HoldTimeArrStr .= tableItem.HoldTimeArr[A_Index]
         RemarkArrStr .= tableItem.RemarkConArr[A_Index].Value
         TriggerTypeArrStr .= tableItem.TriggerTypeConArr[A_Index].Value
@@ -1421,19 +1421,15 @@ GetItemFoldForbidState(tableItem, itemIndex) {
 }
 
 GetItemFrontInfo(tableItem, itemIndex) {
-    frontInfo := tableItem.FrontInfoArr.Length >= itemIndex ? tableItem.FrontInfoArr[itemIndex] : ""
-    if (frontInfo != "")
-        return frontInfo
-
-    ; FoldInfo := tableItem.FoldInfo
-    ; for Index, IndexSpanStr in FoldInfo.IndexSpanArr {
-    ;     IndexSpan := StrSplit(IndexSpanStr, "-")
-    ;     if (IsInteger(IndexSpan[1]) && IsInteger(IndexSpan[2])) {
-    ;         if (IndexSpan[1] <= itemIndex && IndexSpan[2] >= itemIndex) {
-    ;             return FoldInfo.FrontInfoArr[Index]
-    ;         }
-    ;     }
-    ; }
+    FoldInfo := tableItem.FoldInfo
+    for Index, IndexSpanStr in FoldInfo.IndexSpanArr {
+        IndexSpan := StrSplit(IndexSpanStr, "-")
+        if (IsInteger(IndexSpan[1]) && IsInteger(IndexSpan[2])) {
+            if (IndexSpan[1] <= itemIndex && IndexSpan[2] >= itemIndex) {
+                return FoldInfo.FrontInfoArr[Index]
+            }
+        }
+    }
 
     return ""
 }

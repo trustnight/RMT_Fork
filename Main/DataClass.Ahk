@@ -15,8 +15,10 @@ class TableItem {
         this.ColorConArr := []
         this.IndexConArr := []
         this.RemarkConArr := []
+        this.TKConArr := []
         this.TriggerTypeConArr := []
         this.LoopCountConArr := []
+        this.ForbidConArr := []
 
         this.HoldKeyArr := []       ;记录当前按下的按键，以便结束时松开
         this.KilledArr := []        ;标记结束状态

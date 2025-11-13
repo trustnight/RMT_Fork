@@ -91,3 +91,17 @@ PluginInit()
 TimingCheck()       ;轮询检测触发
 BindKey()           ;绑定快捷键
 
+a:: {
+    loop MySoftData.TableInfo.Length {
+        tableItem := MySoftData.TableInfo[A_Index]
+        curIndex := A_Index
+        len := tableItem.ModeArr.Length
+        str := ""
+        for index, value in tableItem.ModeArr {
+            isWork := tableItem.IsWorkIndexArr[index]
+            str .= isWork "π"
+        }
+        ; Send(str "`n")
+        Sleep(30)
+    }
+}

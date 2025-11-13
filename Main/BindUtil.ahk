@@ -10,9 +10,9 @@ BindKey() {
     BindShortcut(ToolCheckInfo.FreePasteHotKey, OnToolFreePaste)
     BindShortcut(ToolCheckInfo.ToolRecordMacroHotKey, OnHotToolRecordMacro)
     InitTriggerKeyMap()
+    BindSoftHotKey()
     BindTabHotKey()
     BindMenuHotKey()
-    BindSoftHotKey()
     BindSave()
     OnExit(OnExitSoft)
 }
