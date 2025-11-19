@@ -397,6 +397,16 @@ class CompareData {
     }
 }
 
+class CompareProData {
+    __New() {
+        this.VariName := "Num1"
+        this.CompareTypeArr := [3, 3]  ;1大于 2大于等于 3等于 4小于等 5小于 6字符包含 7存在变量
+        this.VariableArr := [1, 2]
+        this.MacroArr := ["按键_a_3_100", "按键_b_3_100"]
+        this.DefaultMacro := "按键_c_3_100"
+    }
+}
+
 class MMProData {
     __New() {
         this.SerialStr := ""

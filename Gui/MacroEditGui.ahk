@@ -16,6 +16,7 @@
 #Include RMTCMDGui.ahk
 #Include BGKeyGui.ahk
 #Include LoopGui.ahk
+#Include CompareProGui.ahk
 
 class MacroEditGui {
     __new() {
@@ -82,6 +83,10 @@ class MacroEditGui {
         this.CompareGui := CompareGui()
         this.CompareGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
         this.SubGuiMap.Set("如果", this.CompareGui)
+
+        this.CompareProGui := CompareProGui()
+        this.CompareProGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
+        this.SubGuiMap.Set("如果Pro", this.CompareProGui)
 
         this.MMProGui := MMProGui()
         this.MMProGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
@@ -246,29 +251,29 @@ class MacroEditGui {
 
         PosX := 15
         PosY += 40
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 75), "如果")
+        btnCon.SetFont((Format("S{} W{} Q{}", 11, 400, 5)))
+        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.CompareGui))
+        this.CmdBtnConMap.Set("如果", btnCon)
+
+        PosX += 85
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 75), "如果Pro")
+        btnCon.SetFont((Format("S{} W{} Q{}", 11, 400, 5)))
+        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.CompareProGui))
+        this.CmdBtnConMap.Set("如果Pro", btnCon)
+
+        PosX := 15
+        PosY += 40
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 75), "运算")
         btnCon.SetFont((Format("S{} W{} Q{}", 11, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.OperationGui))
         this.CmdBtnConMap.Set("运算", btnCon)
 
         PosX += 85
-        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 75), "如果")
-        btnCon.SetFont((Format("S{} W{} Q{}", 11, 400, 5)))
-        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.CompareGui))
-        this.CmdBtnConMap.Set("如果", btnCon)
-
-        PosX := 15
-        PosY += 40
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 75), "RMT指令")
         btnCon.SetFont((Format("S{} W{} Q{}", 11, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.RMTCMDGui))
         this.CmdBtnConMap.Set("RMT指令", btnCon)
-
-        PosX += 85
-        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 75), "宏操作")
-        btnCon.SetFont((Format("S{} W{} Q{}", 11, 400, 5)))
-        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.SubMacroGui))
-        this.CmdBtnConMap.Set("宏操作", btnCon)
 
         PosX := 15
         PosY += 40
@@ -485,15 +490,15 @@ class MacroEditGui {
         }
     }
 
-    OnDoubleClick(ctrl, info) {
-        if (info == 0)
+    OnDoubleClick(ctrl, item) {
+        if (item == 0)
             return
 
-        itemText := this.MacroTreeViewCon.GetText(info)
+        itemText := this.MacroTreeViewCon.GetText(item)
         if (itemText == "" || SubStr(itemText, 1, 1) == "⎖")
             return
 
-        this.CurItemID := info
+        this.CurItemID := item
         if (itemText == "真" || itemText == "假" || itemText == "循环体") {
             if (this.SubMacroEditGui == "")
                 this.SubMacroEditGui := MacroEditGui()

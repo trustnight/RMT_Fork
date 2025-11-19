@@ -62,7 +62,7 @@ class VariableListenGui {
 
         PosX := 10
         PosY += 30
-        this.LVCon := MyGui.Add("ListView", Format("x{} y{} w350 h250 Sort", PosX, PosY), ["变量名", "变量值"])
+        this.LVCon := MyGui.Add("ListView", Format("x{} y{} w350 h250 -LV0x10 NoSort Sort", PosX, PosY), ["变量名", "变量值"])
         ; 设置列宽（单位：px）
         this.LVCon.ModifyCol(1, 120) ; 第一列宽度
         this.LVCon.ModifyCol(2, 205) ; 自动填充剩余宽度

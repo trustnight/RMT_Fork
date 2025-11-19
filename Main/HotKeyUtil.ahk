@@ -83,6 +83,7 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         IsInterval := StrCompare(paramArr[1], "间隔", false) == 0
         IsRun := StrCompare(paramArr[1], "运行", false) == 0
         IsIf := StrCompare(paramArr[1], "如果", false) == 0
+        IsIfPro := StrCompare(paramArr[1], "如果Pro", false) == 0
         IsMMPro := StrCompare(paramArr[1], "移动Pro", false) == 0
         IsOutput := StrCompare(paramArr[1], "输出", false) == 0
         IsVariable := StrCompare(paramArr[1], "变量", false) == 0
@@ -124,6 +125,9 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         }
         else if (IsIf) {
             OnCompare(tableItem, cmdArr[A_Index], index)
+        }
+        else if (IsIfPro) {
+            OnComparePro(tableItem, cmdArr[A_Index], index)
         }
         else if (IsOutput) {
             OnOutput(tableItem, cmdArr[A_Index], index)
@@ -359,6 +363,10 @@ OnCompare(tableItem, cmd, index) {
         return
 
     OnTriggerMacroOnce(tableItem, macro, index)
+}
+
+OnComparePro(tableItem, cmd, index) {
+    
 }
 
 OnMMPro(tableItem, cmd, index) {
