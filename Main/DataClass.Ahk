@@ -399,11 +399,31 @@ class CompareData {
 
 class CompareProData {
     __New() {
-        this.VariName := "Num1"
-        this.CompareTypeArr := [3, 3]  ;1大于 2大于等于 3等于 4小于等 5小于 6字符包含 7存在变量
-        this.VariableArr := [1, 2]
+        this.VariNameArr := [["Num1"], ["Num2"]]
+        this.CompareTypeArr := [[3], [3]]  ;1大于 2大于等于 3等于 4小于等 5小于 6字符包含 7存在变量
+        this.VariableArr := [[1], [2]]
+        this.LogicTypeArr := [1, 2]
         this.MacroArr := ["按键_a_3_100", "按键_b_3_100"]
         this.DefaultMacro := "按键_c_3_100"
+    }
+
+    ;用于逻辑树展示
+    static GetCondiStr(Data, itemIndex) {
+        CommandStr := ""
+        symbolStr := Data.LogicTypeArr[itemIndex] == 1 ? "且" : "或"
+        CompareTypeStrArr := ["大于", "大于等于", "等于", "小于等于",
+            "小于", "字符包含", "变量存在"]
+
+        loop Data.VariNameArr[itemIndex].Length {
+            VariName := Data.VariNameArr[itemIndex][A_Index]
+            TypeStr := CompareTypeStrArr[Data.CompareTypeArr[itemIndex][A_Index]]
+            Variable := Data.VariableArr[itemIndex][A_Index]
+            CommandStr .= VariName " " TypeStr " " Variable " " symbolStr " "
+        }
+        CommandStr := Trim(CommandStr, " ")
+        CommandStr := Trim(CommandStr, symbolStr)
+        CommandStr := Trim(CommandStr, " ")
+        return CommandStr
     }
 }
 
@@ -470,7 +490,7 @@ class LoopData {
         CommandStr := ""
         CompareTypeStrArr := ["大于", "大于等于", "等于", "小于等于",
             "小于", "字符包含", "变量存在"]
-    
+
         loop 4 {
             if (!Data.ToggleArr[A_Index])
                 continue

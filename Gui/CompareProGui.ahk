@@ -1,5 +1,5 @@
 #Requires AutoHotkey v2.0
-#Include MacroEditGui.ahk
+#Include CompareProEditItemGui.ahk
 
 class CompareProGui {
     __new() {
@@ -9,13 +9,16 @@ class CompareProGui {
         this.MacroGui := ""
         this.VariableObjArr := []
         this.FocusCon := ""
+        this.ItemEditGui := ""
+        this.ContextMenu := ""
 
         this.CompareTypeStrArr := ["大于", "大于等于", "等于", "小于等于",
             "小于", "字符包含", "变量存在"]
-        this.ItemMap := Map()
+
+        this.CompareTypeStrMap := Map("大于", 1, "大于等于", 2, "等于", 3, "小于等于",
+            4, "小于", 5, "字符包含", 6, "变量存在", 7)
 
         this.Data := ""
-        this.VariNameCon := ""
     }
 
     ShowGui(cmd) {
@@ -52,29 +55,23 @@ class CompareProGui {
         this.RemarkCon := MyGui.Add("Edit", Format("x{} y{} w{}", PosX, PosY - 5, 150), "")
 
         PosX := 10
-        PosY += 40
-        MyGui.Add("Text", Format("x{} y{} w{} h{}", PosX, PosY - 2, 80, 20), "变量:")
-
-        PosX += 45
-        this.VariNameCon := MyGui.Add("ComboBox", Format("x{} y{} w{}", PosX, PosY - 5, 120), [])
-
-        PosX := 10
         PosY += 30
-        this.LVCon := MyGui.Add("ListView", Format("x{} y{} w450 h250 -LV0x10 NoSort", PosX, PosY), ["条件", "指令"])
+        this.LVCon := MyGui.Add("ListView", Format("x{} y{} w480 h280 -LV0x10 NoSort", PosX, PosY), ["条件", "关系", "指令"])
         this.LVCon.OnEvent("ContextMenu", this.ShowContextMenu.Bind(this))
         this.LVCon.OnEvent("DoubleClick", this.OnDoubleClick.Bind(this))
         ; 设置列宽（单位：px）
-        this.LVCon.ModifyCol(1, 160) ; 第一列宽度
-        this.LVCon.ModifyCol(2, 260) ; 自动填充剩余宽度
+        this.LVCon.ModifyCol(1, 260) ; 第一列宽度
+        this.LVCon.ModifyCol(2, 50) ; 自动填充剩余宽度
+        this.LVCon.ModifyCol(3, 150) ; 自动填充剩余宽度
 
-        PosY += 265
-        PosX := 180
+        PosY += 290
+        PosX := 190
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 100, 40), "确定")
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
         this.FocusCon := btnCon
 
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 470, 400))
+        MyGui.Show(Format("w{} h{}", 500, 380))
     }
 
     Init(cmd) {
@@ -83,44 +80,49 @@ class CompareProGui {
         this.RemarkCon.Value := cmdArr.Length >= 3 ? cmdArr[3] : ""
         this.Data := this.GetCompareProData(this.SerialStr)
 
-        this.VariNameCon.Delete()
-        this.VariNameCon.Add(this.VariableObjArr)
-        this.VariNameCon.Text := this.Data.VariName
         this.LVCon.Delete()
         loop this.Data.MacroArr.Length {
-            condiStr := this.CompareTypeStrArr[this.Data.CompareTypeArr[A_Index]] " " this.Data.VariableArr[A_Index]
-            macro := this.Data.MacroArr[A_Index]
-            item := this.LVCon.Add(, condiStr, macro)
-            this.ItemMap[item] := A_Index
-        }
-        item := this.LVCon.Add(, "以上都不是", this.Data.DefaultMacro)
-        this.ItemMap[item] := this.Data.MacroArr.Length + 1
-    }
-
-    Refresh() {
-        this.LVCon.Opt("-Redraw")
-        count := this.LVCon.GetCount()
-        LVKeys := Map()
-        loop count {
-            row := count - A_Index + 1
-            key := this.LVCon.GetText(row, 1)
-            value := this.LVCon.GetText(row, 2)
-            if !MySoftData.VariableMap.Has(key)
-                this.LVCon.Delete(row)
-            else if (String(MySoftData.VariableMap[key]) != value)
-                this.LVCon.Delete(row)
-            else
-                LVKeys[key] := True
-        }
-
-        ; 3) 添加 Map 中有但 LV 没有的项
-        for key, value in MySoftData.VariableMap {
-            if !LVKeys.Has(key) {
-                this.LVCon.Add(, key, value)
+            condiStr := ""
+            ItemIndex := A_Index
+            loop this.Data.VariNameArr[ItemIndex].Length {
+                condiStr .= this.Data.VariNameArr[ItemIndex][A_Index] " " this.CompareTypeStrArr[this.Data.CompareTypeArr[
+                    ItemIndex][A_Index]] " " this.Data.VariableArr[ItemIndex][A_Index]
+                condiStr .= "⎖"
             }
+            condiStr := Trim(condiStr, "⎖")
+            logicStr := this.Data.LogicTypeArr[A_Index] == 1 ? "且" : "或"
+            macro := this.Data.MacroArr[A_Index]
+
+            this.LVCon.Add(, condiStr, logicStr, macro)
         }
-        this.LVCon.Opt("+Redraw")
+        this.LVCon.Add(, "以上都不是", "", this.Data.DefaultMacro)
+        this.LVCon.Focus()  ; 🔥 强制获得焦点，解决第一次双击无效问题
     }
+
+    ; Refresh() {
+    ;     this.LVCon.Opt("-Redraw")
+    ;     count := this.LVCon.GetCount()
+    ;     LVKeys := Map()
+    ;     loop count {
+    ;         row := count - A_Index + 1
+    ;         key := this.LVCon.GetText(row, 1)
+    ;         value := this.LVCon.GetText(row, 2)
+    ;         if !MySoftData.VariableMap.Has(key)
+    ;             this.LVCon.Delete(row)
+    ;         else if (String(MySoftData.VariableMap[key]) != value)
+    ;             this.LVCon.Delete(row)
+    ;         else
+    ;             LVKeys[key] := True
+    ;     }
+
+    ;     ; 3) 添加 Map 中有但 LV 没有的项
+    ;     for key, value in MySoftData.VariableMap {
+    ;         if !LVKeys.Has(key) {
+    ;             this.LVCon.Add(, key, value)
+    ;         }
+    ;     }
+    ;     this.LVCon.Opt("+Redraw")
+    ; }
 
     ToggleFunc(state) {
         MacroAction := (*) => this.TriggerMacro()
@@ -135,13 +137,98 @@ class CompareProGui {
     ShowContextMenu(ctrl, item, isRightClick, x, y) {
         if (item == 0)
             return
-        MsgBox(this.ItemMap[item])
+
+        if (this.ContextMenu == "") {
+            this.ContextMenu := Menu()
+            this.ContextMenu.Add("编辑", (*) => this.MenuHandler("编辑"))
+            this.ContextMenu.Add()  ; 分隔线
+            this.ContextMenu.Add("向上插入分支", (*) => this.MenuHandler("向上插入分支"))
+            this.ContextMenu.Add("向下插入分支", (*) => this.MenuHandler("向下插入分支"))
+            this.ContextMenu.Add()  ; 分隔线
+            this.ContextMenu.Add("向上移动", (*) => this.MenuHandler("向上移动"))
+            this.ContextMenu.Add("向下移动", (*) => this.MenuHandler("向下移动"))
+            this.ContextMenu.Add()  ; 分隔线
+            this.ContextMenu.Add("删除", (*) => this.MenuHandler("删除"))
+        }
+        this.CurItme := item
+        this.ContextMenu.Show(x, y)
     }
 
     OnDoubleClick(ctrl, item) {
         if (item == 0)
             return
-        MsgBox(this.ItemMap[item])
+        this.OnEditItem(item)
+    }
+
+    MenuHandler(cmdStr) {
+        isFinally := this.LVCon.GetText(this.CurItme, 1) == "以上都不是"
+        switch cmdStr {
+            case "编辑":
+            {
+                this.OnEditItem(this.CurItme)
+            }
+            case "向上插入分支":
+            {
+                this.LVCon.Insert(this.CurItme, , "Num1 大于 Num1", "且", "")
+            }
+            case "向下插入分支":
+            {
+                if (isFinally) {
+                    MsgBox("不可向最后的分支插入")
+                    return
+                }
+                this.LVCon.Insert(this.CurItme + 1, , "Num1 大于 Num1", "且", "")
+            }
+            case "向上移动":
+            {
+                if (isFinally) {
+                    MsgBox("最后的分支不能变更顺序")
+                    return
+                }
+                if (this.CurItme == 1) {
+                    MsgBox("第一个分支不能上移")
+                    return
+                }
+                this.LVCon.Insert(this.CurItme - 1, , this.LVCon.GetText(this.CurItme, 1), this.LVCon.GetText(this.CurItme, 2), this.LVCon.GetText(this.CurItme, 3))
+                this.LVCon.Delete(this.CurItme + 1)
+            }
+            case "向下移动":
+            {
+                if (isFinally || this.LVCon.GetCount() == this.CurItme + 1) {
+                    MsgBox("最后的分支不能变更顺序")
+                    return
+                }
+
+                this.LVCon.Insert(this.CurItme + 2, , this.LVCon.GetText(this.CurItme, 1), this.LVCon.GetText(this.CurItme, 2), this.LVCon.GetText(this.CurItme, 3))
+                this.LVCon.Delete(this.CurItme)
+            }
+            case "删除":
+            {
+                if (isFinally) {
+                    MsgBox("最后的分支不能删除，若无需该分支请清空分支指令")
+                    return
+                }
+                this.LVCon.Delete(this.CurItme)
+            }
+        }
+    }
+
+    OnEditItem(item) {
+        if (this.ItemEditGui == "") {
+            this.ItemEditGui := CompareProEditItemGui()
+            this.ItemEditGui.SureFocusCon := this.FocusCon
+        }
+        this.ItemEditGui.VariableObjArr := this.VariableObjArr
+        EditType := this.LVCon.GetText(item, 1) == "以上都不是" ? 2 : 1
+        DataArr := this.GetCondiStrDataArr(this.LVCon.GetText(item, 1))
+        logicStr := this.LVCon.GetText(item, 2)
+        macro := this.LVCon.GetText(item, 3)
+        this.ItemEditGui.ShowGui(EditType, DataArr, logicStr, macro)
+        this.ItemEditGui.SureBtnAction := this.OnSureEditItem.Bind(this, item)
+    }
+
+    OnSureEditItem(item, condiStr, logicStr, macro) {
+        this.LVCon.Modify(item, , condiStr, logicStr, macro)
     }
 
     OnClickSureBtn() {
@@ -195,8 +282,43 @@ class CompareProGui {
         return data
     }
 
+    GetCondiStrDataArr(condiStr) {
+        condiStrArr := StrSplit(condiStr, "⎖")
+        VariNameArr := []
+        CompareTypeArr := []
+        VariableArr := []
+        if (condiStr != "以上都不是") {
+            loop condiStrArr.Length {
+                itemCondiArr := StrSplit(condiStrArr[A_Index], " ")
+                VariNameArr.Push(itemCondiArr[1])
+                CompareTypeArr.Push(this.CompareTypeStrMap[itemCondiArr[2]])
+                VariableArr.Push(itemCondiArr[3])
+            }
+        }
+
+        return [VariNameArr, CompareTypeArr, VariableArr]
+    }
+
     SaveCompareProData() {
-        this.Data.VariName := this.VariNameCon.Text
+        this.Data.VariNameArr := []
+        this.Data.CompareTypeArr := []
+        this.Data.VariableArr := []
+        this.Data.LogicTypeArr := []
+        this.Data.MacroArr := []
+        loop this.LVCon.GetCount() {
+            if (A_Index == this.LVCon.GetCount()) {
+                this.Data.DefaultMacro := this.LVCon.GetText(A_Index, 3)
+                break
+            }
+            CondiDataArr := this.GetCondiStrDataArr(this.LVCon.GetText(A_Index, 1))
+            LogicType := this.LVCon.GetText(A_Index, 2) == "且" ? 1 : 2
+            this.Data.VariNameArr.Push(CondiDataArr[1])
+            this.Data.CompareTypeArr.Push(CondiDataArr[2])
+            this.Data.VariableArr.Push(CondiDataArr[3])
+            this.Data.LogicTypeArr.Push(LogicType)
+            this.Data.MacroArr.Push(this.LVCon.GetText(A_Index, 3))
+        }
+
         saveStr := JSON.stringify(this.Data, 0)
         IniWrite(saveStr, CompareProFile, IniSection, this.Data.SerialStr)
         if (MySoftData.DataCacheMap.Has(this.Data.SerialStr)) {

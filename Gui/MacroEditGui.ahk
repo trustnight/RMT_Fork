@@ -590,8 +590,9 @@ class MacroEditGui {
         IsSearch := StrCompare(paramArr[1], "搜索", false) == 0
         IsSearchPro := StrCompare(paramArr[1], "搜索Pro", false) == 0
         IsIf := StrCompare(paramArr[1], "如果", false) == 0
+        IsIfPro := StrCompare(paramArr[1], "如果Pro", false) == 0
         IsLoop := StrCompare(paramArr[1], "循环", false) == 0
-        if (!IsSearch && !IsSearchPro && !IsIf && !IsLoop)
+        if (!IsSearch && !IsSearchPro && !IsIf && !IsLoop && !IsIfPro)
             return
 
         ParentID := this.MacroTreeViewCon.GetParent(root)
@@ -655,9 +656,24 @@ class MacroEditGui {
                 this.TreeAddSubTree(CondiRoot, LoopData.GetCondiStr(Data))
             }
 
-            iconStr := this.GetCmdIconStr("⎖循环体")
+            iconStr := this.GetCmdIconStr("循环体")
             BodyRoot := this.MacroTreeViewCon.Add("循环体", root, iconStr)
             this.TreeAddSubTree(BodyRoot, Data.LoopBody)
+        }
+        else if (IsIfPro) {
+            saveStr := IniRead(CompareProFile, IniSection, paramArr[2], "")
+            Data := JSON.parse(saveStr, , false)
+
+            iconStr := this.GetCmdIconStr("条件")
+            loop Data.VariNameArr.Length {
+                CondiStr := "条件：" CompareProData.GetCondiStr(Data, A_Index)
+                CondiRoot := this.MacroTreeViewCon.Add(CondiStr, root, iconStr)
+                this.TreeAddSubTree(CondiRoot, Data.MacroArr[A_Index])
+            }
+
+            CondiStr := "条件：以上都不是" 
+            CondiRoot := this.MacroTreeViewCon.Add(CondiStr, root, iconStr)
+            this.TreeAddSubTree(CondiRoot, Data.DefaultMacro)
         }
     }
 
