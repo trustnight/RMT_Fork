@@ -51,6 +51,8 @@ class SearchProGui {
         this.CoordToogleCon := ""
         this.CoordXNameCon := ""
         this.CoordYNameCon := ""
+        this.LinkCaptureToggleCon := ""
+        this.CaptureRegionDLCon := ""
         this.MacroGui := ""
 
         this.ConfigDLArr := []
@@ -60,6 +62,7 @@ class SearchProGui {
         this.MouseClickArr := []
         this.ResultTogArr := []
         this.CoordTogArr := []
+        this.LinkCaptureArr := []
     }
 
     ShowGui(cmd) {
@@ -231,11 +234,24 @@ class SearchProGui {
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 80, 25), GetLang("截图"))
         btnCon.OnEvent("Click", (*) => this.OnScreenShotBtnClick())
         this.ScreenshotBtn := btnCon
+        
         PosY := SplitPosY
         PosX := 530
         this.ImageCon := MyGui.Add("Picture", Format("x{} y{} w{} h{}", PosX, PosY, 80, 80), "")
-
+        
         PosY += 90
+        PosX := 360
+        MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), GetLang("联动抓图："))
+        PosX += 80
+        this.LinkCaptureToggleCon := MyGui.Add("Checkbox", Format("x{} y{} w{}", PosX, PosY, 30))
+        this.LinkCaptureToggleCon.OnEvent("Click", (*) => this.OnChangeType())
+        PosX += 40
+        this.CaptureRegionDLCon := MyGui.Add("DropDownList", Format("x{} y{} w{}", PosX, PosY - 3, 120), [])
+        
+        this.LinkCaptureArr.Push(this.LinkCaptureToggleCon)
+        this.LinkCaptureArr.Push(this.CaptureRegionDLCon)
+
+        PosY += 30
         PosX := 360
         this.ColorTipCon := MyGui.Add("Text", Format("x{} y{} w{}", PosX, PosY, 80), GetLang("搜索颜色："))
         PosX += 80
@@ -331,7 +347,7 @@ class SearchProGui {
         btnCon := MyGui.Add("Button", Format("x{} y{} w{} h{}", PosX, PosY, 100, 40), GetLang("确定"))
         btnCon.OnEvent("Click", (*) => this.OnClickSureBtn())
         MyGui.OnEvent("Close", (*) => this.ToggleFunc(false))
-        MyGui.Show(Format("w{} h{}", 660, 550))
+        MyGui.Show(Format("w{} h{}", 660, 570))
     }
 
     Init(cmd) {
@@ -388,6 +404,11 @@ class SearchProGui {
         this.CoordYNameCon.Delete()
         this.CoordYNameCon.Add(RemoveInVariable(this.DLVariableArr))
         this.CoordYNameCon.Text := this.Data.CoordYName
+        
+        ; 初始化联动抓图控件
+        this.LinkCaptureToggleCon.Value := HasProp(this.Data, "LinkCaptureToggle") ? this.Data.LinkCaptureToggle : false
+        this.RefreshCaptureRegionDL()
+        
         this.OnChangeType()
     }
 
@@ -412,6 +433,71 @@ class SearchProGui {
         this.ConfigDLCon.Delete()
         this.ConfigDLCon.Add(this.ConfigDLArr)
         this.ConfigDLCon.Text := this.Data.ConfigName
+    }
+
+    RefreshCaptureRegionDL() {
+        this.CaptureRegionDLCon.Delete()
+        
+        ; 收集抓图名称到数组
+        captureNames := []
+        
+        ; 从 CaptureRegion.ini 文件中读取抓图名称
+        captureRegionPath := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\CaptureRegion.ini"
+        if (FileExist(captureRegionPath)) {
+            ; 使用正确的 IniRead 语法
+            captureRegionContent := IniRead(captureRegionPath, "UserSettings")
+            if (captureRegionContent != "") {
+                ; 解析 INI 文件内容
+                lines := StrSplit(captureRegionContent, "`n", "`r")
+                for index, line in lines {
+                    if (line != "") {
+                        ; 提取抓图名称和配置
+                        pos := InStr(line, "=")
+                        if (pos > 0) {
+                            captureKey := SubStr(line, 1, pos - 1)
+                            captureConfig := SubStr(line, pos + 1)
+                            
+                            ; 直接从字符串中提取 CaptureName
+                            captureNamePos := InStr(captureConfig, "CaptureName")
+                            if (captureNamePos > 0) {
+                                ; 找到 CaptureName 后面的冒号
+                                colonPos := InStr(captureConfig, ":",, captureNamePos)
+                                if (colonPos > 0) {
+                                    ; 找到冒号后面的双引号
+                                    startPos := InStr(captureConfig, Chr(34),, colonPos)
+                                    if (startPos > 0) {
+                                        ; 找到下一个双引号
+                                        endPos := InStr(captureConfig, Chr(34),, startPos + 1)
+                                        if (endPos > 0) {
+                                            ; 提取 CaptureName 的值
+                                            captureName := SubStr(captureConfig, startPos + 1, endPos - startPos - 1)
+                                            if (captureName != "") {
+                                                captureNames.Push(captureName)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        ; 添加抓图名称到下拉框
+        if (captureNames.Length > 0) {
+            this.CaptureRegionDLCon.Add(captureNames)
+        }
+        
+        this.CaptureRegionDLCon.Text := HasProp(this.Data, "LinkCaptureName") ? this.Data.LinkCaptureName : ""
+    }
+
+    ; JSON 字符串转对象
+    JsonToObj(jsonStr) {
+        static doc := ComObject("htmlfile")
+        static js := doc.parentWindow
+        doc.write("<meta http-equiv='X-UA-Compatible' content='IE=9'>")
+        return js.eval("(" . jsonStr . ")")
     }
 
     OnEditScreenRule(con, *) {
@@ -623,7 +709,8 @@ class SearchProGui {
             return false
         }
 
-        if (this.SearchTypeCon.Value == 1 && this.Data.SearchImagePath == "") {
+        ; 检查搜索图片路径，但在联动抓图模式下跳过
+        if (this.SearchTypeCon.Value == 1 && this.Data.SearchImagePath == "" && !this.LinkCaptureToggleCon.Value) {
             MsgBox(GetLang("请设置搜索图片"))
             return false
         }
@@ -631,12 +718,15 @@ class SearchProGui {
         if (this.SearchTypeCon.Value == 1) {
             if (IsNumber(this.StartPosXCon.Text) && IsNumber(this.StartPosYCon.Text)
             && IsNumber(this.EndPosXCon.Text) && IsNumber(this.EndPosYCon.Text)) {
-                searchWidth := this.EndPosXCon.Text - this.StartPosXCon.Text
-                searchHeight := this.EndPosYCon.Text - this.StartPosYCon.Text
-                size := GetImageSize(this.Data.SearchImagePath)
-                if (size[1] > searchWidth || size[2] > searchHeight) {
-                    MsgBox(GetLang("搜索范围不能小于图片大小"))
-                    return false
+                ; 在联动抓图模式下跳过图片大小检查
+                if (!HasProp(this.Data, "LinkCaptureToggle") || !this.Data.LinkCaptureToggle) {
+                    searchWidth := this.EndPosXCon.Text - this.StartPosXCon.Text
+                    searchHeight := this.EndPosYCon.Text - this.StartPosYCon.Text
+                    size := GetImageSize(this.Data.SearchImagePath)
+                    if (size[1] > searchWidth || size[2] > searchHeight) {
+                        MsgBox(GetLang("搜索范围不能小于图片大小"))
+                        return false
+                    }
                 }
             }
         }
@@ -876,6 +966,16 @@ class SearchProGui {
 
         isCoord := this.CoordToogleCon.Value
         this.SetConArrState(this.CoordTogArr, isCoord)
+        
+        isLinkCapture := this.LinkCaptureToggleCon.Value
+        ; 单独处理联动抓图的控件
+        this.LinkCaptureToggleCon.Enabled := isImage
+        this.CaptureRegionDLCon.Enabled := isImage && isLinkCapture
+        
+        ; 更新联动抓图下拉框
+        if (isImage) {
+            this.RefreshCaptureRegionDL()
+        }
     }
 
     SetConArrState(ConArr, state) {
@@ -885,10 +985,10 @@ class SearchProGui {
     }
 
     TriggerMacro() {
+        this.SaveSearchData()
         valid := this.CheckIfValid()
         if (!valid)
             return
-        this.SaveSearchData()
         OnTriggerSepcialItemMacro(this.GetCommandStr())
     }
 
@@ -954,6 +1054,8 @@ class SearchProGui {
         data.CoordToogle := this.CoordToogleCon.Value
         data.CoordXName := this.CoordXNameCon.Text
         data.CoordYName := this.CoordYNameCon.Text
+        data.LinkCaptureToggle := this.LinkCaptureToggleCon.Value
+        data.LinkCaptureName := this.CaptureRegionDLCon.Text
 
         if (data.ResultToggle)
             MySoftData.GlobalVariMap[data.ResultSaveName] := true

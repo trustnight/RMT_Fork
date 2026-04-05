@@ -415,6 +415,8 @@ class SearchData {
         this.CoordToogle := 0
         this.CoordXName := GetLang("坐标X")
         this.CoordYName := GetLang("坐标Y")
+        this.LinkCaptureToggle := false
+        this.LinkCaptureName := ""
     }
 
 }
@@ -774,5 +776,18 @@ class MoveWindowData {
         this.WinInfo := ""
         this.TargetX := "0"
         this.TargetY := "0"
+    }
+}
+
+class CaptureRegionData {
+    __New() {
+        this.SerialStr := ""
+        this.Remark := ""
+        this.CaptureName := ""
+        this.CapturePath := ""
+        this.StartPosX := 0
+        this.StartPosY := 0
+        this.EndPosX := A_ScreenWidth
+        this.EndPosY := A_ScreenHeight
     }
 }

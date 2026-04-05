@@ -275,12 +275,12 @@ InitData() {
         "输出", OutputFile, "运行", RunFile, "循环", LoopFile, "宏操作", SubMacroFile, "变量", VariableFile,
         "变量提取", ExVariableFile, "如果", CompareFile, "如果Pro", CompareProFile, "运算", OperationFile,
         "后台鼠标", BGMouseFile, "后台按键", BGKeyFile, "文本处理", TextOpsFile, "Timing", TimingFile, "数组", ArrayFile,
-        "输入", InputFile, "移动窗口", MoveWindowFile)
+        "输入", InputFile, "移动窗口", MoveWindowFile, "抓图", CaptureRegionFile)
     MySoftData.DataClassMap := Map("搜索", SearchData, "搜索Pro", SearchData, "移动Pro", MMProData,
         "输出", OutputData, "运行", RunData, "循环", LoopData, "宏操作", SubMacroData, "变量", VariableData,
         "变量提取", ExVariableData, "如果", CompareData, "如果Pro", CompareProData, "运算", OperationData,
         "后台鼠标", BGMouseData, "后台按键", BGKeyData, "文本处理", TextOpsData, "Timing", TimingData, "数组", ArrayData,
-        "输入", InputData, "移动窗口", MoveWindowData)
+        "输入", InputData, "移动窗口", MoveWindowData, "抓图", CaptureRegionData)
 }
 
 InitLogitechGHubNew() {
@@ -317,6 +317,62 @@ LoadMainSetting() {
     ToolCheckInfo.ToolRecordMacroHotKey := IniRead(IniFile, IniSection, "RecordMacroHotKey", "!r")
     ToolCheckInfo.ToolTextFilterHotKey := IniRead(IniFile, IniSection, "ToolTextFilterHotKey", "!u")
     ToolCheckInfo.ScreenShotHotKey := IniRead(IniFile, IniSection, "ScreenShotHotKey", "!j")
+    
+    ; 初始化抓图映射
+    MySoftData.CaptureRegionMap := Map()
+    captureRegionPath := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\CaptureRegion.ini"
+    if (FileExist(captureRegionPath)) {
+        captureRegionContent := IniRead(captureRegionPath, "UserSettings")
+        if (captureRegionContent != "") {
+            lines := StrSplit(captureRegionContent, "`n", "`r")
+            for index, line in lines {
+                if (line != "") {
+                    pos := InStr(line, "=")
+                    if (pos > 0) {
+                        captureKey := SubStr(line, 1, pos - 1)
+                        captureConfig := SubStr(line, pos + 1)
+                        
+                        ; 提取 CaptureName 和 CapturePath
+                        captureNamePos := InStr(captureConfig, "CaptureName")
+                        capturePathPos := InStr(captureConfig, "CapturePath")
+                        if (captureNamePos > 0 && capturePathPos > 0) {
+                            ; 提取 CaptureName
+                            colonPos := InStr(captureConfig, ":",, captureNamePos)
+                            if (colonPos > 0) {
+                                startPos := InStr(captureConfig, Chr(34),, colonPos)
+                                if (startPos > 0) {
+                                    endPos := InStr(captureConfig, Chr(34),, startPos + 1)
+                                    if (endPos > 0) {
+                                        captureName := SubStr(captureConfig, startPos + 1, endPos - startPos - 1)
+                                        
+                                        ; 提取 CapturePath
+                                        colonPos := InStr(captureConfig, ":",, capturePathPos)
+                                        if (colonPos > 0) {
+                                            startPos := InStr(captureConfig, Chr(34),, colonPos)
+                                            if (startPos > 0) {
+                                                endPos := InStr(captureConfig, Chr(34),, startPos + 1)
+                                                if (endPos > 0) {
+                                                    capturePath := SubStr(captureConfig, startPos + 1, endPos - startPos - 1)
+                                                    
+                                                    ; 如果 CapturePath 为空，构建默认路径
+                                                    if (capturePath == "") {
+                                                        capturePath := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\Images\ScreenShot\" captureName ".png"
+                                                    }
+                                                    
+                                                    ; 添加到映射
+                                                    MySoftData.CaptureRegionMap[captureName] := capturePath
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
     ToolCheckInfo.FreePasteHotKey := IniRead(IniFile, IniSection, "FreePasteHotKey", "!m")
     ToolCheckInfo.RecordKeyboard := IniRead(IniFile, IniSection, "RecordKeyboard", true)
     ToolCheckInfo.RecordMouse := IniRead(IniFile, IniSection, "RecordMouse", true)

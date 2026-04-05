@@ -22,6 +22,7 @@
 #Include ArrayGui.ahk
 #Include InputGui.ahk
 #Include MoveWindowGui.ahk
+#Include CaptureRegionGui.ahk
 
 class MacroEditGui {
     __new() {
@@ -54,7 +55,7 @@ class MacroEditGui {
         this.SubMacroLastIndex := 0
 
         this.CMDStrArr := GetLangArr(["间隔", "按键", "搜索", "搜索Pro", "移动", "移动Pro", "输入", "输出", "循环", "宏操作", "变量", "变量提取",
-            "如果", "如果Pro", "运算", "运行", "数组", "文本处理", "后台鼠标", "后台按键", "RMT指令", "移动窗口"])
+            "如果", "如果Pro", "运算", "运行", "数组", "文本处理", "后台鼠标", "后台按键", "RMT指令", "移动窗口", "抓图"])
 
         this.IconMap := Map(GetLang("间隔"), "Icon1", GetLang("按键"), "Icon2", GetLang("搜索"), "Icon3", GetLang("搜索Pro"),
         "Icon4", GetLang("移动"), "Icon5", GetLang("移动Pro"),
@@ -156,6 +157,10 @@ class MacroEditGui {
         this.MoveWindowGui := MoveWindowGui()
         this.MoveWindowGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
         this.SubGuiMap.Set(GetLang("移动窗口"), this.MoveWindowGui)
+        
+        this.CaptureRegionGui := CaptureRegionGui()
+        this.CaptureRegionGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
+        this.SubGuiMap.Set(GetLang("抓图"), this.CaptureRegionGui)
     }
 
     ShowGui(CommandStr, ShowSaveBtn) {
@@ -331,6 +336,12 @@ class MacroEditGui {
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 75), GetLang("移动窗口"))
         btnCon.SetFont((Format("S{} W{} Q{}", 11, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.MoveWindowGui))
+        
+        PosY += 40
+        PosX := 10
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 75), GetLang("抓图"))
+        btnCon.SetFont((Format("S{} W{} Q{}", 11, 400, 5)))
+        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.CaptureRegionGui))
 
         PosX := 200
         PosY := 10

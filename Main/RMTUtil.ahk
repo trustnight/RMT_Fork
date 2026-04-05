@@ -285,6 +285,7 @@ InitFilePath() {
     global BGMouseFile := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\BGMouseFile.ini"
     global InputFile := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\InputFile.ini"
     global MoveWindowFile := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\MoveWindow.ini"
+    global CaptureRegionFile := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\CaptureRegion.ini"
 }
 
 SubMacroStopAction(tableIndex, itemIndex) {

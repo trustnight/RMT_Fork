@@ -7,11 +7,6 @@ taskkill /F /IM Work1.exe /IM Work2.exe /IM Work3.exe /IM RMT*.exe /IM AutoHotke
 echo Closed processes
 echo.
 
-REM Delete old files
-del /F /Q Thread\Work1.exe Thread\Work2.exe Thread\Work3.exe RMTv1.1.0.exe 2>nul
-echo Deleted old files
-echo.
-
 REM Set paths
 set AHK_EXE=D:\Program Files\AutoHotkey\v2\AutoHotkey64.exe
 set AHK2EXE=D:\Program Files\AutoHotkey\Compiler\Ahk2Exe.exe

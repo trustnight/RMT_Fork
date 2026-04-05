@@ -72,7 +72,8 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         "文本处理", OnTextOps,
         "数组", OnArray,
         "输入", OnInput,
-        "移动窗口", OnMoveWindow
+        "移动窗口", OnMoveWindow,
+        "抓图", OnCaptureRegion
     )
 
     cmdArr := SplitMacro(macro)
@@ -170,16 +171,25 @@ OnSearchOnce(tableItem, Data, index) {
         return
 
     CoordMode("Pixel", "Screen")
+    
+    ; 获取搜索图片路径，支持联动抓图
+    searchImagePath := Data.SearchImagePath
+    if (Data.SearchType == 1 && Data.LinkCaptureToggle && Data.LinkCaptureName != "") {
+        if (MySoftData.CaptureRegionMap && MySoftData.CaptureRegionMap.Has(Data.LinkCaptureName)) {
+            searchImagePath := MySoftData.CaptureRegionMap[Data.LinkCaptureName]
+        }
+    }
+    
     if (Data.SearchType == 1) {
         if (Data.SearchImageType == 1) {
             OutputVarX := 0
             OutputVarY := 0
-            found := FindImage(Data.SearchImagePath, X1, Y1, X2 - X1, Y2 - Y1, Data.Similar, &OutputVarX, &
+            found := FindImage(searchImagePath, X1, Y1, X2 - X1, Y2 - Y1, Data.Similar, &OutputVarX, &
                 OutputVarY)
         }
         else {
             Similar := Integer(-2.55 * Data.Similar + 255)
-            SearchInfo := Format("*{} *w0 *h0 {}", Similar, Data.SearchImagePath)
+            SearchInfo := Format("*{} *w0 *h0 {}", Similar, searchImagePath)
             found := ImageSearch(&OutputVarX, &OutputVarY, X1, Y1, X2, Y2, SearchInfo)
         }
     }
@@ -201,7 +211,7 @@ OnSearchOnce(tableItem, Data, index) {
         Speed := 100 - Data.Speed
         Pos := [OutputVarX, OutputVarY]
         if (Data.SearchType == 1) {
-            imageSize := GetImageSize(Data.SearchImagePath)
+            imageSize := GetImageSize(searchImagePath)
             Pos := [OutputVarX + imageSize[1] / 2, OutputVarY + imageSize[2] / 2]
         }
 
@@ -1194,6 +1204,63 @@ OnMoveWindow(tableItem, cmd, index) {
         hwnd := WinExist(WinTitle)
         if (hwnd != 0) {
             DllCall("SetWindowPos", "Ptr", hwnd, "Ptr", 0, "Int", TargetX, "Int", TargetY, "Int", 0, "Int", 0, "UInt", 0x0001)
+        }
+    }
+    catch {
+    }
+}
+
+OnCaptureRegion(tableItem, cmd, index) {
+    paramArr := StrSplit(cmd, "_")
+    if (paramArr.Length < 1) {
+        return
+    }
+    Data := GetMacroCMDData(paramArr[1])
+
+    ; 获取抓图名称，若未指定则使用默认命名规则
+    captureName := paramArr.Length >= 2 && paramArr[2] != "" ? paramArr[2] : ""
+    
+    ; 获取坐标参数
+    startX := paramArr.Length >= 3 ? Integer(paramArr[3]) : Integer(Data.StartPosX)
+    startY := paramArr.Length >= 4 ? Integer(paramArr[4]) : Integer(Data.StartPosY)
+    endX := paramArr.Length >= 5 ? Integer(paramArr[5]) : Integer(Data.EndPosX)
+    endY := paramArr.Length >= 6 ? Integer(paramArr[6]) : Integer(Data.EndPosY)
+
+    ; 如果未指定名称，生成默认名称
+    if (captureName == "") {
+        captureName := "captureregion"
+        count := 1
+        while (true) {
+            testName := captureName . count
+            testPath := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\Images\ScreenShot\" testName ".png"
+            if (!FileExist(testPath)) {
+                captureName := testName
+                break
+            }
+            count++
+        }
+    }
+
+    ; 构建保存路径
+    savePath := A_WorkingDir "\Setting\" MySoftData.CurSettingName "\Images\ScreenShot\" captureName ".png"
+
+    try {
+        ; 执行截图操作
+        ScreenShot(startX, startY, endX, endY, savePath)
+        
+        ; 更新数据
+        Data.CaptureName := captureName
+        Data.CapturePath := savePath
+        SaveMacroCMDData(Data)
+        
+        ; 将截图路径保存到全局变量，供搜索Pro使用
+        if (!HasProp(MySoftData, "CaptureRegionMap"))
+            MySoftData.CaptureRegionMap := Map()
+        MySoftData.CaptureRegionMap[captureName] := savePath
+        
+        ; 通知所有 SearchProGui 实例更新下拉框
+        if (HasProp(MyMacroGui, "SearchProGui")) {
+            MyMacroGui.SearchProGui.RefreshCaptureRegionDL()
         }
     }
     catch {
