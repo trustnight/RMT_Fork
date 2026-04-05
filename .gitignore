@@ -10,5 +10,6 @@ installed
 */build*
 .codebuddy/
 .idea
-Setting/初秋/
+# Ignore all files in any directory named Setting
+Setting/
 RMtv1.1.0.exe
