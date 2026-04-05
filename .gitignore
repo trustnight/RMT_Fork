@@ -13,3 +13,4 @@ installed
 # Ignore all files in any directory named Setting
 Setting/
 RMtv1.1.0.exe
+**/debug.log
