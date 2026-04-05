@@ -1153,12 +1153,12 @@ OnInput(tableItem, cmd, index) {
 }
 
 OnMoveWindow(tableItem, cmd, index) {
-    paramArr := SplitCommand(cmd)
+    paramArr := StrSplit(cmd, "_")
     if (paramArr.Length < 1) {
         return
     }
     Data := GetMacroCMDData(paramArr[1])
-    
+
     ; 解析窗口信息
     infoArr := StrSplit(Data.WinInfo, "⎖")
     if (infoArr.Length != 3) {
@@ -1167,7 +1167,7 @@ OnMoveWindow(tableItem, cmd, index) {
     title := infoArr[1]
     className := infoArr[2]
     process := infoArr[3]
-    
+
     ; 构建窗口标题字符串
     WinTitle := ""
     if (title != "")
@@ -1182,14 +1182,14 @@ OnMoveWindow(tableItem, cmd, index) {
             WinTitle .= " "
         WinTitle .= "ahk_exe " process
     }
-    
+
     if (WinTitle == "") {
         return
     }
-    
+
     TargetX := paramArr.Length >= 3 ? Integer(paramArr[2]) : Integer(Data.TargetX)
     TargetY := paramArr.Length >= 4 ? Integer(paramArr[3]) : Integer(Data.TargetY)
-    
+
     try {
         hwnd := WinExist(WinTitle)
         if (hwnd != 0) {
