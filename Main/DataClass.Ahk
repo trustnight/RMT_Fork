@@ -766,3 +766,13 @@ class InputData {
         this.SaveName := "Data"     ;保存的变量名或数组名
     }
 }
+
+class MoveWindowData {
+    __New() {
+        this.SerialStr := ""
+        this.Remark := ""
+        this.WinInfo := ""
+        this.TargetX := "0"
+        this.TargetY := "0"
+    }
+}

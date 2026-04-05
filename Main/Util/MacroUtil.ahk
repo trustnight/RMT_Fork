@@ -71,7 +71,8 @@ OnTriggerMacroOnce(tableItem, macro, index) {
         "循环", OnLoop,
         "文本处理", OnTextOps,
         "数组", OnArray,
-        "输入", OnInput
+        "输入", OnInput,
+        "移动窗口", OnMoveWindow
     )
 
     cmdArr := SplitMacro(macro)
@@ -1148,5 +1149,53 @@ OnInput(tableItem, cmd, index) {
         case "继续&取消":
             InputContinueAndCencel(Data, tableItem, index)
 
+    }
+}
+
+OnMoveWindow(tableItem, cmd, index) {
+    paramArr := SplitCommand(cmd)
+    if (paramArr.Length < 1) {
+        return
+    }
+    Data := GetMacroCMDData(paramArr[1])
+    
+    ; 解析窗口信息
+    infoArr := StrSplit(Data.WinInfo, "⎖")
+    if (infoArr.Length != 3) {
+        return
+    }
+    title := infoArr[1]
+    className := infoArr[2]
+    process := infoArr[3]
+    
+    ; 构建窗口标题字符串
+    WinTitle := ""
+    if (title != "")
+        WinTitle .= title
+    if (className != "") {
+        if (WinTitle != "")
+            WinTitle .= " "
+        WinTitle .= "ahk_class " className
+    }
+    if (process != "") {
+        if (WinTitle != "")
+            WinTitle .= " "
+        WinTitle .= "ahk_exe " process
+    }
+    
+    if (WinTitle == "") {
+        return
+    }
+    
+    TargetX := paramArr.Length >= 3 ? Integer(paramArr[2]) : Integer(Data.TargetX)
+    TargetY := paramArr.Length >= 4 ? Integer(paramArr[3]) : Integer(Data.TargetY)
+    
+    try {
+        hwnd := WinExist(WinTitle)
+        if (hwnd != 0) {
+            DllCall("SetWindowPos", "Ptr", hwnd, "Ptr", 0, "Int", TargetX, "Int", TargetY, "Int", 0, "Int", 0, "UInt", 0x0001)
+        }
+    }
+    catch {
     }
 }

@@ -21,6 +21,7 @@
 #Include TextOpsGui.ahk
 #Include ArrayGui.ahk
 #Include InputGui.ahk
+#Include MoveWindowGui.ahk
 
 class MacroEditGui {
     __new() {
@@ -53,7 +54,7 @@ class MacroEditGui {
         this.SubMacroLastIndex := 0
 
         this.CMDStrArr := GetLangArr(["间隔", "按键", "搜索", "搜索Pro", "移动", "移动Pro", "输入", "输出", "循环", "宏操作", "变量", "变量提取",
-            "如果", "如果Pro", "运算", "运行", "数组", "文本处理", "后台鼠标", "后台按键", "RMT指令"])
+            "如果", "如果Pro", "运算", "运行", "数组", "文本处理", "后台鼠标", "后台按键", "RMT指令", "移动窗口"])
 
         this.IconMap := Map(GetLang("间隔"), "Icon1", GetLang("按键"), "Icon2", GetLang("搜索"), "Icon3", GetLang("搜索Pro"),
         "Icon4", GetLang("移动"), "Icon5", GetLang("移动Pro"),
@@ -61,7 +62,8 @@ class MacroEditGui {
         GetLang("变量"), "Icon11", GetLang("变量提取"), "Icon12", GetLang("如果"), "Icon13", GetLang("如果Pro"),
         "Icon14", GetLang("运算"), "Icon15", GetLang("RMT指令"), "Icon16", GetLang("后台鼠标"), "Icon17", GetLang("后台按键"),
         "Icon2", GetLang("真"), "Icon18", GetLang("假"), "Icon19", GetLang("循环次数"), "Icon20", GetLang("条件"), "Icon21",
-        GetLang("循环体"), "Icon22", GetLang("文本处理"), "Icon23", GetLang("数组"), "Icon24", GetLang("输入"), "Icon25")
+        GetLang("循环体"), "Icon22", GetLang("文本处理"), "Icon23", GetLang("数组"), "Icon24", GetLang("输入"), "Icon25",
+        GetLang("移动窗口"), "Icon26")
 
         this.InitSubGui()
     }
@@ -150,6 +152,10 @@ class MacroEditGui {
         this.InputGui := InputGui()
         this.InputGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
         this.SubGuiMap.Set(GetLang("输入"), this.InputGui)
+
+        this.MoveWindowGui := MoveWindowGui()
+        this.MoveWindowGui.SureBtnAction := (CommandStr) => this.OnSubGuiSureBtnClick(CommandStr)
+        this.SubGuiMap.Set(GetLang("移动窗口"), this.MoveWindowGui)
     }
 
     ShowGui(CommandStr, ShowSaveBtn) {
@@ -186,6 +192,7 @@ class MacroEditGui {
             IL_Add(ImageListID, "Images\Soft\TextOps.png")      ;todo 还没正式化
             IL_Add(ImageListID, "Images\Soft\Arr.png")            ;todo 还没正式化
             IL_Add(ImageListID, "Images\Soft\Input.png")            ;todo 还没正式化
+            IL_Add(ImageListID, "Images\Soft\Target.png")          ;移动窗口
         }
 
         MySoftData.RecordToggleCon := this.RecordMacroCon
@@ -319,6 +326,11 @@ class MacroEditGui {
         btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 75), GetLang("RMT指令"))
         btnCon.SetFont((Format("S{} W{} Q{}", 11, 400, 5)))
         btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.RMTCMDGui))
+
+        PosX += 85
+        btnCon := MyGui.Add("Button", Format("x{} y{} h{} w{} center", PosX, PosY, 30, 75), GetLang("移动窗口"))
+        btnCon.SetFont((Format("S{} W{} Q{}", 11, 400, 5)))
+        btnCon.OnEvent("Click", (*) => this.OnOpenSubGui(this.MoveWindowGui))
 
         PosX := 200
         PosY := 10

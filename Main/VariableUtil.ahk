@@ -25,7 +25,7 @@ SetGlobalData(macroStr, visitMap) {
         IsArray := InStr(paramArr[1], "数组")
         IsVarRelate := IsVariable || IsExVariable || IsTextOps || IsIf || IsOpera || IsSearch || IsSearchPro
             || IsLoop || IsIfPro || IsArray
-        if (!MySoftData.HasJoyMacro && IsPressKey) {
+        if (!MySoftData.HasJoyMacro && IsPressKey && paramArr.Length >= 2) {
             MySoftData.HasJoyMacro := InStr(paramArr[2], "Joy")
         }
 
